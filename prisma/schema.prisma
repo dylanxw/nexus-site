@@ -1,0 +1,251 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String         @id @default(uuid())
+  email             String         @unique
+  password          String
+  name              String
+  role              Role           @default(EMPLOYEE)
+  active            Boolean        @default(true)
+  twoFactorEnabled  Boolean        @default(false)
+  twoFactorSecret   String?
+  backupCodes       String?        // JSON array of backup codes
+  phoneNumber       String?
+  emailVerified     Boolean        @default(false)
+  lastLoginAt       DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  activityLogs      ActivityLog[]
+  quotes            Quote[]
+  refreshTokens     RefreshToken[]
+  sessions          Session[]
+  trustedDevices    TrustedDevice[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  sessionToken String @unique
+  userId    String
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sessionToken])
+  @@index([userId])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TrustedDevice {
+  id              String   @id @default(uuid())
+  userId          String
+  deviceFingerprint String  // Hash of browser/device characteristics
+  deviceName      String?  // User agent or friendly name
+  ipAddress       String?
+  lastUsedAt      DateTime @default(now())
+  expiresAt       DateTime // 7 days from creation
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceFingerprint])
+  @@index([deviceFingerprint])
+  @@index([userId])
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  code      String?  // 6-digit verification code
+  type      String   // EMAIL_VERIFY, PASSWORD_RESET
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([token])
+  @@index([code])
+}
+
+model Quote {
+  id            String        @id @default(uuid())
+  quoteNumber   String        @unique
+  deviceType    String
+  model         String
+  network       String
+  storage       String
+  condition     String
+  atlasPrice    Float
+  offerPrice    Float
+  margin        Float
+  customerName  String
+  customerEmail String
+  customerPhone String
+  status        QuoteStatus   @default(PENDING)
+  expiresAt     DateTime
+  notes         String?
+  createdBy     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  activityLogs  ActivityLog[]
+  emailLogs     EmailLog[]
+  user          User?         @relation(fields: [createdBy], references: [id])
+}
+
+model PricingData {
+  id          String   @id @default(uuid())
+  model       String
+  deviceType  String
+  modelName   String
+  storage     String
+  network     String
+  series      String?  // iPhone series identifier (e.g., "17", "16", "SE", "X") for series overrides
+  priceSwap   Float?
+  priceGradeA Float?
+  priceGradeB Float?
+  priceGradeC Float?
+  priceGradeD Float?
+  priceDOA    Float?
+  crackedBack Float?
+  crackedLens Float?
+  lastUpdated DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  // Manual override prices (null = use margin calculation)
+  overrideGradeA  Float?
+  overrideGradeB  Float?
+  overrideGradeC  Float?
+  overrideGradeD  Float?
+  overrideDOA     Float?
+
+  // Track when overrides were set
+  overrideSetAt   DateTime?
+  overrideSetBy   String?
+
+  // Cached calculated offer prices (Atlas price minus margin)
+  // These are auto-calculated and stored for performance
+  offerGradeA     Float?
+  offerGradeB     Float?
+  offerGradeC     Float?
+  offerGradeD     Float?
+  offerDOA        Float?
+
+  // Track when offers were last calculated
+  offersCalculatedAt DateTime?
+
+  @@unique([model, network])
+  @@index([deviceType, modelName])
+  @@index([series])
+}
+
+model EmailLog {
+  id       String    @id @default(uuid())
+  quoteId  String
+  type     EmailType
+  status   String
+  sentAt   DateTime  @default(now())
+  metadata String?
+  quote    Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+}
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  category  String
+  updatedAt DateTime @updatedAt
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  quoteId     String?
+  action      String
+  description String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  quote       Quote?   @relation(fields: [quoteId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+model PricingUpdateLog {
+  id             String   @id @default(uuid())
+  fileName       String?
+  source         String
+  recordsAdded   Int      @default(0)
+  recordsUpdated Int      @default(0)
+  status         String
+  error          String?
+  executedAt     DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+  COMPLETED
+  PAID
+}
+
+enum EmailType {
+  QUOTE_CONFIRMATION
+  REMINDER_7_DAYS
+  REMINDER_3_DAYS
+  REMINDER_1_DAY
+  EXPIRED_NOTICE
+  ADMIN_NOTIFICATION
+}
+
+// Margin configuration for different price ranges and conditions
+model MarginTier {
+  id            String   @id @default(uuid())
+  name          String   // e.g., "Budget", "Mid-Range", "Premium"
+  minPrice      Float    // Minimum Atlas price for this tier
+  maxPrice      Float    // Maximum Atlas price for this tier
+
+  // Margins for each condition (dollar amounts to deduct from Atlas price)
+  marginGradeA  Float    // Margin for Flawless condition
+  marginGradeB  Float    // Margin for Good condition
+  marginGradeC  Float    // Margin for Fair condition
+  marginGradeD  Float    // Margin for Broken condition
+  marginDOA     Float    // Margin for No Power condition
+
+  // Optional percentage-based margins (if you want to use % instead of fixed $)
+  usePercentage Boolean  @default(false)
+  percentGradeA Float?   // Percentage margin for Grade A (if usePercentage is true)
+  percentGradeB Float?   // Percentage margin for Grade B
+  percentGradeC Float?   // Percentage margin for Grade C
+  percentGradeD Float?   // Percentage margin for Grade D
+  percentDOA    Float?   // Percentage margin for DOA
+
+  priority      Int      @default(0) // Order of tiers (higher priority = checked first)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([minPrice, maxPrice])
+  @@index([priority])
+}
