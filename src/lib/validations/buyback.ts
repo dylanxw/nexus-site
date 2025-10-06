@@ -36,19 +36,47 @@ export const customerInfoSchema = z.object({
 });
 
 /**
+ * Valid storage options for iPhones
+ */
+const VALID_STORAGE = ["32GB", "64GB", "128GB", "256GB", "512GB", "1TB", "2TB"] as const;
+
+/**
+ * Valid network carriers
+ */
+const VALID_NETWORKS = ["Unlocked", "Carrier Locked", "AT&T", "T-Mobile", "Verizon"] as const;
+
+/**
+ * Valid device conditions
+ */
+const VALID_CONDITIONS = ["Flawless", "Good", "Fair", "Broken", "No Power"] as const;
+
+/**
  * Device Quote Validation Schema
+ * NOTE: Prices are calculated SERVER-SIDE only for security
+ * Client should NEVER provide prices
  */
 export const quoteDeviceSchema = z.object({
-  model: z.string().min(1, "Please select a device model"),
-  storage: z.string().min(1, "Please select storage capacity"),
-  network: z.string().min(1, "Please select network carrier"),
-  condition: z.string().min(1, "Please select device condition"),
-  offerPrice: z.number().positive("Offer price must be positive"),
-  atlasPrice: z.number().positive("Atlas price must be positive"),
+  model: z.string()
+    .min(1, "Please select a device model")
+    .max(100, "Invalid model name")
+    .regex(/^iPhone\s+[\w\s()]+$/, "Invalid model format"),
+
+  storage: z.enum(VALID_STORAGE, {
+    message: "Invalid storage capacity selected",
+  }),
+
+  network: z.enum(VALID_NETWORKS, {
+    message: "Invalid network carrier selected",
+  }),
+
+  condition: z.enum(VALID_CONDITIONS, {
+    message: "Invalid device condition selected",
+  }),
 });
 
 /**
  * Complete Quote Submission Schema
+ * Prices are calculated server-side for security
  */
 export const quoteSubmissionSchema = customerInfoSchema.merge(quoteDeviceSchema);
 
@@ -65,11 +93,21 @@ export const quoteNumberSchema = z.object({
  * Pricing Request Schema
  */
 export const pricingRequestSchema = z.object({
-  model: z.string().min(1, "Model is required"),
-  storage: z.string().min(1, "Storage is required"),
-  network: z.string().min(1, "Network is required"),
-  condition: z.enum(["Flawless", "Good", "Fair", "Broken", "No Power"], {
-    errorMap: () => ({ message: "Invalid condition selected" }),
+  model: z.string()
+    .min(1, "Model is required")
+    .max(100, "Invalid model name")
+    .regex(/^iPhone\s+[\w\s()]+$/, "Invalid model format"),
+
+  storage: z.enum(VALID_STORAGE, {
+    message: "Invalid storage capacity",
+  }),
+
+  network: z.enum(VALID_NETWORKS, {
+    message: "Invalid network carrier",
+  }),
+
+  condition: z.enum(VALID_CONDITIONS, {
+    message: "Invalid condition selected",
   }),
 });
 

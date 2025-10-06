@@ -87,7 +87,7 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
     try {
       const validatedData = validationResult.data;
 
-      // Submit quote to API
+      // Submit quote to API (prices calculated server-side for security)
       const response = await fetch('/api/buyback/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,8 +99,8 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
           name: validatedData.name,
           email: validatedData.email,
           phone: validatedData.phone,
-          offerPrice: quoteData.offerPrice,
-          atlasPrice: quoteData.atlasPrice,
+          // ✅ Prices now calculated SERVER-SIDE for security
+          // ❌ Never send client prices - they can be manipulated
         }),
       });
 
@@ -110,8 +110,18 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
         // Clear session storage
         sessionStorage.removeItem('buybackQuote');
 
+        // Check if email was sent successfully
+        if (data.emailSent === false || data.warning) {
+          // Quote created but email failed
+          toast.warning(data.warning || "Your quote was created, but we couldn't send the confirmation email. Please save your quote number: " + data.quoteNumber, {
+            duration: 8000, // Show longer for important message
+          });
+        } else {
+          // Full success
+          toast.success("Quote submitted successfully! Check your email for confirmation.");
+        }
+
         // Navigate to confirmation with quote number
-        toast.success("Quote submitted successfully!");
         router.push(`/buyback/confirmation?quote=${data.quoteNumber}`);
       } else {
         toast.error(data.error || "Failed to submit quote. Please try again.");

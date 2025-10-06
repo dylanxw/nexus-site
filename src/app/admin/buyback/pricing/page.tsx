@@ -50,28 +50,72 @@ interface PricingData {
   offersCalculatedAt: string | null;
 }
 
+interface Pagination {
+  page: number;
+  limit: number;
+  totalCount: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+interface PricingStats {
+  totalModels: number;
+  activeModels: number;
+  overrideCount: number;
+  lastSync: string | null;
+}
+
 export default function BuybackPricingPage() {
   const [pricing, setPricing] = useState<PricingData[]>([]);
+  const [stats, setStats] = useState<PricingStats | null>(null);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState(""); // What user types
+  const [searchQuery, setSearchQuery] = useState(""); // What gets sent to API
   const [deviceFilter, setDeviceFilter] = useState("all");
   const [showOverridesOnly, setShowOverridesOnly] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editOverrides, setEditOverrides] = useState<any>({});
   const [marginSettings, setMarginSettings] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Handle Enter key press to trigger search
+  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setSearchQuery(searchInput);
+      setCurrentPage(1);
+    }
+  };
 
   useEffect(() => {
     fetchPricing();
+  }, [currentPage, searchQuery]); // Re-fetch when search changes
+
+  useEffect(() => {
     fetchMarginSettings();
-  }, []);
+    fetchStats();
+  }, []); // Only fetch margin settings and stats once
 
   const fetchPricing = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/admin/buyback/pricing");
+
+      // Build query params with search
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '50',
+      });
+
+      if (searchQuery) {
+        params.append('search', searchQuery);
+      }
+
+      const response = await fetch(`/api/admin/buyback/pricing?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
         setPricing(data.pricing);
+        setPagination(data.pagination);
       } else {
         toast.error("Failed to load pricing data");
       }
@@ -92,6 +136,20 @@ export default function BuybackPricingPage() {
       }
     } catch (error) {
       console.error("Error fetching margin settings:", error);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch("/api/admin/buyback/pricing/stats");
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data.stats);
+      } else {
+        console.error("Failed to load pricing stats");
+      }
+    } catch (error) {
+      console.error("Error fetching pricing stats:", error);
     }
   };
 
@@ -253,38 +311,36 @@ export default function BuybackPricingPage() {
   };
 
   const handleSyncFromAtlas = async () => {
+    const loadingToast = toast.loading("Syncing pricing from Atlas...");
     try {
-      toast.loading("Syncing pricing from Atlas...");
       const response = await fetch("/api/admin/buyback/pricing/sync", {
         method: "POST",
       });
 
       if (response.ok) {
         const result = await response.json();
+        toast.dismiss(loadingToast);
         toast.success(
           `Successfully synced! Added: ${result.added}, Updated: ${result.updated}`
         );
         fetchPricing();
       } else {
+        toast.dismiss(loadingToast);
         toast.error("Failed to sync pricing");
       }
     } catch (error) {
       console.error("Error syncing pricing:", error);
+      toast.dismiss(loadingToast);
       toast.error("Error syncing pricing");
     }
   };
 
+  // Server handles search, client handles device and override filters
   const filteredPricing = pricing.filter((item) => {
-    const matchesSearch =
-      !searchQuery ||
-      item.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.modelName.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesDevice = deviceFilter === "all" || item.deviceType === deviceFilter;
-
     const matchesOverride = !showOverridesOnly || hasOverride(item) || hasSeriesOverrideActive(item);
 
-    return matchesSearch && matchesDevice && matchesOverride;
+    return matchesDevice && matchesOverride;
   });
 
   const overrideCount = pricing.filter(item => hasOverride(item) || hasSeriesOverrideActive(item)).length;
@@ -332,13 +388,13 @@ export default function BuybackPricingPage() {
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats - from API (all data, not just current page) */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Models</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{pricing.length}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.totalModels || 0}</p>
                 </div>
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                   <DollarSign className="w-5 h-5 text-blue-600" />
@@ -351,7 +407,7 @@ export default function BuybackPricingPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Active</p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">
-                    {pricing.filter((p) => p.isActive).length}
+                    {stats?.activeModels || 0}
                   </p>
                 </div>
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -364,7 +420,7 @@ export default function BuybackPricingPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Overrides</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{overrideCount}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.overrideCount || 0}</p>
                 </div>
                 <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                   <AlertCircle className="w-5 h-5 text-orange-600" />
@@ -377,8 +433,8 @@ export default function BuybackPricingPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Last Sync</p>
                   <p className="text-sm font-medium text-gray-900 mt-1">
-                    {pricing[0]
-                      ? new Date(pricing[0].lastUpdated).toLocaleDateString()
+                    {stats?.lastSync
+                      ? new Date(stats.lastSync).toLocaleDateString()
                       : "Never"}
                   </p>
                 </div>
@@ -397,9 +453,10 @@ export default function BuybackPricingPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search by model..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by model... (Press Enter to search)"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyPress={handleSearchKeyPress}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DB5858]"
                   />
                 </div>
@@ -662,6 +719,36 @@ export default function BuybackPricingPage() {
                   <Upload className="w-4 h-4 mr-2" />
                   Sync from Atlas
                 </Button>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {pagination && pagination.totalPages > 1 && (
+              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+                <div className="text-sm text-gray-600">
+                  Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount} items
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={!pagination.hasPreviousPage}
+                  >
+                    Previous
+                  </Button>
+                  <div className="text-sm text-gray-600">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={!pagination.hasNextPage}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             )}
           </div>

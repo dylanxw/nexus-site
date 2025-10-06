@@ -91,13 +91,15 @@ export function generateQuoteNumber(): string {
 }
 
 /**
- * Get quote expiration date (2 weeks from now)
- * @returns Date object for 2 weeks from now
+ * Get quote expiration date (14 days from now in UTC)
+ * Returns a Date object representing exactly 14 days from the current UTC time
+ * @returns Date object for 14 days from now (UTC)
  */
 export function getQuoteExpirationDate(): Date {
-  const date = new Date();
-  date.setDate(date.getDate() + 14); // Add 14 days
-  return date;
+  // Calculate expiration using UTC to avoid timezone/DST issues
+  const nowUTC = Date.now(); // Current time in UTC milliseconds
+  const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
+  return new Date(nowUTC + fourteenDaysMs);
 }
 
 /**
@@ -106,18 +108,21 @@ export function getQuoteExpirationDate(): Date {
  * @returns Boolean indicating if the quote has expired
  */
 export function isQuoteExpired(expirationDate: Date): boolean {
-  return new Date() > new Date(expirationDate);
+  // Use UTC comparison to avoid timezone issues
+  return Date.now() > new Date(expirationDate).getTime();
 }
 
 /**
  * Get days remaining until quote expires
+ * Uses UTC for consistent timezone handling regardless of server location
  * @param expirationDate The expiration date
  * @returns Number of days remaining (negative if expired)
  */
 export function getDaysUntilExpiration(expirationDate: Date): number {
-  const now = new Date();
-  const expiry = new Date(expirationDate);
-  const diffTime = expiry.getTime() - now.getTime();
+  // Use UTC timestamps to avoid timezone issues
+  const nowUTC = Date.now(); // Always returns UTC milliseconds
+  const expiryUTC = new Date(expirationDate).getTime(); // Convert to UTC milliseconds
+  const diffTime = expiryUTC - nowUTC;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 }

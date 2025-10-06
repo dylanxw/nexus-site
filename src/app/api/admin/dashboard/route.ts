@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
+import { requireAdminAuth } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
+  try {
+    await requireAdminAuth();
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
+
   try {
     // Fetch buyback stats
     const totalQuotes = await prisma.quote.count();
@@ -11,13 +19,14 @@ export async function GET(request: NextRequest) {
       where: { status: "PENDING" },
     });
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Get start of today in UTC (midnight UTC)
+    const nowUTC = new Date();
+    const todayUTC = new Date(Date.UTC(nowUTC.getUTCFullYear(), nowUTC.getUTCMonth(), nowUTC.getUTCDate()));
 
     const completedToday = await prisma.quote.count({
       where: {
         status: { in: ["COMPLETED", "PAID"] },
-        updatedAt: { gte: today },
+        updatedAt: { gte: todayUTC },
       },
     });
 

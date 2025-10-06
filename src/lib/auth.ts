@@ -233,3 +233,15 @@ export function hasRole(userRole: string, requiredRoles: string[]): boolean {
 
   return false;
 }
+
+// Require admin authentication (ADMIN or MANAGER role)
+export async function requireAdminAuth(): Promise<SessionPayload> {
+  const session = await requireAuth(); // Throws if not authenticated
+
+  // Check if user has admin/manager role
+  if (!hasRole(session.role, ['ADMIN', 'MANAGER'])) {
+    throw new Error('Forbidden - Admin access required');
+  }
+
+  return session;
+}

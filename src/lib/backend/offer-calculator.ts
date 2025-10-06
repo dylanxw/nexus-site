@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 type GradeType = 'gradeA' | 'gradeB' | 'gradeC' | 'gradeD' | 'gradeDOA';
 
@@ -68,7 +67,7 @@ export async function loadMarginSettings(): Promise<MarginSettings> {
 
     return DEFAULT_MARGIN_SETTINGS;
   } catch (error) {
-    console.error('Error loading margin settings:', error);
+    logger.error('Error loading margin settings', 'BUYBACK', {}, error as Error);
     return DEFAULT_MARGIN_SETTINGS;
   }
 }
@@ -182,4 +181,146 @@ export async function recalculateAllOfferPrices(): Promise<{ updated: number }> 
   }
 
   return { updated };
+}
+
+/**
+ * Calculate pricing for a quote request (server-side only)
+ * This is the single source of truth for quote pricing
+ * NEVER trust client-provided prices
+ */
+export async function calculateQuotePricing(params: {
+  model: string;
+  storage: string;
+  network: string;
+  condition: string;
+}): Promise<{
+  success: boolean;
+  atlasPrice?: number;
+  offerPrice?: number;
+  margin?: number;
+  marginPercentage?: string;
+  isOverride?: boolean;
+  isSeriesOverride?: boolean;
+  error?: string;
+}> {
+  try {
+    const { model, storage, network, condition } = params;
+
+    // Import from pricing-calculator to avoid circular dependency
+    const { CONDITION_GRADE_MAP } = await import('@/lib/pricing-calculator');
+
+    type CustomerCondition = keyof typeof CONDITION_GRADE_MAP;
+
+    // Map condition to Atlas grade
+    const gradeField = CONDITION_GRADE_MAP[condition as CustomerCondition];
+    if (!gradeField) {
+      return { success: false, error: 'Invalid condition' };
+    }
+
+    // Map network to database format
+    const networkForLookup = network === "Unlocked" ? "Unlocked" : "Carrier Locked";
+
+    // Construct the model string for database lookup
+    const fullModel = `${model} ${storage} ${networkForLookup}`;
+
+    // Get pricing from database - try exact match first
+    let pricing = await prisma.pricingData.findFirst({
+      where: {
+        model: fullModel,
+        isActive: true,
+      },
+    });
+
+    // If exact match fails, try finding by modelName, storage, and network
+    if (!pricing) {
+      const modelPart = model.replace('iPhone ', '').trim();
+
+      const allPricing = await prisma.pricingData.findMany({
+        where: {
+          storage: storage,
+          network: networkForLookup,
+          isActive: true,
+        },
+      });
+
+      pricing = allPricing.find(p =>
+        p.modelName.toLowerCase().includes(modelPart.toLowerCase())
+      ) || null;
+    }
+
+    if (!pricing) {
+      return {
+        success: false,
+        error: `Pricing not available for ${model} ${storage} ${network}`
+      };
+    }
+
+    // Get the Atlas price for the specific condition
+    const gradeValue = pricing[gradeField as keyof typeof pricing];
+
+    // Runtime type validation
+    if (typeof gradeValue !== 'number' || gradeValue === null || gradeValue === undefined) {
+      return {
+        success: false,
+        error: 'Pricing not available for this condition'
+      };
+    }
+
+    const atlasPrice: number = gradeValue;
+
+    // Check for manual override first
+    const overrideField = gradeField.replace('price', 'override') as keyof typeof pricing;
+    const overridePrice = pricing[overrideField] as number | null;
+
+    // If override exists, use it directly
+    if (overridePrice !== null && overridePrice !== undefined) {
+      return {
+        success: true,
+        atlasPrice,
+        offerPrice: overridePrice,
+        margin: atlasPrice - overridePrice,
+        marginPercentage: (((atlasPrice - overridePrice) / atlasPrice) * 100).toFixed(1),
+        isOverride: true,
+      };
+    }
+
+    // Load margin settings
+    const marginSettings = await loadMarginSettings();
+
+    // Map grade field to grade name
+    const gradeMap: { [key: string]: GradeType } = {
+      priceGradeA: 'gradeA',
+      priceGradeB: 'gradeB',
+      priceGradeC: 'gradeC',
+      priceGradeD: 'gradeD',
+      priceDOA: 'gradeDOA'
+    };
+
+    const gradeName = gradeMap[gradeField];
+
+    // Use database series field (not extracted from user input)
+    const series = pricing.series;
+
+    // Calculate offer price using centralized logic
+    const offerPrice = Math.round(calculateOfferPrice(atlasPrice, gradeName, series, marginSettings));
+    const margin = atlasPrice - offerPrice;
+
+    // Check if series override was used
+    const isSeriesOverride = !!(series && marginSettings.seriesOverrides?.[series]?.enabled);
+
+    return {
+      success: true,
+      atlasPrice,
+      offerPrice,
+      margin,
+      marginPercentage: ((margin / atlasPrice) * 100).toFixed(1),
+      isSeriesOverride,
+    };
+  } catch (error) {
+    logger.error('Error calculating quote pricing', 'BUYBACK', {}, error as Error);
+    return {
+      success: false,
+      error: 'An error occurred while calculating pricing'
+    };
+  }
 }

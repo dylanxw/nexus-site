@@ -40,24 +40,86 @@ interface Quote {
   updatedAt: string;
 }
 
+interface Stats {
+  totalQuotes: number;
+  byStatus: {
+    pending: number;
+    accepted: number;
+    completed: number;
+    paid: number;
+    expired: number;
+    cancelled: number;
+  };
+  financial: {
+    totalValue: number;
+    totalMargin: number;
+    avgQuoteValue: number;
+  };
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  totalCount: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export default function BuybackLeadsPage() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState(""); // What user types
+  const [searchQuery, setSearchQuery] = useState(""); // What gets sent to API
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Handle Enter key press to trigger search
+  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setSearchQuery(searchInput);
+      setCurrentPage(1);
+    }
+  };
+
+  const handleStatusChange = (value: string) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  };
 
   useEffect(() => {
     fetchQuotes();
-  }, []);
+  }, [currentPage, searchQuery, statusFilter]); // Re-fetch when search or filter changes
+
+  useEffect(() => {
+    fetchStats();
+  }, []); // Only fetch stats once on mount
 
   const fetchQuotes = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/admin/buyback/quotes");
+      // Build query params with search and filter
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '50',
+      });
+
+      if (searchQuery) {
+        params.append('search', searchQuery);
+      }
+
+      if (statusFilter !== 'all') {
+        params.append('status', statusFilter);
+      }
+
+      const response = await fetch(`/api/admin/buyback/quotes?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
         setQuotes(data.quotes);
+        setPagination(data.pagination);
       } else {
         toast.error("Failed to load quotes");
       }
@@ -66,6 +128,26 @@ export default function BuybackLeadsPage() {
       toast.error("Error loading quotes");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      console.log("Fetching stats from /api/admin/buyback/quotes/stats");
+      const response = await fetch("/api/admin/buyback/quotes/stats");
+      console.log("Stats response status:", response.status);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Stats data received:", data);
+        setStats(data.stats);
+      } else {
+        const errorText = await response.text();
+        console.error("Stats API error:", response.status, errorText);
+        toast.error("Failed to load statistics");
+      }
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      toast.error("Error loading statistics");
     }
   };
 
@@ -125,26 +207,20 @@ export default function BuybackLeadsPage() {
     }
   };
 
-  const filteredQuotes = quotes.filter((quote) => {
-    const matchesSearch =
-      !searchQuery ||
-      quote.quoteNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      quote.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      quote.customerEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      quote.model.toLowerCase().includes(searchQuery.toLowerCase());
+  // No client-side filtering needed - server handles search and filtering
+  const filteredQuotes = quotes;
 
-    const matchesStatus = statusFilter === "all" || quote.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const stats = {
-    total: quotes.length,
-    pending: quotes.filter((q) => q.status === "PENDING").length,
-    completed: quotes.filter((q) => q.status === "COMPLETED" || q.status === "PAID").length,
-    totalValue: quotes
-      .filter((q) => q.status === "COMPLETED" || q.status === "PAID")
-      .reduce((sum, q) => sum + q.offerPrice, 0),
+  // Display stats from API (all data, not just current page)
+  const displayStats = stats ? {
+    total: stats.totalQuotes,
+    pending: stats.byStatus.pending,
+    completed: stats.byStatus.completed + stats.byStatus.paid,
+    totalValue: stats.financial.totalValue,
+  } : {
+    total: 0,
+    pending: 0,
+    completed: 0,
+    totalValue: 0,
   };
 
   if (loading) {
@@ -188,7 +264,7 @@ export default function BuybackLeadsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Leads</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{displayStats.total}</p>
                 </div>
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                   <DollarSign className="w-5 h-5 text-blue-600" />
@@ -200,7 +276,7 @@ export default function BuybackLeadsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats.pending}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{displayStats.pending}</p>
                 </div>
                 <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                   <Clock className="w-5 h-5 text-yellow-600" />
@@ -212,7 +288,7 @@ export default function BuybackLeadsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Completed</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats.completed}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{displayStats.completed}</p>
                 </div>
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                   <CheckCircle className="w-5 h-5 text-green-600" />
@@ -225,7 +301,7 @@ export default function BuybackLeadsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Value</p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">
-                    ${stats.totalValue.toLocaleString()}
+                    ${displayStats.totalValue.toLocaleString()}
                   </p>
                 </div>
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -243,9 +319,10 @@ export default function BuybackLeadsPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search by quote #, customer name, email, or model..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by quote #, customer name, email, or model... (Press Enter to search)"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyPress={handleSearchKeyPress}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DB5858]"
                   />
                 </div>
@@ -253,21 +330,21 @@ export default function BuybackLeadsPage() {
               <div className="flex gap-2">
                 <Button
                   variant={statusFilter === "all" ? "default" : "outline"}
-                  onClick={() => setStatusFilter("all")}
+                  onClick={() => handleStatusChange("all")}
                   size="sm"
                 >
                   All
                 </Button>
                 <Button
                   variant={statusFilter === "PENDING" ? "default" : "outline"}
-                  onClick={() => setStatusFilter("PENDING")}
+                  onClick={() => handleStatusChange("PENDING")}
                   size="sm"
                 >
                   Pending
                 </Button>
                 <Button
                   variant={statusFilter === "COMPLETED" ? "default" : "outline"}
-                  onClick={() => setStatusFilter("COMPLETED")}
+                  onClick={() => handleStatusChange("COMPLETED")}
                   size="sm"
                 >
                   Completed
@@ -394,6 +471,36 @@ export default function BuybackLeadsPage() {
                     ? "Try adjusting your filters"
                     : "Quotes will appear here as customers request buyback prices"}
                 </p>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {pagination && pagination.totalPages > 1 && (
+              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+                <div className="text-sm text-gray-600">
+                  Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount} quotes
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={!pagination.hasPreviousPage}
+                  >
+                    Previous
+                  </Button>
+                  <div className="text-sm text-gray-600">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={!pagination.hasNextPage}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             )}
           </div>

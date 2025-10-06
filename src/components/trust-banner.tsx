@@ -253,7 +253,7 @@ export function TrustBanner() {
 
                         {/* Review Text */}
                         <p className="text-white/90 text-sm leading-relaxed flex-grow mb-4 line-clamp-4">
-                          "{review.text}"
+                          &quot;{review.text}&quot;
                         </p>
 
                         {/* Author Info */}

@@ -708,7 +708,7 @@ export default function AccountPage() {
                         />
                       )}
                       <p className="text-xs text-gray-500 mt-4">
-                        Can't scan? Enter this key manually: <br />
+                        Can&apos;t scan? Enter this key manually: <br />
                         <code className="bg-gray-100 px-2 py-1 rounded">{secret}</code>
                       </p>
                     </div>

@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
+import { requireAdminAuth } from "@/lib/auth";
 
 export async function GET() {
+  try {
+    await requireAdminAuth();
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
+
   try {
     // Get sample records with series field
     const samples = await prisma.pricingData.findMany({

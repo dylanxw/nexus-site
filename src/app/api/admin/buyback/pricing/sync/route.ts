@@ -1,18 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { calculateAllOfferPrices } from "@/lib/backend/offer-calculator";
-
-const prisma = new PrismaClient();
+import { requireAdminAuth } from "@/lib/auth";
 
 /**
  * Sync pricing data from Atlas (Google Sheets)
  *
  * This endpoint fetches data from a publicly accessible Atlas pricing Google Sheet
  * and updates the PricingData table in the database.
- *
- * No authentication required since the sheet is public.
  */
 export async function POST(request: NextRequest) {
+  try {
+    await requireAdminAuth();
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
+
+  const startTime = Date.now();
+
   try {
     const atlasSheetId = process.env.ATLAS_SHEET_ID;
     const atlasSheetName = process.env.ATLAS_SHEET_NAME || "iPhone Used";
@@ -67,13 +75,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    let added = 0;
-    let updated = 0;
     let skipped = 0;
+    const validRecords: any[] = [];
 
-    // CSV structure: Col B (index 1) = Model, Col C (2) = SWAP, Col D (3) = Grade A,
-    // Col E (4) = Grade B, Col F (5) = Grade C, Col G (6) = Grade D, Col H (7) = DOA
-    // Process each row
+    // Parse pricing helper
+    const parsePrice = (value: string): number | null => {
+      if (!value || value.trim() === "" || value.includes("#REF")) return null;
+      const cleaned = value.replace(/[$,]/g, "").trim();
+      const parsed = parseFloat(cleaned);
+      return isNaN(parsed) ? null : parsed;
+    };
+
+    // STEP 1: Parse and validate all rows (collect in memory)
+    console.log('📊 Parsing CSV data...');
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
 
@@ -87,169 +101,145 @@ export async function POST(request: NextRequest) {
       }
 
       try {
-        // Parse the model string (e.g., "iPhone 17 Pro Max 256GB Unlocked")
         const modelStr = row[1].trim();
 
-        // Skip if model string doesn't contain iPhone
-        if (!modelStr.includes("iPhone")) {
-          skipped++;
-          continue;
-        }
-
-        // Additional validation: must have a valid iPhone model pattern
-        // Should contain "iPhone" followed by a model number/name and storage
-        if (!modelStr.match(/iPhone\s+\S+.*\d+(?:GB|TB)/i)) {
-          console.log(`Skipping invalid model format at row ${i}: "${modelStr}"`);
+        // Skip if not iPhone or invalid format
+        if (!modelStr.includes("iPhone") || !modelStr.match(/iPhone\s+\S+.*\d+(?:GB|TB)/i)) {
           skipped++;
           continue;
         }
 
         // Extract device info
-        let deviceType = "iPhone";
-        let modelName = "";
-        let storage = "";
-        let network = "";
-
-        // Extract storage first (e.g., "256GB", "512GB", "1TB", "2TB")
         const storageMatch = modelStr.match(/(\d+(?:GB|TB))/i);
-        storage = storageMatch ? storageMatch[1] : "";
+        const storage = storageMatch ? storageMatch[1] : "";
+        const network = modelStr.toLowerCase().includes("unlocked") ? "Unlocked" : "Carrier Locked";
 
-        // Extract network status
-        network = modelStr.toLowerCase().includes("unlocked") ? "Unlocked" : "Carrier Locked";
-
-        // Extract model name - everything between "iPhone" and storage, trimmed
-        // Examples:
-        // "iPhone 17 Pro Max 256GB Unlocked" -> "17 Pro Max"
-        // "iPhone SE (3rd Gen) 64GB Unlocked" -> "SE (3rd Gen)"
-        // "iPhone 16 128GB Carrier Locked" -> "16"
+        // Extract model name
+        let modelName = "";
         if (storage) {
-          const beforeStorage = modelStr.split(storage)[0]; // "iPhone 17 Pro Max "
-          modelName = beforeStorage.replace("iPhone", "").trim(); // "17 Pro Max"
+          const beforeStorage = modelStr.split(storage)[0];
+          modelName = beforeStorage.replace("iPhone", "").trim();
         } else {
-          // Fallback if no storage found
           const parts = modelStr.split(" ");
-          // Remove "iPhone" and network status
           modelName = parts.slice(1, -2).join(" ").trim();
         }
 
-        // Extract series for series override functionality
-        // This is just the numeric/base part (e.g., "17", "16", "SE", "X", "7")
-        // Ignores suffixes like "E", "Plus", "Pro", etc.
+        // Extract series
         let series: string | null = null;
         const seriesMatch = modelName.match(/^(\d+|SE|XS|XR|X)(?:\s|[A-Z]|$)/i);
         if (seriesMatch) {
-          series = seriesMatch[1].toUpperCase(); // Normalize to uppercase
+          series = seriesMatch[1].toUpperCase();
         }
 
-        // Log series extraction for first few iPhone 17 models
-        if (modelName.includes('17') && added + updated < 5) {
-          console.log(`Series extraction: "${modelName}" -> "${series}"`);
-        }
-
-        // Parse pricing data - remove $ and , then convert to number
-        const parsePrice = (value: string): number | null => {
-          if (!value || value.trim() === "" || value.includes("#REF")) return null;
-          const cleaned = value.replace(/[$,]/g, "").trim();
-          const parsed = parseFloat(cleaned);
-          return isNaN(parsed) ? null : parsed;
-        };
-
-        // Column mapping for Atlas sheet:
-        // Column B (index 1): Model
-        // Column C (index 2): SWAP/HSO
-        // Column D (index 3): Grade A
-        // Column E (index 4): Grade B
-        // Column F (index 5): Grade C
-        // Column G (index 6): Grade D
-        // Column H (index 7): DOA
-        const pricingData = {
-          model: modelStr,
-          deviceType,
-          modelName,
-          storage,
-          network,
-          series, // Add series field for bulletproof series override matching
-          priceSwap: parsePrice(row[2]), // Column C: SWAP/HSO
-          priceGradeA: parsePrice(row[3]), // Column D: Grade A (was incorrectly row[2])
-          priceGradeB: parsePrice(row[4]), // Column E: Grade B
-          priceGradeC: parsePrice(row[5]), // Column F: Grade C
-          priceGradeD: parsePrice(row[6]), // Column G: Grade D
-          priceDOA: parsePrice(row[7]), // Column H: DOA
-          crackedBack: null, // Not in the sheet directly
-          crackedLens: null, // Not in the sheet directly
-          lastUpdated: new Date(),
-          isActive: true,
-        };
-
-        // Skip if we couldn't extract valid data
+        // Skip if missing required data
         if (!storage || !modelName) {
-          console.log(`Skipping row ${i}: missing storage or modelName`, { modelStr, storage, modelName });
           skipped++;
           continue;
         }
 
-        // Log first few records for debugging
-        if (added + updated < 3) {
-          console.log(`Processing row ${i}:`, {
-            modelStr,
-            deviceType,
-            modelName,
-            storage,
-            network,
-            priceGradeA: pricingData.priceGradeA,
-          });
-        }
+        // Build pricing data object
+        const pricingData = {
+          model: modelStr,
+          deviceType: "iPhone",
+          modelName,
+          storage,
+          network,
+          series,
+          priceSwap: parsePrice(row[2]),
+          priceGradeA: parsePrice(row[3]),
+          priceGradeB: parsePrice(row[4]),
+          priceGradeC: parsePrice(row[5]),
+          priceGradeD: parsePrice(row[6]),
+          priceDOA: parsePrice(row[7]),
+          crackedBack: null,
+          crackedLens: null,
+          lastUpdated: new Date(),
+          isActive: true,
+        };
 
-        // Check if record exists before upserting
-        const existing = await prisma.pricingData.findUnique({
-          where: {
-            model_network: {
-              model: pricingData.model,
-              network: pricingData.network,
-            },
-          },
-        });
-
-        // Calculate offer prices based on margins
-        const offerPrices = await calculateAllOfferPrices({
-          priceGradeA: pricingData.priceGradeA,
-          priceGradeB: pricingData.priceGradeB,
-          priceGradeC: pricingData.priceGradeC,
-          priceGradeD: pricingData.priceGradeD,
-          priceDOA: pricingData.priceDOA,
-          series: pricingData.series,
-        });
-
-        // Upsert the pricing data with calculated offer prices
-        await prisma.pricingData.upsert({
-          where: {
-            model_network: {
-              model: pricingData.model,
-              network: pricingData.network,
-            },
-          },
-          update: {
-            ...pricingData,
-            ...offerPrices,
-            offersCalculatedAt: new Date(),
-          },
-          create: {
-            ...pricingData,
-            ...offerPrices,
-            offersCalculatedAt: new Date(),
-          },
-        });
-
-        if (existing) {
-          updated++;
-        } else {
-          added++;
-        }
+        validRecords.push(pricingData);
       } catch (error) {
-        console.error(`Error processing row ${i}:`, error, row);
+        console.error(`Error parsing row ${i}:`, error);
         skipped++;
-        // Continue with next row
       }
+    }
+
+    console.log(`✅ Parsed ${validRecords.length} valid records, skipped ${skipped} invalid rows`);
+
+    // STEP 2: Fetch all existing records in one query
+    console.log('🔍 Fetching existing records...');
+    const existingRecords = await prisma.pricingData.findMany({
+      where: {
+        model: { in: validRecords.map(r => r.model) }
+      },
+      select: {
+        model: true,
+        network: true,
+      }
+    });
+
+    // Create a Set for O(1) lookup
+    const existingKeys = new Set(
+      existingRecords.map(r => `${r.model}::${r.network}`)
+    );
+
+    console.log(`📦 Found ${existingRecords.length} existing records in database`);
+
+    // STEP 3: Calculate offer prices for all records and batch upsert
+    console.log('💰 Calculating offer prices and preparing batch operations...');
+
+    const batchSize = 50; // Process in batches to avoid overwhelming the database
+    let added = 0;
+    let updated = 0;
+
+    for (let i = 0; i < validRecords.length; i += batchSize) {
+      const batch = validRecords.slice(i, i + batchSize);
+
+      // Use transaction for batch operations
+      await prisma.$transaction(async (tx) => {
+        for (const record of batch) {
+          const isExisting = existingKeys.has(`${record.model}::${record.network}`);
+
+          // Calculate offer prices
+          const offerPrices = await calculateAllOfferPrices({
+            priceGradeA: record.priceGradeA,
+            priceGradeB: record.priceGradeB,
+            priceGradeC: record.priceGradeC,
+            priceGradeD: record.priceGradeD,
+            priceDOA: record.priceDOA,
+            series: record.series,
+          });
+
+          // Upsert record
+          await tx.pricingData.upsert({
+            where: {
+              model_network: {
+                model: record.model,
+                network: record.network,
+              },
+            },
+            update: {
+              ...record,
+              ...offerPrices,
+              offersCalculatedAt: new Date(),
+            },
+            create: {
+              ...record,
+              ...offerPrices,
+              offersCalculatedAt: new Date(),
+            },
+          });
+
+          if (isExisting) {
+            updated++;
+          } else {
+            added++;
+          }
+        }
+      });
+
+      // Log progress
+      console.log(`   Processed ${Math.min(i + batchSize, validRecords.length)}/${validRecords.length} records...`);
     }
 
     // Log the update
@@ -262,12 +252,23 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+    // Log summary to console
+    console.log(`\n✅ Sync Complete:`);
+    console.log(`   Added: ${added} new records`);
+    console.log(`   Updated: ${updated} existing records`);
+    console.log(`   Skipped: ${skipped} invalid rows`);
+    console.log(`   Total synced: ${added + updated}`);
+    console.log(`   Duration: ${duration}s\n`);
+
     return NextResponse.json({
       success: true,
       added,
       updated,
       skipped,
       total: added + updated,
+      duration: `${duration}s`,
     });
   } catch (error) {
     console.error("Pricing sync error:", error);

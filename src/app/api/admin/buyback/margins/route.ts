@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { recalculateAllOfferPrices } from "@/lib/backend/offer-calculator";
-
-const prisma = new PrismaClient();
+import { requireAdminAuth } from "@/lib/auth";
 
 const SETTINGS_KEY = "margin_settings_simple";
 
 // GET margin settings
 export async function GET(request: NextRequest) {
+  try {
+    await requireAdminAuth(); // Require admin authentication
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
   try {
     const setting = await prisma.setting.findUnique({
       where: { key: SETTINGS_KEY },
@@ -54,6 +61,15 @@ export async function GET(request: NextRequest) {
 
 // POST (save) margin settings
 export async function POST(request: NextRequest) {
+  try {
+    await requireAdminAuth(); // Require admin authentication
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
+
   try {
     const settings = await request.json();
 

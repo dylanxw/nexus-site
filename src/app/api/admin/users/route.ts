@@ -19,7 +19,7 @@ const updateUserSchema = z.object({
   phoneNumber: z.string().optional(),
 });
 
-// GET all users
+// GET all users (with pagination)
 export async function GET(request: NextRequest) {
   try {
     const session = await requireAuth();
@@ -32,6 +32,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get pagination parameters from query string
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '50'))); // Max 100 per page
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination metadata
+    const totalCount = await prisma.user.count();
+
+    // Fetch paginated users
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -49,9 +59,23 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take: limit,
     });
 
-    return NextResponse.json({ users });
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return NextResponse.json({
+      users,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     return NextResponse.json(

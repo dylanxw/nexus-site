@@ -1,31 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
+import { requireAdminAuth } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
+  try {
+    await requireAdminAuth();
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const range = searchParams.get("range") || "30d";
 
-    // Calculate date range
-    const now = new Date();
-    let startDate = new Date();
+    // Calculate date range using UTC to avoid timezone issues
+    const nowUTC = Date.now();
+    let startDateMs: number;
 
     switch (range) {
       case "7d":
-        startDate.setDate(now.getDate() - 7);
+        startDateMs = nowUTC - (7 * 24 * 60 * 60 * 1000);
         break;
       case "30d":
-        startDate.setDate(now.getDate() - 30);
+        startDateMs = nowUTC - (30 * 24 * 60 * 60 * 1000);
         break;
       case "90d":
-        startDate.setDate(now.getDate() - 90);
+        startDateMs = nowUTC - (90 * 24 * 60 * 60 * 1000);
         break;
       case "all":
-        startDate = new Date(0); // Beginning of time
+        startDateMs = 0; // Beginning of time
         break;
+      default:
+        startDateMs = nowUTC - (30 * 24 * 60 * 60 * 1000);
     }
+
+    const startDate = new Date(startDateMs);
+    const now = new Date(nowUTC);
 
     // Fetch all quotes in range
     const quotes = await prisma.quote.findMany({

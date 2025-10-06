@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
-import { PrismaClient, Quote, EmailType } from '@prisma/client';
+import { Quote, EmailType } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { formatPrice, getDaysUntilExpiration } from '../pricing-calculator';
 import { siteConfig } from '@/config/site';
-
-const prisma = new PrismaClient();
+import { logger } from '@/lib/logger';
 
 // Create transporter using Hostinger SMTP
 const transporter = nodemailer.createTransport({
@@ -15,6 +15,51 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+
+/**
+ * Send email with retry logic and exponential backoff
+ * @param mailOptions - Nodemailer mail options
+ * @param maxRetries - Maximum number of retry attempts (default: 3)
+ * @returns Promise<boolean> - true if sent, false if failed
+ */
+async function sendEmailWithRetry(
+  mailOptions: nodemailer.SendMailOptions,
+  maxRetries: number = 3
+): Promise<boolean> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      const isLastAttempt = attempt === maxRetries;
+
+      logger.warn(`Email attempt ${attempt}/${maxRetries} failed`, 'EMAIL', {
+        to: String(mailOptions.to || 'unknown'),
+        subject: String(mailOptions.subject || 'unknown'),
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+
+      if (isLastAttempt) {
+        logger.error('Email failed after max retries', 'EMAIL', {
+          to: String(mailOptions.to || 'unknown'),
+          subject: String(mailOptions.subject || 'unknown')
+        }, error as Error);
+        return false;
+      }
+
+      // Exponential backoff: 1s, 2s, 4s
+      const delayMs = 1000 * Math.pow(2, attempt - 1);
+      logger.info(`Retrying email in ${delayMs}ms`, 'EMAIL', {
+        attempt,
+        delayMs,
+        to: String(mailOptions.to || 'unknown')
+      });
+
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+  return false;
+}
 
 /**
  * Send quote confirmation email to customer
@@ -124,25 +169,27 @@ export async function sendQuoteConfirmationEmail(quote: Quote): Promise<boolean>
       </html>
     `;
 
-    await transporter.sendMail({
+    // Send with retry logic
+    const sent = await sendEmailWithRetry({
       from: `"${siteConfig.name}" <${process.env.EMAIL_USER}>`,
       to: quote.customerEmail,
       subject: `Your Device Quote: ${formatPrice(quote.offerPrice)} - ${siteConfig.name}`,
       html,
     });
 
-    // Log email sent
+    // Log email result
     await prisma.emailLog.create({
       data: {
         quoteId: quote.id,
         type: EmailType.QUOTE_CONFIRMATION,
-        status: 'sent',
+        status: sent ? 'sent' : 'failed',
+        metadata: sent ? null : JSON.stringify({ error: 'Failed after retries' }),
       },
     });
 
-    return true;
+    return sent;
   } catch (error) {
-    console.error('Error sending quote confirmation email:', error);
+    logger.error('Error sending quote confirmation email', 'EMAIL', { quoteId: quote.id }, error as Error);
 
     // Log email failure
     await prisma.emailLog.create({
@@ -248,25 +295,27 @@ export async function sendReminderEmail(
       </html>
     `;
 
-    await transporter.sendMail({
+    // Send with retry logic
+    const sent = await sendEmailWithRetry({
       from: `"${siteConfig.name}" <${process.env.EMAIL_USER}>`,
       to: quote.customerEmail,
       subject,
       html,
     });
 
-    // Log email sent
+    // Log email result
     await prisma.emailLog.create({
       data: {
         quoteId: quote.id,
         type: reminderType,
-        status: 'sent',
+        status: sent ? 'sent' : 'failed',
+        metadata: sent ? null : JSON.stringify({ error: 'Failed after retries' }),
       },
     });
 
-    return true;
+    return sent;
   } catch (error) {
-    console.error(`Error sending ${reminderType} email:`, error);
+    logger.error(`Error sending ${reminderType} email`, 'EMAIL', { quoteId: quote.id, reminderType }, error as Error);
 
     await prisma.emailLog.create({
       data: {
@@ -362,39 +411,161 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
       </html>
     `;
 
-    await transporter.sendMail({
+    // Send with retry logic
+    const sent = await sendEmailWithRetry({
       from: `"${siteConfig.name} Buyback System" <${process.env.EMAIL_USER}>`,
       to: adminEmails.join(','),
       subject: `New Buyback Quote: ${quote.model} - ${formatPrice(quote.offerPrice)}`,
       html,
     });
 
-    await prisma.emailLog.create({
-      data: {
-        quoteId: quote.id,
-        type: EmailType.ADMIN_NOTIFICATION,
-        status: 'sent',
-      },
+    if (sent) {
+      await prisma.emailLog.create({
+        data: {
+          quoteId: quote.id,
+          type: EmailType.ADMIN_NOTIFICATION,
+          status: 'sent',
+        },
+      });
+    }
+
+    return sent;
+  } catch (error) {
+    logger.error('Error sending admin notification', 'EMAIL', { quoteId: quote.id }, error as Error);
+    return false;
+  }
+}
+
+/**
+ * Send admin notification when customer email fails
+ */
+export async function sendAdminEmailFailureNotification(quote: Quote): Promise<boolean> {
+  try {
+    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || ['admin@nexusrepair.com'];
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #ff6b6b; color: white; padding: 20px; }
+          .warning-banner { background: #fff3cd; border: 2px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
+          .content { padding: 20px; background: #f9f9f9; }
+          table { width: 100%; border-collapse: collapse; }
+          td { padding: 10px; border-bottom: 1px solid #ddd; }
+          .action-required { background: #ff6b6b; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>⚠️ Customer Email Delivery Failed</h2>
+          </div>
+          <div class="content">
+            <div class="action-required">
+              ACTION REQUIRED: Customer did not receive quote confirmation email
+            </div>
+
+            <div class="warning-banner">
+              <strong>⚠️ Email Delivery Issue</strong><br>
+              The customer's quote was created successfully, but we were unable to deliver the confirmation email to <strong>${quote.customerEmail}</strong>.
+              <br><br>
+              Please reach out to the customer directly via phone to provide their quote details.
+            </div>
+
+            <h3>Quote Details to Provide:</h3>
+            <table>
+              <tr>
+                <td><strong>Quote #:</strong></td>
+                <td><strong>${quote.quoteNumber}</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Customer:</strong></td>
+                <td>${quote.customerName}</td>
+              </tr>
+              <tr>
+                <td><strong>Phone:</strong></td>
+                <td><strong>${quote.customerPhone}</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Email (Failed):</strong></td>
+                <td>${quote.customerEmail}</td>
+              </tr>
+              <tr>
+                <td><strong>Device:</strong></td>
+                <td>${quote.model} (${quote.storage}, ${quote.network})</td>
+              </tr>
+              <tr>
+                <td><strong>Condition:</strong></td>
+                <td>${quote.condition}</td>
+              </tr>
+              <tr>
+                <td><strong>Offer Amount:</strong></td>
+                <td><strong style="color: #DB5858; font-size: 18px;">${formatPrice(quote.offerPrice)}</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Valid Until:</strong></td>
+                <td>${new Date(quote.expiresAt).toLocaleDateString()}</td>
+              </tr>
+              <tr>
+                <td><strong>Created:</strong></td>
+                <td>${new Date(quote.createdAt).toLocaleString()}</td>
+              </tr>
+            </table>
+
+            <p style="margin-top: 20px;">
+              <a href="${process.env.NEXT_PUBLIC_URL}/admin/quotes/${quote.id}"
+                 style="background: #DB5858; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                View in Admin Panel
+              </a>
+            </p>
+
+            <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2196f3;">
+              <strong>Next Steps:</strong>
+              <ol style="margin: 10px 0;">
+                <li>Call the customer at <strong>${quote.customerPhone}</strong></li>
+                <li>Provide quote number: <strong>${quote.quoteNumber}</strong></li>
+                <li>Confirm offer amount: <strong>${formatPrice(quote.offerPrice)}</strong></li>
+                <li>Explain quote is valid until ${new Date(quote.expiresAt).toLocaleDateString()}</li>
+                <li>Verify their email address is correct</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Send with retry logic
+    const sent = await sendEmailWithRetry({
+      from: `"${siteConfig.name} Buyback System" <${process.env.EMAIL_USER}>`,
+      to: adminEmails.join(','),
+      subject: `🚨 URGENT: Customer Email Failed - Quote ${quote.quoteNumber}`,
+      html,
     });
 
-    return true;
+    return sent;
   } catch (error) {
-    console.error('Error sending admin notification:', error);
+    logger.error('Error sending admin email failure notification', 'EMAIL', { quoteId: quote.id }, error as Error);
     return false;
   }
 }
 
 /**
  * Process email reminders for all active quotes
+ * Uses UTC for consistent timezone handling
  */
 export async function processEmailReminders(): Promise<void> {
-  const now = new Date();
+  // Use UTC timestamp for consistent timezone handling
+  const nowUTC = new Date(Date.now());
 
   // Get all pending quotes
   const quotes = await prisma.quote.findMany({
     where: {
       status: 'PENDING',
-      expiresAt: { gt: now },
+      expiresAt: { gt: nowUTC },
     },
     include: {
       emailLogs: true,
@@ -423,11 +594,11 @@ export async function processEmailReminders(): Promise<void> {
     }
   }
 
-  // Mark expired quotes
+  // Mark expired quotes using UTC timestamp
   await prisma.quote.updateMany({
     where: {
       status: 'PENDING',
-      expiresAt: { lte: now },
+      expiresAt: { lte: nowUTC },
     },
     data: {
       status: 'EXPIRED',

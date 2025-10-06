@@ -69,6 +69,10 @@ Every design decision should prioritize conversions:
 - Framer Motion for animations (subtle)
 - Follow existing code patterns
 
+Be brutally honest, don't be a yes man. 
+If I am wrong, point it out bluntly. 
+I need honest feedback on my code.
+
 ## Environment Variables
 
 Required for production:

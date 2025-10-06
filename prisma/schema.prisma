@@ -105,6 +105,14 @@ model Quote {
   activityLogs  ActivityLog[]
   emailLogs     EmailLog[]
   user          User?         @relation(fields: [createdBy], references: [id])
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([expiresAt])
+  @@index([updatedAt])
+  @@index([customerEmail])
+  @@index([status, createdAt])
+  @@index([status, expiresAt])
 }
 
 model PricingData {
@@ -161,6 +169,10 @@ model EmailLog {
   sentAt   DateTime  @default(now())
   metadata String?
   quote    Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@index([quoteId])
+  @@index([type])
+  @@index([status])
 }
 
 model Setting {
@@ -182,6 +194,11 @@ model ActivityLog {
   createdAt   DateTime @default(now())
   quote       Quote?   @relation(fields: [quoteId], references: [id])
   user        User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([quoteId])
+  @@index([action])
+  @@index([createdAt])
 }
 
 model PricingUpdateLog {
@@ -248,4 +265,15 @@ model MarginTier {
 
   @@index([minPrice, maxPrice])
   @@index([priority])
+}
+
+// Rate limiting for production (persists across server restarts)
+model RateLimit {
+  key       String   @id  // Format: "ip:endpoint"
+  count     Int             // Number of requests in current window
+  resetTime BigInt          // Timestamp when window resets (milliseconds)
+  updatedAt DateTime @updatedAt
+
+  @@index([resetTime])  // For cleanup queries
+  @@map("rate_limits")   // Use snake_case table name for raw SQL queries
 }

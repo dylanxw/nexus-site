@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
+import { requireAdminAuth } from "@/lib/auth";
 
 /**
  * One-time cleanup endpoint to fix database records
@@ -12,6 +11,15 @@ const prisma = new PrismaClient();
  * 4. Report on what was cleaned up
  */
 export async function POST(request: NextRequest) {
+  try {
+    await requireAdminAuth();
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unauthorized' },
+      { status: error instanceof Error && error.message.includes('Forbidden') ? 403 : 401 }
+    );
+  }
+
   try {
     // First, delete records with invalid or empty model names
     const invalidModelRecords = await prisma.pricingData.findMany({

@@ -1,86 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-/**
- * Calculate offer price from Atlas price using margin settings
- * This replicates the exact logic from /api/buyback/pricing
- */
-async function calculateOfferPrice(atlasPrice: number, modelName: string): Promise<number> {
-  try {
-    // Load margin settings from database
-    const settingRecord = await prisma.setting.findUnique({
-      where: { key: "margin_settings_simple" }
-    });
-
-    let marginSettings: any = null;
-    if (settingRecord) {
-      marginSettings = JSON.parse(settingRecord.value);
-    }
-
-    // Default settings if none configured
-    if (!marginSettings) {
-      marginSettings = {
-        mode: "percentage",
-        percentageMargins: {
-          gradeA: 25,
-          gradeB: 20,
-          gradeC: 12,
-          gradeD: 22,
-          gradeDOA: 30,
-        },
-        tieredMargins: {
-          tier1: { min: 0, max: 100, gradeA: 30, gradeB: 25, gradeC: 15, gradeD: 35, gradeDOA: 40 },
-          tier2: { min: 100, max: 300, gradeA: 60, gradeB: 50, gradeC: 30, gradeD: 55, gradeDOA: 70 },
-          tier3: { min: 300, max: 500, gradeA: 100, gradeB: 80, gradeC: 50, gradeD: 85, gradeDOA: 110 },
-          tier4: { min: 500, max: 750, gradeA: 140, gradeB: 110, gradeC: 70, gradeD: 120, gradeDOA: 150 },
-          tier5: { min: 750, max: 999999, gradeA: 180, gradeB: 150, gradeC: 90, gradeD: 150, gradeDOA: 180 },
-        },
-        seriesOverrides: {}
-      };
-    }
-
-    // Extract iPhone series from model name (e.g., "iPhone 17 Pro" -> "17")
-    const extractSeries = (modelName: string): string | null => {
-      const match = modelName.match(/iPhone\s+(\d+|SE|XS|XR|X)/i);
-      return match ? match[1] : null;
-    };
-
-    const series = extractSeries(modelName);
-
-    // Check for series-specific override first
-    let marginsToUse = marginSettings.percentageMargins;
-    if (series && marginSettings.seriesOverrides && marginSettings.seriesOverrides[series]?.enabled) {
-      marginsToUse = marginSettings.seriesOverrides[series].margins;
-    }
-
-    // Calculate margin based on mode
-    let margin = 0;
-
-    if (marginSettings.mode === "percentage") {
-      // Percentage mode: Simple percentage of Atlas price
-      margin = atlasPrice * (marginsToUse.gradeA / 100);
-    } else {
-      // Tiered mode: Find the right tier and use the dollar amount
-      const tiers = marginSettings.tieredMargins;
-      let tier = tiers.tier1;
-
-      if (atlasPrice >= tiers.tier5.min) tier = tiers.tier5;
-      else if (atlasPrice >= tiers.tier4.min) tier = tiers.tier4;
-      else if (atlasPrice >= tiers.tier3.min) tier = tiers.tier3;
-      else if (atlasPrice >= tiers.tier2.min) tier = tiers.tier2;
-      else tier = tiers.tier1;
-
-      margin = tier.gradeA;
-    }
-
-    // Calculate offer price
-    return Math.max(0, atlasPrice - margin);
-  } catch (error) {
-    console.error('Error calculating offer price:', error);
-    return atlasPrice; // Fallback to Atlas price if calculation fails
-  }
-}
+import { prisma } from '@/lib/prisma';
+import { calculateOfferPrice, loadMarginSettings } from './offer-calculator';
+import { logger } from '@/lib/logger';
 
 /**
  * Calculate the maximum possible price for a given iPhone model
@@ -120,6 +40,9 @@ export async function getMaxPriceForModel(modelName: string): Promise<number> {
     // Find the highest offer price across all storage options
     let maxOfferPrice = 0;
 
+    // Load margin settings once for all calculations
+    const marginSettings = await loadMarginSettings();
+
     for (const record of exactMatches) {
       let offerPrice = 0;
 
@@ -134,8 +57,12 @@ export async function getMaxPriceForModel(modelName: string): Promise<number> {
       // Priority 3: Calculate as fallback (shouldn't happen if sync/margins work correctly)
       else if (record.priceGradeA) {
         const atlasPrice = record.priceGradeA;
-        offerPrice = await calculateOfferPrice(atlasPrice, modelName);
-        console.warn(`Missing cached offer price for ${record.model}, calculated: ${offerPrice}`);
+        // Use centralized calculation with database series field
+        offerPrice = Math.round(calculateOfferPrice(atlasPrice, 'gradeA', record.series, marginSettings));
+        logger.warn(`Missing cached offer price for ${record.model}`, 'PRICING', {
+          model: record.model,
+          calculated: offerPrice
+        });
       }
 
       if (offerPrice > maxOfferPrice) {
@@ -145,7 +72,7 @@ export async function getMaxPriceForModel(modelName: string): Promise<number> {
 
     return Math.round(maxOfferPrice);
   } catch (error) {
-    console.error(`Error getting max price for ${modelName}:`, error);
+    logger.error(`Error getting max price`, 'PRICING', { modelName }, error as Error);
     return 0;
   }
 }
@@ -181,7 +108,7 @@ export async function getAlliPhoneMaxPrices(): Promise<Map<string, number>> {
 
     return maxPrices;
   } catch (error) {
-    console.error('Error getting all iPhone max prices:', error);
+    logger.error('Error getting all iPhone max prices', 'PRICING', {}, error as Error);
     return new Map();
   }
 }
@@ -204,7 +131,7 @@ export async function getMaxPricesForModels(modelNames: string[]): Promise<Recor
 
     return maxPrices;
   } catch (error) {
-    console.error('Error getting max prices for models:', error);
+    logger.error('Error getting max prices for models', 'PRICING', {}, error as Error);
     return {};
   }
 }
