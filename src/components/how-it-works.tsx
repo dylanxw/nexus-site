@@ -116,20 +116,20 @@ export function HowItWorks() {
           </p>
 
           {/* Service Type Toggle */}
-          <div className="inline-flex bg-white rounded-2xl p-1 shadow-lg border border-gray-200">
+          <div className="inline-flex flex-col sm:flex-row bg-white rounded-2xl p-1 shadow-lg border border-gray-200 w-full sm:w-auto max-w-md sm:max-w-none mx-auto">
             {serviceTypes.map((service) => {
               const Icon = service.icon;
               return (
                 <button
                   key={service.id}
                   onClick={() => setActiveService(service.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 ${
                     activeService === service.id
                       ? 'bg-[#DB5858] text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   {service.label}
                 </button>
               );
@@ -143,7 +143,7 @@ export function HowItWorks() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="grid lg:grid-cols-3 gap-8 mb-16"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16"
         >
           {steps.map((step, index) => {
             const Icon = step.icon;
@@ -162,24 +162,24 @@ export function HowItWorks() {
                   </div>
                 )}
 
-                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 group border border-gray-100 h-full flex flex-col min-h-[320px]">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 group border border-gray-100 h-full flex flex-col min-h-[280px] sm:min-h-[320px]">
                   <div className="text-center flex flex-col h-full">
                     {/* Step number */}
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-[#DB5858] text-white rounded-full text-xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto">
+                    <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-[#DB5858] text-white rounded-full text-lg sm:text-xl font-bold mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto">
                       {step.id}
                     </div>
 
                     {/* Icon */}
-                    <div className={`inline-flex items-center justify-center w-16 h-16 ${step.bgColor} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto`}>
-                      <Icon className={`h-8 w-8 ${step.color}`} />
+                    <div className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 ${step.bgColor} rounded-2xl mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300 mx-auto`}>
+                      <Icon className={`h-7 w-7 sm:h-8 sm:w-8 ${step.color}`} />
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 flex flex-col justify-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-[#DB5858] transition-colors">
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 group-hover:text-[#DB5858] transition-colors">
                         {step.title}
                       </h3>
-                      <p className="text-gray-600 leading-relaxed">
+                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                         {step.description}
                       </p>
                     </div>

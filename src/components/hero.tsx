@@ -124,22 +124,22 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
           </motion.div>
         </div>
 
-        {/* Trust Badges Section */}
+        {/* Trust Badges Section - Desktop Only */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="absolute -bottom-31 left-0 right-0"
+          className="absolute -bottom-32 left-0 right-0 hidden lg:block"
         >
           <div className="wide-container">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            <div className="grid grid-cols-4 gap-4">
             {/* 150+ 5 Star Reviews */}
             <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 text-center hover:bg-white/15 transition-all duration-300 group relative overflow-hidden">
               {/* Shine effect */}
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
               <div className="relative z-10">
                 <Star className="h-6 w-6 text-yellow-400 mx-auto mb-1 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-lg lg:text-xl font-bold text-white mb-0.5">150+</h3>
+                <h3 className="text-xl font-bold text-white mb-0.5">150+</h3>
                 <p className="text-xs text-white/80 font-medium">5 Star Reviews</p>
               </div>
             </div>
@@ -150,7 +150,7 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
               <div className="relative z-10">
                 <Wrench className="h-6 w-6 text-[#DB5858] mx-auto mb-1 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-lg lg:text-xl font-bold text-white mb-0.5">5,000+</h3>
+                <h3 className="text-xl font-bold text-white mb-0.5">5,000+</h3>
                 <p className="text-xs text-white/80 font-medium">Devices Repaired</p>
               </div>
             </div>
@@ -161,7 +161,7 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
               <div className="relative z-10">
                 <Shield className="h-6 w-6 text-green-400 mx-auto mb-1 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-lg lg:text-xl font-bold text-white mb-0.5">60-Day</h3>
+                <h3 className="text-xl font-bold text-white mb-0.5">60-Day</h3>
                 <p className="text-xs text-white/80 font-medium">Warranty Included</p>
               </div>
             </div>
@@ -172,7 +172,7 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
               <div className="relative z-10">
                 <Clock className="h-6 w-6 text-blue-400 mx-auto mb-1 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-lg lg:text-xl font-bold text-white mb-0.5">Same Day</h3>
+                <h3 className="text-xl font-bold text-white mb-0.5">Same Day</h3>
                 <p className="text-xs text-white/80 font-medium">Service Available</p>
               </div>
             </div>

@@ -24,7 +24,7 @@ export const siteConfig = {
     sunday: "Closed",
     weekdayShort: "Mon-Fri: 10am-7pm",
     saturdayShort: "Sat: 1pm-6pm",
-    display: "Mon-Fri: 10am-7pm, Sat: 1pm-6pm"
+    display: "Mon-Fri: 10am-7pm | Sat: 1pm-6pm"
   },
   social: {
     facebook: "",

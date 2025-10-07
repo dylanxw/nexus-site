@@ -92,13 +92,13 @@ export function FAQ() {
               >
                 <button
                   onClick={() => toggleItem(faq.id)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 rounded-2xl transition-colors duration-300 group"
+                  className="w-full p-4 sm:p-6 text-left flex items-center justify-between hover:bg-gray-50 rounded-2xl transition-colors duration-300 group"
                 >
-                  <h3 className="text-lg md:text-xl font-semibold text-gray-900 pr-4 group-hover:text-[#DB5858] transition-colors">
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 pr-3 sm:pr-4 group-hover:text-[#DB5858] transition-colors">
                     {faq.question}
                   </h3>
                   <ChevronDown
-                    className={`h-5 w-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ${
+                    className={`h-4 w-4 sm:h-5 sm:w-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ${
                       openItem === faq.id ? "transform rotate-180 text-[#DB5858]" : ""
                     }`}
                   />
@@ -113,9 +113,9 @@ export function FAQ() {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-6">
-                        <div className="border-t border-gray-100 pt-4">
-                          <p className="text-gray-600 leading-relaxed">
+                      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                        <div className="border-t border-gray-100 pt-3 sm:pt-4">
+                          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                             {faq.answer}
                           </p>
                         </div>

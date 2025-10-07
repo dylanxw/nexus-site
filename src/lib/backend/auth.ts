@@ -11,7 +11,7 @@ const JWT_SECRET = new TextEncoder().encode(
 const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
-interface TokenPayload {
+interface TokenPayload extends Record<string, unknown> {
   userId: string;
   email: string;
   role: Role;

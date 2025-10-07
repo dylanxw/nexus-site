@@ -260,7 +260,7 @@ export function ProductFilters({ filters, onFiltersChange }: ProductFiltersProps
   return (
     <>
       {/* Mobile Filter Button */}
-      <div className="lg:hidden mb-6">
+      <div className="lg:hidden mb-0">
         <Button
           onClick={() => setShowMobileFilters(true)}
           className="w-full bg-[#DB5858] hover:bg-[#c94848] text-white"

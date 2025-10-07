@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { Star, ExternalLink, MapPin, Clock, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
@@ -84,7 +84,25 @@ const mockReviews = [
 
 export function TrustBanner() {
   const [currentSlide, setCurrentSlide] = useState(1); // Start at 1 for infinite scroll
-  const reviewsPerSlide = 3;
+  const [reviewsPerSlide, setReviewsPerSlide] = useState(3);
+
+  // Update reviewsPerSlide based on screen size
+  useEffect(() => {
+    const updateReviewsPerSlide = () => {
+      if (window.innerWidth < 640) {
+        setReviewsPerSlide(1); // Mobile: show 1 review
+      } else if (window.innerWidth < 1024) {
+        setReviewsPerSlide(2); // Tablet: show 2 reviews
+      } else {
+        setReviewsPerSlide(3); // Desktop: show 3 reviews
+      }
+    };
+
+    updateReviewsPerSlide();
+    window.addEventListener('resize', updateReviewsPerSlide);
+    return () => window.removeEventListener('resize', updateReviewsPerSlide);
+  }, []);
+
   const totalSlides = Math.ceil(mockReviews.length / reviewsPerSlide);
 
   // Create infinite loop by duplicating first and last slides
@@ -192,11 +210,11 @@ export function TrustBanner() {
           {/* Review Cards Slider */}
           <div className="relative mb-12 max-w-6xl mx-auto">
             {/* Slider Container */}
-            <div className="overflow-hidden cursor-grab active:cursor-grabbing mx-16">
+            <div className="overflow-hidden cursor-grab active:cursor-grabbing mx-8 sm:mx-12 lg:mx-16">
               <motion.div
                 className="flex"
                 animate={{
-                  x: `-${currentSlide * (100 / 3)}%` // Move by 1/3 for each slide since we show 3 at once
+                  x: `-${currentSlide * (100 / reviewsPerSlide)}%` // Move by 1/reviewsPerSlide for each slide
                 }}
                 transition={
                   currentSlide === 0 || currentSlide === totalSlides + 1
@@ -234,9 +252,10 @@ export function TrustBanner() {
                   return (
                     <div
                       key={`${review.id}-${cardIndex}`}
-                      className="w-1/3 flex-shrink-0 px-3" // Each card is exactly 1/3 width with padding
+                      style={{ width: `${100 / reviewsPerSlide}%` }}
+                      className="flex-shrink-0 px-2 sm:px-3 lg:px-3"
                     >
-                      <div className="backdrop-blur-sm bg-white/25 border border-white/40 rounded-2xl p-5 text-left hover:bg-white/30 transition-all duration-300 h-56 flex flex-col pointer-events-auto select-none group shadow-lg hover:shadow-xl relative overflow-hidden">
+                      <div className="backdrop-blur-sm bg-white/25 border border-white/40 rounded-2xl p-4 sm:p-5 text-left hover:bg-white/30 transition-all duration-300 h-56 flex flex-col pointer-events-auto select-none group shadow-lg hover:shadow-xl relative overflow-hidden">
                         {/* Glass shine animation */}
                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/60 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
                         {/* Stars & Google */}
@@ -345,7 +364,7 @@ export function TrustBanner() {
                 </div>
 
                 {/* Action Buttons - Right Side */}
-                <div className="flex flex-col gap-4 min-w-[500px]">
+                <div className="flex flex-col gap-4 w-full lg:w-auto lg:min-w-[400px]">
                   <Button asChild className="py-4 px-12 backdrop-blur-md bg-white/10 border-2 border-white/30 hover:bg-white/20 hover:border-white/40 text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg">
                     <a
                       href="https://maps.google.com"
@@ -353,7 +372,7 @@ export function TrustBanner() {
                       rel="noopener noreferrer"
                     >
                       View on Google Maps
-                      <ExternalLink className="ml-2 h-4 w-4" />
+                      <ExternalLink className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                     </a>
                   </Button>
                   <Button asChild className="py-4 px-12 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-none">
@@ -363,7 +382,7 @@ export function TrustBanner() {
                       rel="noopener noreferrer"
                     >
                       Write a Review
-                      <ExternalLink className="ml-2 h-4 w-4" />
+                      <ExternalLink className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                     </a>
                   </Button>
                 </div>

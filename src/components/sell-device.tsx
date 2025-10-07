@@ -48,61 +48,61 @@ export function SellDevice() {
             viewport={{ once: true }}
             className="flex flex-col justify-center space-y-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 group">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <DollarSign className="h-6 w-6 text-white" />
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 sm:p-4 hover:bg-white/15 transition-all duration-300 group">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">High Offers</h3>
-                    <p className="text-gray-300 text-sm">Competitive prices that beat local buyers</p>
+                    <h3 className="text-sm sm:text-lg font-semibold text-white">High Offers</h3>
+                    <p className="text-gray-300 text-xs sm:text-sm">Competitive prices</p>
                   </div>
                 </div>
               </div>
 
-              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 group">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <CheckCircle className="h-6 w-6 text-white" />
+              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 sm:p-4 hover:bg-white/15 transition-all duration-300 group">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Easy Process</h3>
-                    <p className="text-gray-300 text-sm">Quote in minutes, cash the same day</p>
+                    <h3 className="text-sm sm:text-lg font-semibold text-white">Easy Process</h3>
+                    <p className="text-gray-300 text-xs sm:text-sm">Quick quotes</p>
                   </div>
                 </div>
               </div>
 
-              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 group">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <Clock className="h-6 w-6 text-white" />
+              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 sm:p-4 hover:bg-white/15 transition-all duration-300 group">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Instant Cash</h3>
-                    <p className="text-gray-300 text-sm">No waiting, no checks, immediate payment</p>
+                    <h3 className="text-sm sm:text-lg font-semibold text-white">Instant Cash</h3>
+                    <p className="text-gray-300 text-xs sm:text-sm">Immediate payment</p>
                   </div>
                 </div>
               </div>
 
-              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 group">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <Mail className="h-6 w-6 text-white" />
+              <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 sm:p-4 hover:bg-white/15 transition-all duration-300 group">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg brand-gradient flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Mail-Ins Welcome</h3>
-                    <p className="text-gray-300 text-sm">Secure shipping, nationwide service</p>
+                    <h3 className="text-sm sm:text-lg font-semibold text-white">Mail-Ins Welcome</h3>
+                    <p className="text-gray-300 text-xs sm:text-sm">Secure shipping</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="pt-6">
-              <Button asChild className="py-6 px-12 text-2xl font-bold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 bg-[#DB5858] hover:bg-[#c94848] text-white border-none">
+              <Button asChild className="w-full sm:w-auto py-4 sm:py-6 px-8 sm:px-12 text-lg sm:text-2xl font-bold shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 bg-[#DB5858] hover:bg-[#c94848] text-white border-none">
                 <Link href="/sell-device-quote">
                   Get Your Quote Today
-                  <DollarSign className="ml-4 h-8 w-8" />
+                  <DollarSign className="ml-3 sm:ml-4 h-6 w-6 sm:h-8 sm:w-8" />
                 </Link>
               </Button>
             </div>

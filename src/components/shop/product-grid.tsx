@@ -324,7 +324,7 @@ export function ProductGrid({ filters }: ProductGridProps) {
         </div>
 
         {/* Loading Grid */}
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="bg-white rounded-2xl border border-gray-200 p-6 animate-pulse">
               <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
@@ -363,7 +363,7 @@ export function ProductGrid({ filters }: ProductGridProps) {
       </div>
 
       {/* Product Grid */}
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
         {sortedProducts.map((product, index) => (
           <motion.div
             key={product.id}
@@ -404,23 +404,23 @@ export function ProductGrid({ filters }: ProductGridProps) {
             </div>
 
             {/* Product Info */}
-            <div className="p-6 flex flex-col h-full">
+            <div className="p-3 md:p-6 flex flex-col h-full">
               {/* Brand & Model */}
-              <div className="mb-3 flex justify-between items-start">
+              <div className="mb-2 md:mb-3 flex justify-between items-start">
                 <div>
-                  <p className="text-sm text-[#DB5858] font-semibold">{product.brand}</p>
-                  <h3 className="text-lg font-bold text-gray-900">{product.model}</h3>
+                  <p className="text-xs md:text-sm text-[#DB5858] font-semibold">{product.brand}</p>
+                  <h3 className="text-sm md:text-lg font-bold text-gray-900">{product.model}</h3>
                 </div>
                 {/* Listing ID Badge */}
                 {product.listingId && (
-                  <Badge className="bg-white text-[#DB5858] border-[#DB5858] border-2 font-bold text-sm shrink-0 ml-2">
+                  <Badge className="bg-white text-[#DB5858] border-[#DB5858] border-2 font-bold text-[10px] md:text-sm shrink-0 ml-1 md:ml-2">
                     ID: {product.listingId}
                   </Badge>
                 )}
               </div>
 
               {/* Specs */}
-              <div className="space-y-2 mb-4">
+              <div className="space-y-1 md:space-y-2 mb-2 md:mb-4 text-xs md:text-sm">
                 {/* Smartphones & Tablets */}
                 {(product.deviceType === 'smartphone' || product.deviceType === 'tablet') && (
                   <>
@@ -537,15 +537,15 @@ export function ProductGrid({ filters }: ProductGridProps) {
               </div>
 
               {/* Price */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-[#DB5858]">${product.price}</span>
+              <div className="mb-2 md:mb-4">
+                <div className="flex items-center gap-1 md:gap-2">
+                  <span className="text-lg md:text-2xl font-bold text-[#DB5858]">${product.price}</span>
                   {product.originalPrice && (
-                    <span className="text-gray-500 line-through">${product.originalPrice}</span>
+                    <span className="text-xs md:text-base text-gray-500 line-through">${product.originalPrice}</span>
                   )}
                 </div>
                 {product.originalPrice && (
-                  <p className="text-sm text-green-600 font-medium">
+                  <p className="text-xs md:text-sm text-green-600 font-medium">
                     Save ${product.originalPrice - product.price}
                   </p>
                 )}
@@ -563,7 +563,7 @@ export function ProductGrid({ filters }: ProductGridProps) {
               <div className="space-y-2 mt-auto">
                 <Button
                   size="sm"
-                  className="w-full bg-[#DB5858] hover:bg-[#c94848] text-white"
+                  className="w-full bg-[#DB5858] hover:bg-[#c94848] text-white text-xs md:text-sm py-2"
                   disabled={!product.inStock}
                   asChild
                 >

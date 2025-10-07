@@ -17,7 +17,7 @@ export default function ShopPage() {
   return (
     <main className="min-h-screen">
       <ShopHero />
-      <div className="section-padding bg-gray-50">
+      <div className="py-4 md:py-16 lg:py-20 bg-gray-50">
         <div className="wide-container">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Filters Sidebar */}

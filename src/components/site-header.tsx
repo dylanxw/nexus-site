@@ -69,10 +69,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full" style={{ backgroundColor: '#1D2228' }}>
-      {/* Top Section - Contact Info - Only visible when not scrolled */}
+      {/* Top Section - Contact Info - Hidden on mobile, visible on desktop when not scrolled */}
       <div
         style={{ backgroundColor: '#1D2228', borderBottomColor: '#22272E' }}
-        className={`border-b transition-all duration-300 overflow-hidden ${
+        className={`hidden lg:block border-b transition-all duration-300 overflow-hidden ${
           isScrolled ? 'max-h-0 opacity-0' : 'max-h-96 opacity-100'
         }`}
       >
@@ -186,14 +186,23 @@ export function SiteHeader() {
       >
         <div className="wide-container">
           <div className="flex items-center justify-between">
-            {/* Logo */}
+            {/* Logo - Fixed size on mobile, responsive on desktop */}
             <Link href="/" className="flex items-center group -ml-4 sm:-ml-6 lg:-ml-8">
+              {/* Mobile logo - always 150px */}
+              <Image
+                src="/images/site-logo/nexus-logo.png"
+                alt="Nexus Tech Solutions Logo"
+                width={150}
+                height={150}
+                className="lg:hidden"
+              />
+              {/* Desktop logo - responsive to scroll */}
               <Image
                 src="/images/site-logo/nexus-logo.png"
                 alt="Nexus Tech Solutions Logo"
                 width={isScrolled ? 150 : 180}
                 height={isScrolled ? 150 : 180}
-                className="transition-all duration-300 -my-3"
+                className="hidden lg:block transition-all duration-300 -my-3"
               />
             </Link>
 

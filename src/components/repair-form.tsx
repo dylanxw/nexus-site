@@ -249,14 +249,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   };
 
   const renderProgressBar = () => (
-    <div className="mb-8">
-      <div className="flex items-center justify-center">
+    <div className="mb-6 sm:mb-8">
+      <div className="flex items-center justify-center overflow-x-auto px-2">
         {steps.map((step, index) => (
-          <div key={step.number} className="flex items-center">
+          <div key={step.number} className="flex items-center flex-shrink-0">
             {/* Step Circle */}
             <div className="flex flex-col items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                   step.number === currentStep
                     ? 'bg-primary text-white'
                     : step.number < currentStep
@@ -266,7 +266,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
               >
                 {step.number}
               </div>
-              <span className={`text-xs mt-1 ${
+              <span className={`text-[10px] sm:text-xs mt-1 hidden sm:block ${
                 step.number === currentStep ? 'text-primary font-medium' : 'text-gray-500'
               }`}>
                 {step.label}
@@ -276,7 +276,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             {/* Progress Line */}
             {index < steps.length - 1 && (
               <div
-                className={`h-0.5 w-16 mx-2 ${
+                className={`h-0.5 w-8 sm:w-16 mx-1 sm:mx-2 ${
                   step.number < currentStep ? 'bg-primary' : 'bg-gray-300'
                 }`}
               />
@@ -301,7 +301,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
         </div>
 
         {/* Device Selection Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
           {deviceTypes.map((device) => {
             const Icon = device.icon;
             const isSelected = selectedDevice === device.id;
@@ -309,20 +309,20 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             return (
               <div
                 key={device.id}
-                className={`p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 ${
+                className={`p-4 sm:p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 ${
                   isSelected
                     ? 'border-primary bg-primary/10 shadow-lg'
                     : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
                 }`}
                 onClick={() => handleDeviceSelect(device.id)}
               >
-                <div className="flex flex-col items-center text-center space-y-3">
+                <div className="flex flex-col items-center text-center space-y-2 sm:space-y-3">
                   <Icon
-                    className={`h-12 w-12 ${
+                    className={`h-10 w-10 sm:h-12 sm:w-12 ${
                       isSelected ? 'text-primary' : 'text-gray-600'
                     }`}
                   />
-                  <span className={`font-semibold text-lg ${
+                  <span className={`font-semibold text-base sm:text-lg ${
                     isSelected ? 'text-primary' : 'text-gray-700'
                   }`}>
                     {device.label}
@@ -445,23 +445,23 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             return (
               <div
                 key={damage.id}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
+                className={`p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
                   isSelected
                     ? 'border-primary bg-primary/10 shadow-lg'
                     : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
                 }`}
                 onClick={() => handleDamageToggle(damage.id)}
               >
-                <div className="flex flex-col items-center text-center space-y-2">
+                <div className="flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
                   {/* Placeholder Image */}
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center text-xl sm:text-2xl ${
                     isSelected ? 'bg-primary/20' : 'bg-gray-100'
                   }`}>
                     {damage.placeholder}
                   </div>
 
                   {/* Label */}
-                  <span className={`font-medium text-xs ${
+                  <span className={`font-medium text-[10px] sm:text-xs leading-tight ${
                     isSelected ? 'text-primary' : 'text-gray-700'
                   }`}>
                     {damage.label}

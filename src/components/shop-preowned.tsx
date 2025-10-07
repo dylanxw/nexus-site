@@ -33,43 +33,43 @@ export function ShopPreowned() {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            <div className="grid gap-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="h-6 w-6 text-[#DB5858]" />
+            <div className="grid gap-4 sm:gap-6">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-[#DB5858]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Quality Tested</h3>
-                  <p className="text-muted-foreground">Every device undergoes comprehensive testing to ensure optimal performance and reliability.</p>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">Quality Tested</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">Every device undergoes comprehensive testing to ensure optimal performance and reliability.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center flex-shrink-0">
-                  <Smartphone className="h-6 w-6 text-[#DB5858]" />
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center flex-shrink-0">
+                  <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 text-[#DB5858]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Wide Selection</h3>
-                  <p className="text-muted-foreground">Phones, tablets, laptops, and more from top brands like Apple, Samsung, and Google.</p>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">Wide Selection</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">Phones, tablets, laptops, and more from top brands like Apple, Samsung, and Google.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="h-6 w-6 text-[#DB5858]" />
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-[#DB5858]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Warranty Included</h3>
-                  <p className="text-muted-foreground">All pre-owned devices come with our standard warranty for peace of mind.</p>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">Warranty Included</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">All pre-owned devices come with our standard warranty for peace of mind.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-6">
-              <Button asChild className="btn-primary py-5 px-10 text-xl font-semibold">
+              <Button asChild className="w-full sm:w-auto btn-primary py-4 sm:py-5 px-8 sm:px-10 text-lg sm:text-xl font-semibold">
                 <Link href="/shop">
                   Browse Our Inventory
-                  <ShoppingCart className="ml-3 h-6 w-6" />
+                  <ShoppingCart className="ml-2 sm:ml-3 h-5 w-5 sm:h-6 sm:w-6" />
                 </Link>
               </Button>
             </div>

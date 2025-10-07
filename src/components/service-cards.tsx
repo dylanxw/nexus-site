@@ -63,7 +63,7 @@ export function ServiceCards() {
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {siteConfig.services.map((service, index) => {
             const Icon = iconMap[service.icon as keyof typeof iconMap];
 
@@ -75,26 +75,26 @@ export function ServiceCards() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-6 h-full hover:bg-white/15 transition-all duration-300 group relative overflow-hidden">
+                <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-6 h-full hover:bg-white/15 transition-all duration-300 group relative overflow-hidden">
                   {/* Shine effect */}
                   <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                   <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-xl brand-gradient flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg flex-shrink-0">
-                        <Icon className="h-7 w-7 text-white" />
+                    <div className="flex items-center gap-3 mb-3 sm:mb-4">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl brand-gradient flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg flex-shrink-0">
+                        <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors mb-1">
+                        <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-primary transition-colors mb-1">
                           {service.name}
                         </h3>
-                        <p className="text-sm text-gray-300 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
                           {service.description}
                         </p>
                       </div>
                     </div>
 
-                    <Button variant="outline" asChild className="w-full btn-outline py-2 text-sm">
+                    <Button variant="outline" asChild className="w-full btn-outline py-2 text-xs sm:text-sm">
                       <Link href={`/services#${service.id}`}>
                         Learn more
                         <ArrowRight className="ml-2 h-4 w-4" />
