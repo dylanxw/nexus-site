@@ -51,17 +51,17 @@ export function WaterDamageProcess() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="text-center mb-16"
+          className="text-center mb-8 lg:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             Our Water Damage Restoration Process
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Professional emergency restoration process designed to maximize recovery and save your iPhone and data.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8 lg:mb-12">
           {processSteps.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -71,19 +71,19 @@ export function WaterDamageProcess() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden text-center"
+                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden text-center"
               >
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                 <div className="relative z-10">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500/10 rounded-2xl mb-4 backdrop-blur-sm group-hover:bg-blue-500/20 transition-colors">
-                    <Icon className="h-8 w-8 text-blue-600" />
+                  <div className="inline-flex items-center justify-center w-12 h-12 lg:w-16 lg:h-16 bg-blue-500/10 rounded-xl lg:rounded-2xl mb-3 lg:mb-4 backdrop-blur-sm group-hover:bg-blue-500/20 transition-colors">
+                    <Icon className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600" />
                   </div>
 
-                  <div className="text-sm font-bold text-blue-600 mb-2">Step {step.step}</div>
-                  <h3 className="text-lg font-bold mb-3 text-gray-900">{step.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-3">{step.description}</p>
+                  <div className="text-xs lg:text-sm font-bold text-blue-600 mb-1 lg:mb-2">Step {step.step}</div>
+                  <h3 className="text-sm lg:text-lg font-bold mb-2 lg:mb-3 text-gray-900">{step.title}</h3>
+                  <p className="text-gray-600 text-xs lg:text-sm leading-relaxed mb-2 lg:mb-3">{step.description}</p>
                   <div className="text-xs text-gray-500 font-medium">{step.time}</div>
                 </div>
               </motion.div>
@@ -97,43 +97,43 @@ export function WaterDamageProcess() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.6 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-8 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+          className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-6 lg:p-8 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
         >
           <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
           <div className="relative z-10 text-center">
-            <h3 className="text-2xl font-bold mb-4 text-gray-900">
+            <h3 className="text-xl lg:text-2xl font-bold mb-3 lg:mb-4 text-gray-900">
               Why Choose Our Water Damage Restoration?
             </h3>
 
-            <div className="grid md:grid-cols-3 gap-6 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 mt-6 lg:mt-8">
               <div className="text-center">
-                <div className="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Clock className="h-6 w-6 text-orange-600" />
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-orange-500/10 rounded-lg lg:rounded-xl flex items-center justify-center mx-auto mb-2 lg:mb-3">
+                  <Clock className="h-5 w-5 lg:h-6 lg:w-6 text-orange-600" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Emergency Response</h4>
-                <p className="text-sm text-gray-600">Immediate assessment and treatment to prevent further damage and maximize recovery chances.</p>
+                <h4 className="font-semibold text-gray-900 mb-2 text-sm lg:text-base">Emergency Response</h4>
+                <p className="text-xs lg:text-sm text-gray-600">Immediate assessment and treatment to prevent further damage and maximize recovery chances.</p>
               </div>
 
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Droplets className="h-6 w-6 text-blue-600" />
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-blue-500/10 rounded-lg lg:rounded-xl flex items-center justify-center mx-auto mb-2 lg:mb-3">
+                  <Droplets className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Professional Equipment</h4>
-                <p className="text-sm text-gray-600">Ultrasonic cleaning and specialized tools designed for water damage restoration.</p>
+                <h4 className="font-semibold text-gray-900 mb-2 text-sm lg:text-base">Professional Equipment</h4>
+                <p className="text-xs lg:text-sm text-gray-600">Ultrasonic cleaning and specialized tools designed for water damage restoration.</p>
               </div>
 
               <div className="text-center">
-                <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-green-500/10 rounded-lg lg:rounded-xl flex items-center justify-center mx-auto mb-2 lg:mb-3">
+                  <CheckCircle className="h-5 w-5 lg:h-6 lg:w-6 text-green-600" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">High Success Rate</h4>
-                <p className="text-sm text-gray-600">Proven track record of successful water damage recoveries with 60-day warranty.</p>
+                <h4 className="font-semibold text-gray-900 mb-2 text-sm lg:text-base">High Success Rate</h4>
+                <p className="text-xs lg:text-sm text-gray-600">Proven track record of successful water damage recoveries with 60-day warranty.</p>
               </div>
             </div>
 
-            <div className="mt-8">
-              <button className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
+            <div className="mt-6 lg:mt-8">
+              <button className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white px-6 lg:px-8 py-2.5 lg:py-3 rounded-lg text-sm lg:text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
                 Get Emergency Assessment
               </button>
             </div>
@@ -146,45 +146,45 @@ export function WaterDamageProcess() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.8 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="mt-12"
+          className="mt-8 lg:mt-12"
         >
-          <div className="backdrop-blur-md bg-orange-50/60 border border-orange-200/80 rounded-2xl p-8 hover:bg-orange-50/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+          <div className="backdrop-blur-md bg-orange-50/60 border border-orange-200/80 rounded-xl lg:rounded-2xl p-4 lg:p-8 hover:bg-orange-50/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
             <div className="relative z-10">
-              <div className="flex items-start gap-4 mb-6">
-                <AlertTriangle className="h-8 w-8 text-orange-500 flex-shrink-0 mt-1" />
+              <div className="flex items-start gap-2 lg:gap-4 mb-4 lg:mb-6">
+                <AlertTriangle className="h-5 w-5 lg:h-8 lg:w-8 text-orange-500 flex-shrink-0 mt-0.5 lg:mt-1" />
                 <div>
-                  <h3 className="text-2xl font-bold text-orange-800 mb-2">Critical Timeline for Water Damage</h3>
-                  <p className="text-orange-700 leading-relaxed">
+                  <h3 className="text-base lg:text-2xl font-bold text-orange-800 mb-1 lg:mb-2">Critical Timeline for Water Damage</h3>
+                  <p className="text-orange-700 leading-relaxed text-xs lg:text-base">
                     The first 24 hours are crucial for successful water damage recovery. Immediate action significantly increases the chances of saving your iPhone and recovering your data.
                   </p>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-6">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl font-bold text-green-600">0-6h</span>
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-500/10 rounded-lg lg:rounded-2xl flex items-center justify-center mx-auto mb-2 lg:mb-3">
+                    <span className="text-base lg:text-2xl font-bold text-green-600">0-6h</span>
                   </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Excellent Recovery</h4>
-                  <p className="text-sm text-gray-600">Best chance for full recovery with minimal component damage.</p>
+                  <h4 className="font-semibold text-gray-900 mb-1 lg:mb-2 text-xs lg:text-base">Excellent Recovery</h4>
+                  <p className="text-xs lg:text-sm text-gray-600">Best chance for full recovery with minimal component damage.</p>
                 </div>
 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl font-bold text-yellow-600">6-24h</span>
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 bg-yellow-500/10 rounded-lg lg:rounded-2xl flex items-center justify-center mx-auto mb-2 lg:mb-3">
+                    <span className="text-base lg:text-2xl font-bold text-yellow-600">6-24h</span>
                   </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Good Recovery</h4>
-                  <p className="text-sm text-gray-600">Still good recovery potential with prompt professional treatment.</p>
+                  <h4 className="font-semibold text-gray-900 mb-1 lg:mb-2 text-xs lg:text-base">Good Recovery</h4>
+                  <p className="text-xs lg:text-sm text-gray-600">Still good recovery potential with prompt professional treatment.</p>
                 </div>
 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl font-bold text-red-600">24h+</span>
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 bg-red-500/10 rounded-lg lg:rounded-2xl flex items-center justify-center mx-auto mb-2 lg:mb-3">
+                    <span className="text-base lg:text-2xl font-bold text-red-600">24h+</span>
                   </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Challenging Recovery</h4>
-                  <p className="text-sm text-gray-600">Corrosion may have set in, but recovery may still be possible.</p>
+                  <h4 className="font-semibold text-gray-900 mb-1 lg:mb-2 text-xs lg:text-base">Challenging Recovery</h4>
+                  <p className="text-xs lg:text-sm text-gray-600">Corrosion may have set in, but recovery may still be possible.</p>
                 </div>
               </div>
             </div>

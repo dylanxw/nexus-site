@@ -28,25 +28,25 @@ export function ContactForm() {
   return (
     <section className="section-padding bg-white">
       <div className="wide-container">
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Contact Form */}
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 lg:mb-6 text-gray-900">
               Contact Us
             </h2>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-base lg:text-lg text-gray-600 mb-6 lg:mb-8">
               Have a question or need assistance? Fill out the form below and we'll get back to you within 30 minutes during business hours.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
               {/* Name and Email */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-3 lg:gap-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
                     Full Name *
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 text-gray-400" />
                     <input
                       type="text"
                       id="name"
@@ -54,17 +54,17 @@ export function ContactForm() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
+                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
                       placeholder="Your full name"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
                     Email Address *
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 text-gray-400" />
                     <input
                       type="email"
                       id="email"
@@ -72,7 +72,7 @@ export function ContactForm() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
+                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -80,37 +80,37 @@ export function ContactForm() {
               </div>
 
               {/* Phone and Inquiry Type */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-3 lg:gap-4">
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="phone" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
                     Phone Number
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 text-gray-400" />
                     <input
                       type="tel"
                       id="phone"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
+                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
                       placeholder="(555) 123-4567"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="inquiry" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="inquiry" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
                     What can we help you with? *
                   </label>
                   <div className="relative">
-                    <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 text-gray-400" />
                     <select
                       id="inquiry"
                       name="inquiry"
                       value={formData.inquiry}
                       onChange={handleInputChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DB5858] focus:border-transparent appearance-none bg-white"
+                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent appearance-none bg-white"
                     >
                       <option value="">Select an option</option>
                       <option value="schedule-repair">Schedule a Repair</option>
@@ -126,11 +126,11 @@ export function ContactForm() {
 
               {/* Message */}
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="message" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
                   Message *
                 </label>
                 <div className="relative">
-                  <MessageSquare className="absolute left-3 top-4 h-5 w-5 text-gray-400" />
+                  <MessageSquare className="absolute left-3 top-4 h-4 w-4 lg:h-5 lg:w-5 text-gray-400" />
                   <textarea
                     id="message"
                     name="message"
@@ -138,7 +138,7 @@ export function ContactForm() {
                     onChange={handleInputChange}
                     required
                     rows={4}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#DB5858] focus:border-transparent resize-none"
+                    className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent resize-none"
                     placeholder="Please provide details about your inquiry..."
                   />
                 </div>
@@ -148,13 +148,13 @@ export function ContactForm() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-4 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-none"
+                className="w-full bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-6 lg:py-4 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-none"
               >
-                <Send className="mr-2 h-5 w-5" />
+                <Send className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />
                 Send Message
               </Button>
 
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-xs lg:text-sm text-gray-500 text-center">
                 We'll respond within 30 minutes during business hours.
               </p>
             </form>
@@ -162,53 +162,53 @@ export function ContactForm() {
 
           {/* Contact Options */}
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 lg:mb-6 text-gray-900">
               Prefer to Talk?
             </h2>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-base lg:text-lg text-gray-600 mb-6 lg:mb-8">
               Sometimes it's easier to just talk! Call us for instant assistance or visit our store for walk-in service.
             </p>
 
             {/* Contact Cards */}
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               {/* Call */}
-              <div className="bg-gradient-to-r from-[#DB5858] to-[#c94848] rounded-2xl p-6 text-white">
-                <div className="flex items-center gap-4 mb-4">
-                  <Phone className="h-8 w-8" />
+              <div className="bg-gradient-to-r from-[#DB5858] to-[#c94848] rounded-xl lg:rounded-2xl p-4 lg:p-6 text-white">
+                <div className="flex items-center gap-3 lg:gap-4 mb-3 lg:mb-4">
+                  <Phone className="h-6 w-6 lg:h-8 lg:w-8" />
                   <div>
-                    <h3 className="text-xl font-bold">Call for Instant Help</h3>
-                    <p className="text-white/90">Available during business hours</p>
+                    <h3 className="text-base lg:text-xl font-bold">Call for Instant Help</h3>
+                    <p className="text-white/90 text-xs lg:text-base">Available during business hours</p>
                   </div>
                 </div>
                 <a
                   href={`tel:${siteConfig.phone}`}
-                  className="block w-full bg-white text-[#DB5858] py-3 px-6 rounded-lg font-bold text-center hover:bg-gray-100 transition-colors text-lg"
+                  className="block w-full bg-white text-[#DB5858] py-2.5 px-4 lg:py-3 lg:px-6 rounded-lg font-bold text-center hover:bg-gray-100 transition-colors text-base lg:text-lg"
                 >
                   {siteConfig.phone}
                 </a>
               </div>
 
               {/* Walk-in */}
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <CheckCircle className="h-8 w-8 text-[#DB5858]" />
+              <div className="bg-gray-50 border border-gray-200 rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                <div className="flex items-center gap-3 lg:gap-4 mb-3 lg:mb-4">
+                  <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-[#DB5858]" />
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">Walk-in Service</h3>
-                    <p className="text-gray-600">No appointment needed</p>
+                    <h3 className="text-base lg:text-xl font-bold text-gray-900">Walk-in Service</h3>
+                    <p className="text-gray-600 text-xs lg:text-base">No appointment needed</p>
                   </div>
                 </div>
-                <div className="space-y-2 text-sm text-gray-600">
+                <div className="space-y-1.5 lg:space-y-2 text-xs lg:text-sm text-gray-600">
                   <p><span className="font-medium">Mon-Fri:</span> 10:00 AM - 7:00 PM</p>
-                  <p><span className="font-medium">Saturday:</span> 10:00 AM - 6:00 PM</p>
+                  <p><span className="font-medium">Saturday:</span> 1:00 PM - 5:00 PM</p>
                   <p><span className="font-medium">Sunday:</span> Closed</p>
                   <p className="text-[#DB5858] font-medium">Same-day service available</p>
                 </div>
               </div>
 
               {/* Features */}
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Why Choose Us?</h3>
-                <div className="space-y-3">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Why Choose Us?</h3>
+                <div className="space-y-2 lg:space-y-3">
                   {[
                     "Free diagnostic & quote",
                     "60-day warranty on all repairs",
@@ -217,9 +217,9 @@ export function ContactForm() {
                     "Same-day service available",
                     "All payment types accepted"
                   ].map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-gray-600">{feature}</span>
+                    <div key={index} className="flex items-center gap-2 lg:gap-3">
+                      <CheckCircle className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-green-500 flex-shrink-0" />
+                      <span className="text-xs lg:text-sm text-gray-600">{feature}</span>
                     </div>
                   ))}
                 </div>

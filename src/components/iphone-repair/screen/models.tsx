@@ -66,38 +66,38 @@ export function ScreenRepairModels() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+        <div className="text-center mb-8 lg:mb-16">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             iPhone Screen Replacement by Model
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Professional screen replacement for all iPhone models with model-specific parts and expert installation.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
           {screenRepairModels.map((modelGroup, index) => (
             <div
               key={modelGroup.category}
               style={{ transition: 'background-color 0.3s ease, box-shadow 0.3s ease' }}
-              className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
+              className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
             >
               {/* Glass shine animation */}
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
               <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#DB5858] to-[#c94848] flex items-center justify-center shadow-lg">
-                    <Smartphone className="h-6 w-6 text-white" />
+                <div className="flex items-center gap-3 mb-3 lg:mb-4">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-gradient-to-br from-[#DB5858] to-[#c94848] flex items-center justify-center shadow-lg">
+                    <Smartphone className="h-5 w-5 lg:h-6 lg:w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">{modelGroup.category}</h3>
-                    <p className="text-lg font-bold text-[#DB5858]">{modelGroup.price}</p>
+                    <h3 className="text-base lg:text-xl font-bold text-gray-900">{modelGroup.category}</h3>
+                    <p className="text-sm lg:text-lg font-bold text-[#DB5858]">{modelGroup.price}</p>
                   </div>
                 </div>
 
-                <div className="mb-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">Compatible Models:</h4>
+                <div className="mb-3 lg:mb-4">
+                  <h4 className="font-semibold text-gray-900 mb-2 text-xs lg:text-sm">Compatible Models:</h4>
                   <div className="flex flex-wrap gap-1">
                     {modelGroup.models.map((model, modelIndex) => (
                       <span
@@ -110,15 +110,15 @@ export function ScreenRepairModels() {
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                <p className="text-gray-600 text-xs lg:text-sm mb-3 lg:mb-4 leading-relaxed">
                   {modelGroup.description}
                 </p>
 
-                <div className="mb-6 flex-grow">
-                  <h4 className="font-semibold text-gray-900 mb-2">Screen Features:</h4>
+                <div className="mb-4 lg:mb-6 flex-grow">
+                  <h4 className="font-semibold text-gray-900 mb-2 text-xs lg:text-sm">Screen Features:</h4>
                   <div className="space-y-1">
                     {modelGroup.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center text-sm text-gray-600">
+                      <div key={featureIndex} className="flex items-center text-xs lg:text-sm text-gray-600">
                         <CheckCircle className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
                         {feature}
                       </div>
@@ -126,7 +126,7 @@ export function ScreenRepairModels() {
                   </div>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl mt-auto">
+                <button className="w-full bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-2.5 lg:py-3 px-4 rounded-lg text-sm lg:text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl mt-auto">
                   Get Quote for {modelGroup.category}
                 </button>
               </div>

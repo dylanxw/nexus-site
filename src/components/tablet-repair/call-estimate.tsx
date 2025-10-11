@@ -19,53 +19,53 @@ export function CallEstimateTablet() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+        <div className="text-center mb-8 lg:mb-16">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             Ready to Fix Your Tablet?
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-            Get an instant estimate for your tablet repair. Call now or visit our Denton store for same-day service on all tablet brands.
+          <p className="text-base lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-4 lg:mb-8">
+            Get an instant estimate for your tablet repair. Call now or visit our Denton store for same-day service.
           </p>
 
           {/* Main CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-2xl mx-auto mb-12">
+          <div className="flex flex-col sm:flex-row gap-3 lg:gap-6 justify-center max-w-2xl mx-auto mb-8 lg:mb-12">
             <Button
               size="lg"
               asChild
-              className="flex-1 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-6 px-10 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-none"
+              className="flex-1 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-6 lg:py-6 lg:px-10 text-base lg:text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-none"
             >
               <a href={`tel:${siteConfig.phone}`}>
-                <Phone className="mr-3 h-6 w-6" />
+                <Phone className="mr-2 lg:mr-3 h-5 w-5 lg:h-6 lg:w-6" />
                 Call {siteConfig.phone}
               </a>
             </Button>
             <Button
               size="lg"
-              className="flex-1 backdrop-blur-md bg-white/40 border-2 border-white/60 hover:bg-white/60 hover:border-white/80 text-gray-800 py-6 px-10 text-xl font-bold transition-all duration-300 hover:shadow-lg"
+              className="flex-1 backdrop-blur-md bg-white/40 border-2 border-white/60 hover:bg-white/60 hover:border-white/80 text-gray-800 py-3 px-6 lg:py-6 lg:px-10 text-base lg:text-xl font-bold transition-all duration-300 hover:shadow-lg"
             >
               Get Free Quote Online
-              <MessageSquare className="ml-3 h-6 w-6" />
+              <MessageSquare className="ml-2 lg:ml-3 h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
           </div>
         </div>
 
         {/* Features Grid with glass morphism */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8 lg:mb-16">
           {[
             {
               icon: Clock,
               title: "Same-Day Service",
-              description: "Most tablet repairs completed in 1-3 hours"
+              description: "Most repairs completed in 1-2 hours"
             },
             {
               icon: Shield,
               title: "60-Day Warranty",
-              description: "All tablet repairs guaranteed for 60 days"
+              description: "All repairs guaranteed for 60 days"
             },
             {
               icon: CheckCircle,
               title: "Quality Parts",
-              description: "High-quality parts for all tablet brands"
+              description: "High-quality parts including genuine options"
             },
             {
               icon: Star,
@@ -79,15 +79,15 @@ export function CallEstimateTablet() {
                 key={feature.title}
                 className="text-center"
               >
-                <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden h-full flex flex-col">
+                <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden h-full flex flex-col">
                   {/* Glass shine animation */}
                   <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
                   <div className="relative z-10 text-center flex flex-col h-full">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-[#DB5858]/10 rounded-2xl mb-4 backdrop-blur-sm">
-                      <Icon className="h-8 w-8 text-[#DB5858]" />
+                    <div className="inline-flex items-center justify-center w-12 h-12 lg:w-16 lg:h-16 bg-[#DB5858]/10 rounded-xl lg:rounded-2xl mb-3 lg:mb-4 backdrop-blur-sm mx-auto">
+                      <Icon className="h-6 w-6 lg:h-8 lg:w-8 text-[#DB5858]" />
                     </div>
-                    <h3 className="text-lg font-bold mb-2 text-gray-900">{feature.title}</h3>
-                    <p className="text-sm text-gray-600 flex-grow">{feature.description}</p>
+                    <h3 className="text-sm lg:text-lg font-bold mb-1 lg:mb-2 text-gray-900">{feature.title}</h3>
+                    <p className="text-xs lg:text-sm text-gray-600 flex-grow">{feature.description}</p>
                   </div>
                 </div>
               </div>
@@ -96,20 +96,20 @@ export function CallEstimateTablet() {
         </div>
 
         {/* Contact Options with glass morphism */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
           {/* Call */}
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10 flex flex-col h-full">
-              <Phone className="h-12 w-12 text-[#DB5858] mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Call for Instant Quote</h3>
-              <p className="text-gray-600 mb-4 text-sm flex-grow">
+              <Phone className="h-10 w-10 lg:h-12 lg:w-12 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+              <h3 className="text-base lg:text-xl font-bold mb-2 text-gray-900">Call for Instant Quote</h3>
+              <p className="text-gray-600 mb-3 lg:mb-4 text-xs lg:text-sm flex-grow">
                 Speak with our tablet repair experts and get pricing over the phone
               </p>
               <a
                 href={`tel:${siteConfig.phone}`}
-                className="inline-block bg-gradient-to-r from-[#DB5858] to-[#c94848] text-white px-6 py-3 rounded-lg font-semibold hover:from-[#c94848] hover:to-[#b83d3d] transition-all duration-300 shadow-lg hover:shadow-xl mt-auto"
+                className="inline-block bg-gradient-to-r from-[#DB5858] to-[#c94848] text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:from-[#c94848] hover:to-[#b83d3d] transition-all duration-300 shadow-lg hover:shadow-xl mt-auto"
               >
                 {siteConfig.phone}
               </a>
@@ -117,41 +117,41 @@ export function CallEstimateTablet() {
           </div>
 
           {/* Visit */}
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10 flex flex-col h-full">
-              <CheckCircle className="h-12 w-12 text-[#DB5858] mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Visit Our Store</h3>
-              <p className="text-gray-600 mb-4 text-sm flex-grow">
+              <CheckCircle className="h-10 w-10 lg:h-12 lg:w-12 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+              <h3 className="text-base lg:text-xl font-bold mb-2 text-gray-900">Visit Our Store</h3>
+              <p className="text-gray-600 mb-3 lg:mb-4 text-xs lg:text-sm flex-grow">
                 Walk-in for free diagnostic and same-day tablet repair service
               </p>
               <a
                 href="https://maps.app.goo.gl/bazd8n2NJn5z91ry6"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-800 font-semibold text-sm mt-auto hover:text-[#DB5858] transition-colors duration-300 flex items-center justify-center gap-2"
+                className="text-gray-800 font-semibold text-xs lg:text-sm mt-auto hover:text-[#DB5858] transition-colors duration-300 flex items-center justify-center gap-2"
               >
                 <div className="text-center">
                   {siteConfig.address.street}<br />
                   {siteConfig.address.city}, {siteConfig.address.state}
                 </div>
-                <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                <ExternalLink className="h-3 w-3 lg:h-4 lg:w-4 flex-shrink-0" />
               </a>
             </div>
           </div>
 
           {/* Online */}
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10 flex flex-col h-full">
-              <MessageSquare className="h-12 w-12 text-[#DB5858] mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Online Quote</h3>
-              <p className="text-gray-600 mb-4 text-sm flex-grow">
+              <MessageSquare className="h-10 w-10 lg:h-12 lg:w-12 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+              <h3 className="text-base lg:text-xl font-bold mb-2 text-gray-900">Online Quote</h3>
+              <p className="text-gray-600 mb-3 lg:mb-4 text-xs lg:text-sm flex-grow">
                 Get an estimate online and schedule your tablet repair appointment
               </p>
-              <button className="bg-gradient-to-r from-[#DB5858] to-[#c94848] text-white px-6 py-3 rounded-lg font-semibold hover:from-[#c94848] hover:to-[#b83d3d] transition-all duration-300 shadow-lg hover:shadow-xl mt-auto">
+              <button className="bg-gradient-to-r from-[#DB5858] to-[#c94848] text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:from-[#c94848] hover:to-[#b83d3d] transition-all duration-300 shadow-lg hover:shadow-xl mt-auto">
                 Get Quote
               </button>
             </div>
@@ -159,15 +159,15 @@ export function CallEstimateTablet() {
         </div>
 
         {/* Bottom Urgency Message */}
-        <div className="text-center mt-12">
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 relative overflow-hidden group hover:bg-white/80 hover:shadow-xl transition-all duration-300">
+        <div className="text-center mt-8 lg:mt-12">
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 relative overflow-hidden group hover:bg-white/80 hover:shadow-xl transition-all duration-300">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10">
-              <p className="text-lg font-semibold mb-2 text-gray-900">
+              <p className="text-sm lg:text-lg font-semibold mb-2 text-gray-900">
                 ⚡ Don't wait! The longer you wait, the more damage can occur to your tablet.
               </p>
-              <p className="text-gray-600">
+              <p className="text-xs lg:text-base text-gray-600">
                 Call now for same-day repair service and get your tablet back to perfect condition today.
               </p>
             </div>

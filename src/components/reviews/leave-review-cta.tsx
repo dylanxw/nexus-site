@@ -3,6 +3,7 @@
 import { Star, MessageSquare, ExternalLink, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import Image from "next/image";
 
 export function LeaveReviewCTA() {
   return (
@@ -27,16 +28,22 @@ export function LeaveReviewCTA() {
         </div>
 
         {/* Review Platform Options */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {/* Google */}
           <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
-            <div className="w-16 h-16 mx-auto mb-4 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">G</span>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center overflow-hidden p-1">
+              <Image
+                src="/images/social-icons/google-icon.png"
+                alt="Google"
+                width={64}
+                height={64}
+                className="w-full h-full object-contain"
+              />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Google</h3>
             <p className="text-gray-600 text-sm mb-4 flex-grow">Leave a review on Google My Business</p>
             <a
-              href="#"
+              href="https://g.page/r/CZos6WU19IEyEAE/review"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm mt-auto w-full"
@@ -45,8 +52,8 @@ export function LeaveReviewCTA() {
             </a>
           </div>
 
-          {/* Trustpilot */}
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
+          {/* Trustpilot - Commented out until setup is complete */}
+          {/* <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
             <div className="w-16 h-16 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-2xl">T</span>
             </div>
@@ -60,17 +67,23 @@ export function LeaveReviewCTA() {
             >
               Review on Trustpilot <ExternalLink className="h-4 w-4" />
             </a>
-          </div>
+          </div> */}
 
           {/* Facebook */}
           <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
-            <div className="w-16 h-16 mx-auto mb-4 bg-blue-800 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">f</span>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center overflow-hidden p-1">
+              <Image
+                src="/images/social-icons/facebook-icon.png"
+                alt="Facebook"
+                width={64}
+                height={64}
+                className="w-full h-full object-contain"
+              />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Facebook</h3>
             <p className="text-gray-600 text-sm mb-4 flex-grow">Rate us on our Facebook page</p>
             <a
-              href="#"
+              href="https://www.facebook.com/NexusTechSolutionsLLC/reviews"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm mt-auto w-full"
@@ -81,13 +94,19 @@ export function LeaveReviewCTA() {
 
           {/* Yelp */}
           <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 text-center hover:bg-white/80 hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
-            <div className="w-16 h-16 mx-auto mb-4 bg-red-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">Y</span>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center overflow-hidden">
+              <Image
+                src="/images/social-icons/yelp-icon.webp"
+                alt="Yelp"
+                width={64}
+                height={64}
+                className="w-full h-full object-contain"
+              />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Yelp</h3>
             <p className="text-gray-600 text-sm mb-4 flex-grow">Write a review on Yelp</p>
             <a
-              href="#"
+              href="https://www.yelp.com/writeareview/biz/D3dP-0nMy6BpRlGXDme3pg?return_url=%252Fbiz%252FD3dP-0nMy6BpRlGXDme3pg"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm mt-auto w-full"

@@ -15,24 +15,24 @@ export function ContactInfo() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900">
+        <div className="text-center mb-8 lg:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-4 text-gray-900">
             Find Our Location
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
             Located in the heart of Denton, TX. Easy to find with plenty of free parking available.
           </p>
         </div>
 
         {/* Map Card */}
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg max-w-4xl mx-auto">
+        <div className="bg-white rounded-xl lg:rounded-2xl border border-gray-200 overflow-hidden shadow-lg max-w-4xl mx-auto">
           {/* Map will be integrated here later */}
           <div className="aspect-[16/10] bg-gray-100 flex items-center justify-center relative">
-            <div className="text-center">
-              <MapPin className="h-16 w-16 text-[#DB5858] mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Google Maps Integration</h3>
-              <p className="text-gray-600 mb-4">Interactive map will be added here</p>
-              <div className="text-sm text-gray-500">
+            <div className="text-center px-4">
+              <MapPin className="h-12 w-12 lg:h-16 lg:w-16 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+              <h3 className="text-base lg:text-xl font-bold text-gray-900 mb-2">Google Maps Integration</h3>
+              <p className="text-gray-600 mb-3 lg:mb-4 text-sm lg:text-base">Interactive map will be added here</p>
+              <div className="text-xs lg:text-sm text-gray-500">
                 {siteConfig.address.street}<br />
                 {siteConfig.address.city}, {siteConfig.address.state} {siteConfig.address.zip}
               </div>
@@ -43,17 +43,17 @@ export function ContactInfo() {
             <div className="absolute top-4 left-4 bg-white rounded-lg px-3 py-2 shadow-md">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-[#DB5858] rounded-full"></div>
-                <span className="text-sm font-medium text-gray-900">Nexus Tech Solutions</span>
+                <span className="text-xs lg:text-sm font-medium text-gray-900">Nexus Tech Solutions</span>
               </div>
             </div>
           </div>
 
           {/* Map Footer */}
-          <div className="p-4 bg-white border-t border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className="p-3 lg:p-4 bg-white border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-[#DB5858]" />
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-xs lg:text-sm font-medium text-gray-900">
                   {siteConfig.address.street}, {siteConfig.address.city}
                 </span>
               </div>
@@ -61,7 +61,7 @@ export function ContactInfo() {
                 href="https://maps.app.goo.gl/bazd8n2NJn5z91ry6"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-[#DB5858] hover:text-[#c94848] transition-colors text-sm font-medium"
+                className="flex items-center gap-2 text-[#DB5858] hover:text-[#c94848] transition-colors text-xs lg:text-sm font-medium"
               >
                 Open in Maps <ExternalLink className="h-4 w-4" />
               </a>

@@ -1,0 +1,17 @@
+# robots.txt for Nexus Tech Solutions
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin
+Disallow: /api/
+Disallow: /login
+Disallow: /verify-email
+
+# Sitemap location
+Sitemap: https://nexustechsolutions.io/sitemap.xml
+
+# Crawl delay (optional - adjust if needed)
+# Crawl-delay: 1

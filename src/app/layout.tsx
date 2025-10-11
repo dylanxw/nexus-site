@@ -28,7 +28,14 @@ export const metadata: Metadata = {
     "game console repair",
     "data recovery",
     "denton tx",
-    "electronics repair"
+    "electronics repair",
+    "buy sell devices",
+    "buy sell phones",
+    "buy sell laptops",
+    "buy sell tablets",
+    "buy sell game consoles",
+    "buy sell drones",
+    "buy sell cameras",
   ],
   authors: [
     {
@@ -51,7 +58,7 @@ export const metadata: Metadata = {
     creator: "@nexustechsolutions",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/images/nexus-favicon.png",
   },
 };
 
@@ -72,7 +79,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${manrope.variable} font-sans antialiased`}>
+      <body className={`${manrope.variable} font-sans antialiased`} suppressHydrationWarning>
         <div className="relative flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1">{children}</main>

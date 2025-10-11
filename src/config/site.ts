@@ -20,11 +20,11 @@ export const siteConfig = {
     wednesday: "10:00 AM - 7:00 PM",
     thursday: "10:00 AM - 7:00 PM",
     friday: "10:00 AM - 7:00 PM",
-    saturday: "1:00 PM - 6:00 PM",
+    saturday: "1:00 PM - 5:00 PM",
     sunday: "Closed",
     weekdayShort: "Mon-Fri: 10am-7pm",
-    saturdayShort: "Sat: 1pm-6pm",
-    display: "Mon-Fri: 10am-7pm | Sat: 1pm-6pm"
+    saturdayShort: "Sat: 1pm-5pm",
+    display: "Mon-Fri: 10am-7pm | Sat: 1pm-5pm"
   },
   social: {
     facebook: "",
@@ -67,6 +67,18 @@ export const siteConfig = {
       name: "Game Console Repair",
       description: "PlayStation, Xbox, Nintendo Switch repairs and mods",
       icon: "gamepad2"
+    },
+    {
+      id: "device-buyback",
+      name: "Device Buyback",
+      description: "Instant cash for phones, tablets, laptops and electronics",
+      icon: "dollarSign"
+    },
+    {
+      id: "pre-owned-sales",
+      name: "Pre-Owned Device Sales",
+      description: "Quality refurbished phones, tablets, and electronics",
+      icon: "shoppingCart"
     },
     {
       id: "other-repair",

@@ -50,45 +50,45 @@ export function TabletReviews() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+        <div className="text-center mb-8 lg:mb-16">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             What Our Tablet Repair Customers Say
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Real reviews from satisfied customers who trusted us with their tablet repairs.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-8">
           {reviews.map((review, index) => (
             <div
               key={review.id}
-              className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+              className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
             >
               {/* Glass shine animation */}
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
               <div className="relative z-10">
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start justify-between mb-3 lg:mb-4">
                   <div>
-                    <h4 className="font-bold text-gray-900">{review.name}</h4>
-                    <p className="text-sm text-gray-600">{review.device}</p>
+                    <h4 className="font-bold text-gray-900 text-sm lg:text-base">{review.name}</h4>
+                    <p className="text-xs lg:text-sm text-gray-600">{review.device}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} className="h-3 w-3 lg:h-4 lg:w-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
                 </div>
 
                 <div className="relative">
-                  <Quote className="absolute -top-2 -left-2 h-6 w-6 text-[#DB5858]/20" />
-                  <p className="text-gray-700 leading-relaxed pl-4">
+                  <Quote className="absolute -top-2 -left-2 h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]/20" />
+                  <p className="text-gray-700 leading-relaxed pl-3 lg:pl-4 text-xs lg:text-base">
                     {review.text}
                   </p>
                 </div>
 
-                <div className="mt-4 text-xs text-gray-500">
+                <div className="mt-3 lg:mt-4 text-xs text-gray-500">
                   {review.date}
                 </div>
               </div>
@@ -97,23 +97,23 @@ export function TabletReviews() {
         </div>
 
         {/* Review Stats */}
-        <div className="text-center mt-16">
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-8 shadow-lg hover:bg-white/80 transition-all duration-300 group relative overflow-hidden">
+        <div className="text-center mt-8 lg:mt-16">
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-lg hover:bg-white/80 transition-all duration-300 group relative overflow-hidden">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
                 <div>
-                  <div className="text-3xl font-bold text-[#DB5858] mb-2">150+</div>
-                  <div className="text-gray-600">Tablet Repair Reviews</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-[#DB5858] mb-1 lg:mb-2">150+</div>
+                  <div className="text-sm lg:text-base text-gray-600">Tablet Repair Reviews</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-[#DB5858] mb-2">4.9★</div>
-                  <div className="text-gray-600">Average Rating</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-[#DB5858] mb-1 lg:mb-2">4.9★</div>
+                  <div className="text-sm lg:text-base text-gray-600">Average Rating</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-[#DB5858] mb-2">98%</div>
-                  <div className="text-gray-600">Customer Satisfaction</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-[#DB5858] mb-1 lg:mb-2">98%</div>
+                  <div className="text-sm lg:text-base text-gray-600">Customer Satisfaction</div>
                 </div>
               </div>
             </div>

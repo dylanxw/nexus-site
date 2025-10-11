@@ -277,3 +277,160 @@ model RateLimit {
   @@index([resetTime])  // For cleanup queries
   @@map("rate_limits")   // Use snake_case table name for raw SQL queries
 }
+
+// ============================================
+// REPAIR FORM CONFIGURATION
+// ============================================
+
+// Device categories (Smartphones, Tablet, Computer, etc.)
+model RepairDevice {
+  id        String   @id @default(uuid())
+  name      String   // "Smartphones", "Tablet", etc.
+  slug      String   @unique // "smartphones", "tablet"
+  icon      String   // Lucide icon name (e.g. "Smartphone", "Tablet")
+  order     Int      @default(0) // Display order
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brands    RepairBrand[]
+  issues    RepairDeviceIssue[]
+
+  @@index([active, order])
+}
+
+// Brands for each device category (Apple, Samsung, etc.)
+model RepairBrand {
+  id        String   @id @default(uuid())
+  name      String   // "Apple", "Samsung"
+  deviceId  String   // FK to RepairDevice
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  device    RepairDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  models    RepairModel[]
+
+  @@unique([deviceId, name])
+  @@index([deviceId, active, order])
+}
+
+// Models for each brand (iPhone 17 Pro Max, Galaxy S24, etc.)
+model RepairModel {
+  id        String   @id @default(uuid())
+  name      String   // "iPhone 17 Pro Max"
+  brandId   String   // FK to RepairBrand
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brand     RepairBrand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  issues    RepairModelIssue[]
+
+  @@unique([brandId, name])
+  @@index([brandId, active, order])
+}
+
+// Repair issues/problems (Screen Damage, Battery, etc.)
+model RepairIssue {
+  id        String   @id @default(uuid())
+  name      String   // "Screen Damage"
+  slug      String   @unique // "screen-damage"
+  emoji     String   // "📱"
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  devices   RepairDeviceIssue[]
+  models    RepairModelIssue[]
+
+  @@index([active, order])
+}
+
+// Junction table: Which issues apply to which device types
+model RepairDeviceIssue {
+  id        String   @id @default(uuid())
+  deviceId  String
+  issueId   String
+
+  device    RepairDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  issue     RepairIssue  @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([deviceId, issueId])
+  @@index([deviceId])
+  @@index([issueId])
+}
+
+// Junction table: Which issues apply to which specific models
+model RepairModelIssue {
+  id        String   @id @default(uuid())
+  modelId   String
+  issueId   String
+  createdAt DateTime @default(now())
+
+  model     RepairModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  issue     RepairIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, issueId])
+  @@index([modelId])
+  @@index([issueId])
+}
+
+// ============================================
+// REPAIR BOOKING SUBMISSIONS
+// ============================================
+
+model RepairBooking {
+  id              String   @id @default(uuid())
+  bookingNumber   String   @unique // e.g. "REP-2025-0001"
+
+  // Device info
+  deviceType      String
+  make            String
+  model           String
+  issues          String   // JSON array of issue slugs
+  description     String?
+
+  // Customer info
+  firstName       String
+  lastName        String
+  email           String
+  phone           String
+
+  // Appointment info (null for quote requests)
+  appointmentDate String?
+  appointmentTime String?
+  requestType     String   // "appointment" or "quote"
+
+  // Status tracking
+  status          RepairBookingStatus @default(PENDING)
+
+  // Google Calendar integration
+  calendarEventId String?  // Google Calendar event ID
+
+  // Internal notes
+  notes           String?
+  staffNotes      String?
+
+  // Metadata
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+  @@index([appointmentDate])
+  @@index([requestType])
+}
+
+enum RepairBookingStatus {
+  PENDING       // Initial submission
+  CONFIRMED     // Appointment confirmed
+  IN_PROGRESS   // Currently being repaired
+  COMPLETED     // Repair finished
+  CANCELLED     // Customer cancelled
+  NO_SHOW       // Customer didn't show up
+  QUOTED        // Quote provided (for quote requests)
+}

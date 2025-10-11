@@ -11,7 +11,12 @@ interface FormPresets {
   step?: number;
 }
 
-export default function RepairFormClient() {
+interface RepairFormClientProps {
+  initialDevices: any[];
+  initialModelIssues: Record<string, any[]>;
+}
+
+export default function RepairFormClient({ initialDevices, initialModelIssues }: RepairFormClientProps) {
   const searchParams = useSearchParams();
   const [formPresets, setFormPresets] = useState<FormPresets>({});
   const [isLoaded, setIsLoaded] = useState(false);
@@ -46,7 +51,7 @@ export default function RepairFormClient() {
 
   // Don't render until we've checked the URL parameters
   if (!isLoaded) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return null; // Removed loading indicator for faster perceived performance
   }
 
   return (
@@ -55,6 +60,8 @@ export default function RepairFormClient() {
       initialBrand={formPresets.brand || ""}
       initialService={formPresets.service || ""}
       initialStep={formPresets.step || 1}
+      initialDevices={initialDevices}
+      initialModelIssues={initialModelIssues}
       standalone={true}
     />
   );

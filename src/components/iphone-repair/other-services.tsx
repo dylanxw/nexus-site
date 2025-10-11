@@ -60,46 +60,46 @@ export function OtherRepairServices() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900">
+        <div className="text-center mb-8 lg:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-4 text-gray-900">
             Other Repair Services
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
             Beyond iPhone repair, we fix all your tech devices with the same quality and expertise
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {otherServices.map((service, index) => {
             const Icon = service.icon;
             return (
               <div
                 key={service.id}
                 style={{ transition: 'background-color 0.3s ease, box-shadow 0.3s ease' }}
-                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
+                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
               >
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                 <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[#DB5858]/20" style={{ transition: 'background-color 0.3s ease' }}>
-                      <Icon className="h-6 w-6 text-[#DB5858]" />
+                  <div className="flex flex-col lg:flex-row items-center lg:items-center gap-3 lg:gap-4 mb-3 lg:mb-4">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-[#DB5858]/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[#DB5858]/20" style={{ transition: 'background-color 0.3s ease' }}>
+                      <Icon className="h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]" />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
+                    <div className="text-center lg:text-left">
+                      <h3 className="text-sm lg:text-lg font-bold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
                         {service.title}
                       </h3>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">
+                  <p className="text-gray-600 text-xs lg:text-sm leading-relaxed mb-3 lg:mb-4 hidden lg:block">
                     {service.description}
                   </p>
 
-                  <a href={service.link}>
+                  <a href={service.link} className="mt-auto">
                     <button
-                      className={`w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 text-sm shadow-lg hover:shadow-xl mt-auto ${
+                      className={`w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 text-xs lg:text-sm shadow-lg hover:shadow-xl ${
                         service.link === "#"
                           ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                           : "bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white"

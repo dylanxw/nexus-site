@@ -80,18 +80,18 @@ export function WaterDamageFAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="text-center mb-16"
+          className="text-center mb-8 lg:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             Water Damage Repair FAQ
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Common questions about iPhone water damage repair and emergency restoration services.
           </p>
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="space-y-4">
+          <div className="space-y-3 lg:space-y-4">
             {waterDamageFAQs.map((faq, index) => (
               <motion.div
                 key={faq.id}
@@ -99,27 +99,27 @@ export function WaterDamageFAQ() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.03 }}
                 viewport={{ once: true, margin: "-50px" }}
-                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl shadow-lg hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl shadow-lg hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
               >
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                 <button
                   onClick={() => toggleItem(faq.id)}
-                  className="w-full p-6 text-left flex items-center justify-between rounded-2xl transition-colors duration-300 group relative z-10"
+                  className="w-full p-4 lg:p-6 text-left flex items-center justify-between rounded-xl lg:rounded-2xl transition-colors duration-300 group relative z-10"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
-                      <Droplets className="h-6 w-6 text-blue-600" />
+                  <div className="flex items-center gap-3 lg:gap-4">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-blue-500/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                      <Droplets className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#DB5858] transition-colors">
+                      <h3 className="text-sm lg:text-lg font-semibold text-gray-900 group-hover:text-[#DB5858] transition-colors">
                         {faq.question}
                       </h3>
                     </div>
                   </div>
                   <ChevronDown
-                    className={`h-5 w-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ${
+                    className={`h-4 w-4 lg:h-5 lg:w-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ${
                       openItem === faq.id ? "transform rotate-180 text-[#DB5858]" : ""
                     }`}
                   />
@@ -134,9 +134,9 @@ export function WaterDamageFAQ() {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden relative z-10"
                     >
-                      <div className="px-6 pb-6">
-                        <div className="border-t border-white/40 pt-6">
-                          <p className="text-gray-600 leading-relaxed">
+                      <div className="px-4 lg:px-6 pb-4 lg:pb-6">
+                        <div className="border-t border-white/40 pt-4 lg:pt-6">
+                          <p className="text-gray-600 leading-relaxed text-xs lg:text-base">
                             {faq.answer}
                           </p>
                         </div>
@@ -155,19 +155,19 @@ export function WaterDamageFAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.8 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="text-center mt-16"
+          className="text-center mt-8 lg:mt-16"
         >
-          <div className="backdrop-blur-md bg-orange-50/60 border border-orange-200/80 rounded-2xl p-8 shadow-lg hover:bg-orange-50/80 transition-all duration-300 group relative overflow-hidden">
+          <div className="backdrop-blur-md bg-orange-50/60 border border-orange-200/80 rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-lg hover:bg-orange-50/80 transition-all duration-300 group relative overflow-hidden">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-orange-800">
+              <h3 className="text-xl lg:text-3xl font-bold mb-3 lg:mb-4 text-orange-800">
                 Don't Wait - Every Minute Counts!
               </h3>
-              <p className="text-lg mb-6 text-orange-700">
+              <p className="text-base lg:text-lg mb-4 lg:mb-6 text-orange-700">
                 Water damage gets worse over time. Call us now for emergency assessment and start the recovery process immediately.
               </p>
-              <button className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
+              <button className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white px-6 lg:px-8 py-2.5 lg:py-3 rounded-lg text-sm lg:text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
                 Emergency Water Damage Call
               </button>
             </div>

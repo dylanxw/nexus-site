@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { LocationsHero } from "@/components/locations/hero";
 import { CurrentLocation } from "@/components/locations/current-location";
 import { ServiceAreas } from "@/components/locations/service-areas";
-import { FutureLocations } from "@/components/locations/future-locations";
 import { WhyDenton } from "@/components/locations/why-denton";
 
+
+import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Locations | Nexus Tech Solutions - Denton, TX Device Repair Shop",
   description: "Visit Nexus Tech Solutions in Denton, Texas for professional device repair, buying, and selling services. We're your local tech experts serving Denton County and surrounding North Texas areas.",
@@ -32,8 +33,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Locations | Nexus Tech Solutions - Denton, TX Device Repair Shop",
     description: "Visit our Denton, Texas location for expert device repair services. We buy, sell, and repair phones, computers, tablets, and more in Denton County.",
-    url: "https://nexustechsolutions.io/locations",
-    siteName: "Nexus Tech Solutions",
+    url: `${siteConfig.url}/locations`,
+    siteName: siteConfig.name,
     locale: "en_US",
     type: "website",
   },
@@ -43,7 +44,18 @@ export const metadata: Metadata = {
     description: "Visit our Denton, Texas location for expert device repair services. We buy, sell, and repair phones, computers, tablets, and more.",
   },
   alternates: {
-    canonical: "https://nexustechsolutions.io/locations",
+    canonical: `${siteConfig.url}/locations`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -54,7 +66,6 @@ export default function LocationsPage() {
       <CurrentLocation />
       <ServiceAreas />
       <WhyDenton />
-      <FutureLocations />
     </main>
   );
 }

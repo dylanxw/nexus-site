@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 
 export function DroneRepairHero() {
   return (
-    <section className="py-16 relative overflow-hidden" style={{
+    <section className="py-8 lg:py-16 relative overflow-hidden" style={{
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%)'
     }}>
       {/* Subtle animated background elements */}
@@ -17,37 +17,37 @@ export function DroneRepairHero() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
           {/* Content */}
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 text-gray-900">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
               Drone Repair <span className="text-[#DB5858]">Denton, TX</span>
             </h1>
 
-            <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+            <p className="text-base lg:text-xl text-gray-600 mb-4 lg:mb-6 leading-relaxed">
               The drone doctors of Denton! Expert drone repair with same-day service, quality parts, and 60-day warranty. Professional technicians for DJI, Autel, Parrot, and all drone brands.
             </p>
 
             {/* Quick stats */}
-            <div className="flex flex-wrap gap-4 mb-8">
-              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl px-4 py-2 flex items-center">
-                <Star className="h-4 w-4 mr-2 text-yellow-500" />
-                <span className="font-semibold text-gray-800 text-sm">4.9★ Rating</span>
+            <div className="flex flex-wrap gap-2 lg:gap-4 mb-4 lg:mb-8">
+              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-lg lg:rounded-xl px-3 py-1.5 lg:px-4 lg:py-2 flex items-center">
+                <Star className="h-3 w-3 lg:h-4 lg:w-4 mr-2 text-yellow-500" />
+                <span className="font-semibold text-gray-800 text-xs lg:text-sm">4.9★ Rating</span>
               </div>
-              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl px-4 py-2 flex items-center">
-                <Clock className="h-4 w-4 mr-2 text-green-500" />
-                <span className="font-semibold text-gray-800 text-sm">Same-Day Service</span>
+              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-lg lg:rounded-xl px-3 py-1.5 lg:px-4 lg:py-2 flex items-center">
+                <Clock className="h-3 w-3 lg:h-4 lg:w-4 mr-2 text-green-500" />
+                <span className="font-semibold text-gray-800 text-xs lg:text-sm">Same-Day Service</span>
               </div>
-              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl px-4 py-2 flex items-center">
-                <Shield className="h-4 w-4 mr-2 text-blue-500" />
-                <span className="font-semibold text-gray-800 text-sm">60-Day Warranty</span>
+              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-lg lg:rounded-xl px-3 py-1.5 lg:px-4 lg:py-2 flex items-center">
+                <Shield className="h-3 w-3 lg:h-4 lg:w-4 mr-2 text-blue-500" />
+                <span className="font-semibold text-gray-800 text-xs lg:text-sm">60-Day Warranty</span>
               </div>
             </div>
 
             {/* Common Repairs */}
-            <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 mb-8 shadow-lg">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Common Drone Repairs:</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 mb-4 lg:mb-8 shadow-lg">
+              <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Common Drone Repairs:</h3>
+              <div className="grid grid-cols-2 gap-2 lg:gap-3 text-xs lg:text-sm">
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-[#DB5858] rounded-full mr-2"></div>
                   <span className="text-gray-600">Crash damage repair</span>
@@ -76,23 +76,23 @@ export function DroneRepairHero() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
               <Button
                 size="lg"
                 asChild
-                className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-4 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-none"
+                className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-6 lg:py-4 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-none"
               >
                 <a href={`tel:${siteConfig.phone}`}>
-                  <Phone className="mr-2 h-5 w-5" />
+                  <Phone className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />
                   Call {siteConfig.phone}
                 </a>
               </Button>
               <Button
                 size="lg"
-                className="backdrop-blur-md bg-white/40 border border-white/60 text-gray-800 hover:bg-white/60 hover:border-white/80 py-4 px-8 text-lg font-semibold transition-all duration-300"
+                className="backdrop-blur-md bg-white/40 border border-white/60 text-gray-800 hover:bg-white/60 hover:border-white/80 py-3 px-6 lg:py-4 lg:px-8 text-base lg:text-lg font-semibold transition-all duration-300"
               >
                 Get Free Quote
-                <MessageSquare className="ml-2 h-5 w-5" />
+                <MessageSquare className="ml-2 h-4 w-4 lg:h-5 lg:w-5" />
               </Button>
             </div>
           </div>
@@ -103,22 +103,22 @@ export function DroneRepairHero() {
               <img
                 src="/images/drone-repair/drone-repair-services.png"
                 alt="Drone repair services in Denton TX"
-                className="w-full h-auto max-w-md mx-auto rounded-2xl"
+                className="w-full h-auto max-w-md mx-auto rounded-xl lg:rounded-2xl"
               />
 
               {/* Floating badge */}
-              <div className="absolute top-4 right-4 bg-[#DB5858] text-white px-4 py-2 rounded-full shadow-lg">
+              <div className="absolute top-4 right-4 bg-[#DB5858] text-white px-3 py-1.5 lg:px-4 lg:py-2 rounded-full shadow-lg">
                 <div className="text-center">
-                  <div className="text-sm font-bold">Same-Day</div>
+                  <div className="text-xs lg:text-sm font-bold">Same-Day</div>
                   <div className="text-xs">Service</div>
                 </div>
               </div>
 
               {/* Trust badge */}
-              <div className="absolute bottom-4 left-4 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-lg">
+              <div className="absolute bottom-4 left-4 bg-white border border-gray-200 px-3 py-1.5 lg:px-4 lg:py-2 rounded-lg shadow-lg">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-sm font-semibold text-gray-900">60-Day Warranty</span>
+                  <CheckCircle className="h-3 w-3 lg:h-4 lg:w-4 text-green-500" />
+                  <span className="text-xs lg:text-sm font-semibold text-gray-900">60-Day Warranty</span>
                 </div>
               </div>
             </div>

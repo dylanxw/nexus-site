@@ -45,61 +45,61 @@ export function WhyChooseIPhone() {
   return (
     <section className="section-padding bg-gray-50">
       <div className="wide-container">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-gray-900">
+        <div className="text-center mb-8 lg:mb-16">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             Why Choose Nexus Tech Solutions for iPhone Repair?
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             We're Denton's trusted iPhone repair experts with the experience, parts, and service you deserve.
           </p>
         </div>
 
         {/* Stats Banner */}
-        <div className="bg-gradient-to-r from-[#DB5858] to-[#c94848] rounded-2xl p-8 mb-16 text-white">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="bg-gradient-to-r from-[#DB5858] to-[#c94848] rounded-xl lg:rounded-2xl p-4 lg:p-8 mb-8 lg:mb-16 text-white">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8 text-center">
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-2">5,000+</div>
-              <div className="text-sm opacity-90">iPhones Repaired</div>
+              <div className="text-2xl lg:text-4xl font-bold mb-1 lg:mb-2">5,000+</div>
+              <div className="text-xs lg:text-sm opacity-90">iPhones Repaired</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-2">4.9★</div>
-              <div className="text-sm opacity-90">Average Rating</div>
+              <div className="text-2xl lg:text-4xl font-bold mb-1 lg:mb-2">4.9★</div>
+              <div className="text-xs lg:text-sm opacity-90">Average Rating</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-2">98%</div>
-              <div className="text-sm opacity-90">Success Rate</div>
+              <div className="text-2xl lg:text-4xl font-bold mb-1 lg:mb-2">98%</div>
+              <div className="text-xs lg:text-sm opacity-90">Success Rate</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold mb-2">60-Day</div>
-              <div className="text-sm opacity-90">Warranty</div>
+              <div className="text-2xl lg:text-4xl font-bold mb-1 lg:mb-2">60-Day</div>
+              <div className="text-xs lg:text-sm opacity-90">Warranty</div>
             </div>
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div
                 key={feature.title}
                 style={{ transition: 'box-shadow 0.3s ease' }}
-                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg group border border-gray-200"
+                className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-sm hover:shadow-lg group border border-gray-200"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 flex items-center justify-center group-hover:bg-[#DB5858]/20 flex-shrink-0" style={{ transition: 'background-color 0.3s ease' }}>
-                    <Icon className="h-6 w-6 text-[#DB5858]" />
+                <div className="flex items-start gap-3 lg:gap-4">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-[#DB5858]/10 flex items-center justify-center group-hover:bg-[#DB5858]/20 flex-shrink-0" style={{ transition: 'background-color 0.3s ease' }}>
+                    <Icon className="h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
+                      <h3 className="text-sm lg:text-lg font-semibold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
                         {feature.title}
                       </h3>
-                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#DB5858]/10 text-[#DB5858] whitespace-nowrap">
+                      <span className="inline-flex items-center px-2 lg:px-3 py-1 lg:py-1.5 rounded-full text-xs font-medium bg-[#DB5858]/10 text-[#DB5858] whitespace-nowrap">
                         {feature.highlight}
                       </span>
                     </div>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <p className="text-gray-600 text-xs lg:text-sm leading-relaxed">
                       {feature.description}
                     </p>
                   </div>

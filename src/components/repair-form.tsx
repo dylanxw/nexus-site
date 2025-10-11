@@ -5,22 +5,26 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
-import { Smartphone, Tablet, Monitor, Gamepad2, Watch, HardDrive, ArrowRight } from "lucide-react";
+import { Smartphone, Tablet, Monitor, Gamepad2, Watch, HardDrive, ArrowRight, Package } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
-const deviceTypes = [
-  { id: "smartphones", label: "Smartphones", icon: Smartphone },
-  { id: "tablet", label: "Tablet", icon: Tablet },
-  { id: "computer", label: "Computer", icon: Monitor },
-  { id: "gaming-system", label: "Gaming System", icon: Gamepad2 },
-  { id: "wearables", label: "Wearables", icon: Watch },
-  { id: "other", label: "Other", icon: HardDrive },
-];
+// Icon mapping for dynamic devices
+const iconMap: Record<string, any> = {
+  Smartphone,
+  Tablet,
+  Monitor,
+  Laptop: Monitor,
+  Gamepad2,
+  Watch,
+  Package,
+  HardDrive
+};
 
 const steps = [
   { number: 1, label: "Type", active: true },
@@ -28,48 +32,6 @@ const steps = [
   { number: 3, label: "Repair", active: false },
   { number: 4, label: "Appointment", active: false },
   { number: 5, label: "Confirmation", active: false },
-];
-
-const deviceMakes = {
-  smartphones: ["Apple", "Samsung", "Motorola", "Google", "LG", "OnePlus", "Other"],
-  tablet: ["Apple", "Samsung", "Microsoft", "Amazon", "Lenovo", "Other"],
-  computer: ["Apple", "Dell", "HP", "Lenovo", "ASUS", "Acer", "Other"],
-  "gaming-system": ["Sony", "Microsoft", "Nintendo", "Other"],
-  wearables: ["Apple", "Samsung", "Fitbit", "Garmin", "Other"],
-  other: ["Other"]
-};
-
-const deviceModels = {
-  Apple: {
-    smartphones: ["iPhone 17 Pro Max", "iPhone 17 Pro", "iPhone 17 Air", "iPhone 17", "iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16", "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14"],
-    tablet: ["iPad Pro 13-inch", "iPad Pro 11-inch", "iPad Air", "iPad", "iPad mini"],
-    computer: ["MacBook Pro", "MacBook Air", "iMac", "Mac mini", "Mac Studio", "Mac Pro"]
-  },
-  Samsung: {
-    smartphones: ["Galaxy S24 Ultra", "Galaxy S24+", "Galaxy S24", "Galaxy S23 Ultra", "Galaxy S23+", "Galaxy S23", "Galaxy Note series", "Galaxy A series", "Galaxy Z Fold", "Galaxy Z Flip"],
-    tablet: ["Galaxy Tab S9", "Galaxy Tab S8", "Galaxy Tab A", "Galaxy Tab Active"]
-  },
-  // Add more models as needed
-  Other: {
-    smartphones: ["Other Model"],
-    tablet: ["Other Model"],
-    computer: ["Other Model"],
-    "gaming-system": ["Other Model"],
-    wearables: ["Other Model"],
-    other: ["Other Model"]
-  }
-};
-
-const damageTypes = [
-  { id: "screen-damage", label: "Screen Damage", placeholder: "📱" },
-  { id: "battery-drains-fast", label: "Battery Drains Fast", placeholder: "🔋" },
-  { id: "charging-issue", label: "Charging Issue", placeholder: "🔌" },
-  { id: "rear-camera-issue", label: "Rear Camera Issue", placeholder: "📷" },
-  { id: "front-camera-issue", label: "Front Camera Issue (Selfie)", placeholder: "🤳" },
-  { id: "rear-camera-lens-damage", label: "Rear Camera Lens Damage", placeholder: "📸" },
-  { id: "back-housing-glass-damage", label: "Back Housing / Glass Damage", placeholder: "📱" },
-  { id: "water-liquid-damage", label: "Water / Liquid Damage", placeholder: "💧" },
-  { id: "other", label: "Other", placeholder: "❓" },
 ];
 
 // Mock available time slots - in production, this would come from Google Calendar API
@@ -93,15 +55,19 @@ interface RepairFormProps {
   initialBrand?: string;
   initialService?: string;
   initialStep?: number;
+  initialDevices?: any[];
+  initialModelIssues?: Record<string, any[]>;
   standalone?: boolean;
 }
 
-export function RepairForm({ initialDevice = "", initialBrand = "", initialService = "", initialStep = 1, standalone = false }: RepairFormProps = {}) {
+export function RepairForm({ initialDevice = "", initialBrand = "", initialService = "", initialStep = 1, initialDevices = [], initialModelIssues = {}, standalone = false }: RepairFormProps = {}) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [selectedDevice, setSelectedDevice] = useState<string>(initialDevice);
   const [selectedMake, setSelectedMake] = useState<string>(initialBrand);
   const [selectedModel, setSelectedModel] = useState<string>("");
+  const [customMake, setCustomMake] = useState<string>("");
+  const [customModel, setCustomModel] = useState<string>("");
   const [selectedDamages, setSelectedDamages] = useState<string[]>(initialService ? [initialService] : []);
   const [customerInfo, setCustomerInfo] = useState({
     firstName: "",
@@ -116,6 +82,40 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState<{ time: string; value: string }[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [slotsFetchedForDate, setSlotsFetchedForDate] = useState<string | null>(null);
+
+  // Dynamic data from database
+  const [deviceTypes, setDeviceTypes] = useState<any[]>(() => {
+    // Initialize devices immediately if provided
+    if (initialDevices && initialDevices.length > 0) {
+      return initialDevices.map((device: any) => ({
+        id: device.value,
+        label: device.label,
+        icon: iconMap[device.icon] || Package,
+        brands: device.brands
+      }));
+    }
+    return [];
+  });
+  const [damageTypes, setDamageTypes] = useState<any[]>([]);
+  const [loadingDevices, setLoadingDevices] = useState(!initialDevices.length);
+  const [loadingIssues, setLoadingIssues] = useState(false);
+
+  // Only fetch devices if not provided initially
+  useEffect(() => {
+    if (initialDevices.length === 0) {
+      fetchDevices();
+    }
+  }, []); // Empty dependency array - only run once on mount
+
+  // Fetch issues when model changes
+  useEffect(() => {
+    if (selectedModel && currentStep >= 3) {
+      fetchIssues(selectedModel);
+    }
+  }, [selectedModel, currentStep]);
 
   // Initialize form state when props change
   useEffect(() => {
@@ -131,6 +131,102 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     }
   }, [initialDevice, initialBrand, initialService, initialStep, standalone]);
 
+  const fetchDevices = async () => {
+    setLoadingDevices(true);
+    try {
+      const response = await fetch('/api/repair-form/devices');
+      const data = await response.json();
+      if (response.ok && data.devices) {
+        // Transform to match expected format
+        const formattedDevices = data.devices.map((device: any) => ({
+          id: device.value,
+          label: device.label,
+          icon: iconMap[device.icon] || Package,
+          brands: device.brands
+        }));
+        setDeviceTypes(formattedDevices);
+      }
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    } finally {
+      setLoadingDevices(false);
+    }
+  };
+
+  const fetchIssues = async (modelId: string) => {
+    // Check if we have pre-fetched data
+    if (initialModelIssues[modelId]) {
+      const formattedIssues = initialModelIssues[modelId].map((issue: any) => ({
+        id: issue.value,
+        label: issue.label,
+        placeholder: issue.emoji
+      }));
+      setDamageTypes(formattedIssues);
+      setLoadingIssues(false);
+      return;
+    }
+
+    // Fallback: fetch from API if not pre-loaded
+    setLoadingIssues(true);
+    try {
+      const response = await fetch(`/api/repair-form/issues?model=${modelId}`);
+      const data = await response.json();
+      if (response.ok && data.issues) {
+        // Transform to match expected format
+        const formattedIssues = data.issues.map((issue: any) => ({
+          id: issue.value,
+          label: issue.label,
+          placeholder: issue.emoji
+        }));
+        setDamageTypes(formattedIssues);
+      } else {
+        console.error('Error fetching issues:', data.error);
+        setDamageTypes([]);
+      }
+    } catch (error) {
+      console.error('Error fetching issues:', error);
+      setDamageTypes([]);
+    } finally {
+      setLoadingIssues(false);
+    }
+  };
+
+  // Fetch available time slots when date changes or when entering step 5
+  useEffect(() => {
+    if (currentStep === 5 && appointmentMode === 'appointment' && selectedDate) {
+      fetchAvailableSlots(selectedDate);
+    }
+  }, [selectedDate, currentStep, appointmentMode]);
+
+  const fetchAvailableSlots = async (date: string) => {
+    // Skip if already fetching or already have data for this date
+    if (loadingSlots || slotsFetchedForDate === date) {
+      console.log('Skipping fetch - already loaded for', date);
+      return;
+    }
+
+    setLoadingSlots(true);
+    // Don't clear slots immediately - better UX
+
+    try {
+      const response = await fetch(`/api/calendar/availability?date=${date}`);
+      const data = await response.json();
+
+      if (response.ok && data.slots) {
+        setAvailableSlots(data.slots);
+        setSlotsFetchedForDate(date);
+      } else {
+        console.error('Failed to fetch availability:', data.error);
+        setSubmitError('Unable to load available time slots. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error fetching availability:', error);
+      setSubmitError('Unable to load available time slots. Please try again.');
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
+
   const handleDeviceSelect = (deviceId: string) => {
     setSelectedDevice(deviceId);
     setSelectedMake(""); // Reset make when device changes
@@ -140,11 +236,9 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
       // Redirect to dedicated form page with selected device
       router.push(`/denton-tx/repair-form?device=${deviceId}`);
     } else {
-      // Auto-advance to step 2 when device is selected on standalone page
-      setTimeout(() => {
-        setCurrentStep(2);
-        console.log("Moving to step 2 with device:", deviceId);
-      }, 200); // Small delay for visual feedback
+      // Auto-advance to step 2 immediately
+      setCurrentStep(2);
+      console.log("Moving to step 2 with device:", deviceId);
     }
   };
 
@@ -155,11 +249,25 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
   const handleModelSelect = (model: string) => {
     setSelectedModel(model);
-    // Auto-advance to step 3 when model is selected
-    setTimeout(() => {
-      setCurrentStep(3);
-      console.log("Moving to step 3 with make/model:", selectedMake, model);
-    }, 200);
+    // Start fetching issues immediately for faster load
+    fetchIssues(model);
+    // Auto-advance to step 3 immediately (no delay)
+    setCurrentStep(3);
+    console.log("Moving to step 3 with make/model:", selectedMake, model);
+  };
+
+  const handleStep2Next = () => {
+    // For "Other" device type, validate custom inputs
+    if (selectedDevice === 'other') {
+      if (customMake && customModel) {
+        setCurrentStep(3);
+      }
+    } else {
+      // Regular device types need make and model selected
+      if (selectedMake && selectedModel) {
+        setCurrentStep(3);
+      }
+    }
   };
 
   const handleDamageToggle = (damageId: string) => {
@@ -174,6 +282,8 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     if (selectedDamages.length > 0) {
       setCurrentStep(4);
       console.log("Moving to step 4 with damages:", selectedDamages);
+      // Prefetch calendar slots for today's date while user fills out contact info
+      fetchAvailableSlots(selectedDate);
     }
   };
 
@@ -198,11 +308,12 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
     try {
       const deviceLabel = deviceTypes.find(d => d.id === selectedDevice)?.label;
+      const isOtherDevice = selectedDevice === 'other';
 
       const requestData = {
         deviceType: deviceLabel || selectedDevice,
-        make: selectedMake,
-        model: selectedModel,
+        make: isOtherDevice ? customMake : selectedMake,
+        model: isOtherDevice ? customModel : selectedModel,
         issues: selectedDamages,
         firstName: customerInfo.firstName,
         lastName: customerInfo.lastName,
@@ -233,6 +344,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
       setIsSubmitted(true);
       console.log('Request submitted successfully:', result);
 
+      // Redirect to confirmation page for appointments
+      if (requestType === 'appointment' && result.redirect) {
+        setTimeout(() => {
+          router.push(result.redirect);
+        }, 1500); // Brief delay to show success message
+      }
+
     } catch (error) {
       console.error('Error submitting request:', error);
       setSubmitError(error instanceof Error ? error.message : 'Failed to submit request');
@@ -249,14 +367,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   };
 
   const renderProgressBar = () => (
-    <div className="mb-6 sm:mb-8">
-      <div className="flex items-center justify-center overflow-x-auto px-2">
+    <div className="mb-6 lg:mb-8">
+      <div className="flex items-center justify-center overflow-x-auto px-2 lg:px-4">
         {steps.map((step, index) => (
           <div key={step.number} className="flex items-center flex-shrink-0">
             {/* Step Circle */}
             <div className="flex flex-col items-center">
               <div
-                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
+                className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center text-sm lg:text-base font-medium ${
                   step.number === currentStep
                     ? 'bg-primary text-white'
                     : step.number < currentStep
@@ -266,7 +384,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
               >
                 {step.number}
               </div>
-              <span className={`text-[10px] sm:text-xs mt-1 hidden sm:block ${
+              <span className={`text-[10px] lg:text-xs mt-1 hidden sm:block ${
                 step.number === currentStep ? 'text-primary font-medium' : 'text-gray-500'
               }`}>
                 {step.label}
@@ -276,7 +394,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             {/* Progress Line */}
             {index < steps.length - 1 && (
               <div
-                className={`h-0.5 w-8 sm:w-16 mx-1 sm:mx-2 ${
+                className={`h-0.5 w-6 sm:w-12 lg:w-16 mx-1 lg:mx-2 ${
                   step.number < currentStep ? 'bg-primary' : 'bg-gray-300'
                 }`}
               />
@@ -289,116 +407,174 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
   const renderStep1 = () => (
     <Card className="shadow-xl border-0 w-full">
-      <CardContent className="p-8">
+      <CardContent className="p-4 sm:p-6 lg:p-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+        <div className="text-center mb-6 lg:mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">
             What type of device needs repair?
           </h2>
-          <p className="text-gray-600">
+          <p className="text-sm lg:text-base text-gray-600">
             Select your device type to get started
           </p>
         </div>
 
-        {/* Device Selection Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
-          {deviceTypes.map((device) => {
-            const Icon = device.icon;
-            const isSelected = selectedDevice === device.id;
+        {/* Loading State */}
+        {loadingDevices ? (
+          <div className="flex items-center justify-center py-8 lg:py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-10 w-10 lg:h-12 lg:w-12 border-b-2 border-primary mx-auto mb-3 lg:mb-4"></div>
+              <p className="text-xs lg:text-sm text-gray-600">Loading device types...</p>
+            </div>
+          </div>
+        ) : deviceTypes.length === 0 ? (
+          <div className="text-center py-8 lg:py-12">
+            <p className="text-sm lg:text-base text-gray-600">No device types available. Please contact support.</p>
+          </div>
+        ) : (
+          /* Device Selection Grid */
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
+            {deviceTypes.map((device) => {
+              const Icon = device.icon;
+              const isSelected = selectedDevice === device.id;
 
-            return (
-              <div
-                key={device.id}
-                className={`p-4 sm:p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 ${
-                  isSelected
-                    ? 'border-primary bg-primary/10 shadow-lg'
-                    : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
-                }`}
-                onClick={() => handleDeviceSelect(device.id)}
-              >
-                <div className="flex flex-col items-center text-center space-y-2 sm:space-y-3">
-                  <Icon
-                    className={`h-10 w-10 sm:h-12 sm:w-12 ${
-                      isSelected ? 'text-primary' : 'text-gray-600'
-                    }`}
-                  />
-                  <span className={`font-semibold text-base sm:text-lg ${
-                    isSelected ? 'text-primary' : 'text-gray-700'
-                  }`}>
-                    {device.label}
-                  </span>
+              return (
+                <div
+                  key={device.id}
+                  className={`p-3 sm:p-4 lg:p-6 border-2 rounded-lg lg:rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 ${
+                    isSelected
+                      ? 'border-primary bg-primary/10 shadow-lg'
+                      : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleDeviceSelect(device.id)}
+                >
+                  <div className="flex flex-col items-center text-center space-y-1.5 sm:space-y-2 lg:space-y-3">
+                    <Icon
+                      className={`h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 ${
+                        isSelected ? 'text-primary' : 'text-gray-600'
+                      }`}
+                    />
+                    <span className={`font-semibold text-sm sm:text-base lg:text-lg ${
+                      isSelected ? 'text-primary' : 'text-gray-700'
+                    }`}>
+                      {device.label}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-
+              );
+            })}
+          </div>
+        )}
 
       </CardContent>
     </Card>
   );
 
   const renderStep2 = () => {
-    const availableMakes = deviceMakes[selectedDevice as keyof typeof deviceMakes] || [];
-    const availableModels = selectedMake && deviceModels[selectedMake as keyof typeof deviceModels]
-      ? deviceModels[selectedMake as keyof typeof deviceModels][selectedDevice as keyof typeof deviceModels[keyof typeof deviceModels]] || []
-      : [];
+    const isOtherDevice = selectedDevice === 'other';
+    const selectedDeviceData = deviceTypes.find(d => d.id === selectedDevice);
+    const availableBrands = selectedDeviceData?.brands || [];
+    const selectedBrandData = availableBrands.find((b: any) => b.value === selectedMake);
+    const availableModels = selectedBrandData?.models || [];
 
     return (
       <Card className="shadow-xl border-0 w-full">
-        <CardContent className="p-8">
+        <CardContent className="p-4 sm:p-6 lg:p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Select Make / Model
+          <div className="text-center mb-6 lg:mb-8">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">
+              {isOtherDevice ? 'Describe Your Device' : 'Select Make / Model'}
             </h2>
-            <p className="text-gray-600">
-              Choose your device's make and model
+            <p className="text-sm lg:text-base text-gray-600">
+              {isOtherDevice ? 'Enter your device details' : 'Choose your device\'s make and model'}
             </p>
           </div>
 
+          {isOtherDevice ? (
+            <>
+              {/* Custom Make Input */}
+              <div className="mb-4 lg:mb-6 max-w-md mx-auto px-2">
+                <label className="block text-xs lg:text-sm font-medium mb-2 lg:mb-3">
+                  Device Make / Brand
+                </label>
+                <Input
+                  type="text"
+                  value={customMake}
+                  onChange={(e) => setCustomMake(e.target.value)}
+                  placeholder="e.g., Sony, Canon, DJI"
+                  className="h-10 lg:h-12 text-sm lg:text-base"
+                />
+              </div>
 
-          {/* Make Selection */}
-          <div className="mb-6 max-w-md mx-auto">
-            <label className="block text-sm font-medium mb-3">
-              Select Your Make
-            </label>
-            <Select value={selectedMake} onValueChange={handleMakeSelect}>
-              <SelectTrigger className="w-full h-12">
-                <SelectValue placeholder="Please choose an option" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableMakes.map((make) => (
-                  <SelectItem key={make} value={make}>
-                    {make}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              {/* Custom Model Input */}
+              <div className="mb-6 lg:mb-8 max-w-md mx-auto px-2">
+                <label className="block text-xs lg:text-sm font-medium mb-2 lg:mb-3">
+                  Device Model
+                </label>
+                <Input
+                  type="text"
+                  value={customModel}
+                  onChange={(e) => setCustomModel(e.target.value)}
+                  placeholder="e.g., Alpha 7 IV, EOS R5, Mavic 3"
+                  className="h-10 lg:h-12 text-sm lg:text-base"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Make Selection */}
+              <div className="mb-4 lg:mb-6 max-w-md mx-auto px-2">
+                <label className="block text-xs lg:text-sm font-medium mb-2 lg:mb-3">
+                  Select Your Make
+                </label>
+                <SearchableSelect
+                  value={selectedMake}
+                  onValueChange={handleMakeSelect}
+                  options={availableBrands.map((brand: any) => ({
+                    value: brand.value,
+                    label: brand.label
+                  }))}
+                  placeholder="Please choose an option"
+                  searchPlaceholder="Search brands..."
+                  emptyText="No brand found."
+                  className="text-sm lg:text-base"
+                />
+              </div>
 
-          {/* Model Selection */}
-          <div className="mb-8 max-w-md mx-auto">
-            <label className="block text-sm font-medium mb-3">
-              Select Your Model
-            </label>
-            <Select
-              value={selectedModel}
-              onValueChange={handleModelSelect}
-              disabled={!selectedMake}
-            >
-              <SelectTrigger className="w-full h-12">
-                <SelectValue placeholder="Please choose an option" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableModels.map((model) => (
-                  <SelectItem key={model} value={model}>
-                    {model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              {/* Model Selection */}
+              <div className="mb-6 lg:mb-8 max-w-md mx-auto px-2">
+                <label className="block text-xs lg:text-sm font-medium mb-2 lg:mb-3">
+                  Select Your Model
+                </label>
+                <SearchableSelect
+                  value={selectedModel}
+                  onValueChange={handleModelSelect}
+                  options={availableModels.map((model: any) => ({
+                    value: model.value,
+                    label: model.label
+                  }))}
+                  placeholder="Please choose an option"
+                  searchPlaceholder="Search models..."
+                  emptyText="No model found."
+                  disabled={!selectedMake}
+                  className="text-sm lg:text-base"
+                />
+              </div>
+            </>
+          )}
+
+          {/* Next Button for Other device type */}
+          {isOtherDevice && (
+            <div className="mb-4 lg:mb-6 max-w-md mx-auto px-2">
+              <Button
+                onClick={handleStep2Next}
+                disabled={!customMake || !customModel}
+                size="lg"
+                className="w-full text-sm lg:text-base"
+              >
+                Continue to Repair Issues →
+              </Button>
+            </div>
+          )}
 
           {/* Choose Another Device Type Link */}
           <div className="text-center">
@@ -416,52 +592,52 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
   const renderStep3 = () => (
     <Card className="shadow-xl border-0 w-full">
-      <CardContent className="p-8">
+      <CardContent className="p-4 sm:p-6 lg:p-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+        <div className="text-center mb-6 lg:mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">
             What is the issue with your device?
           </h2>
-          <p className="text-gray-600">
+          <p className="text-sm lg:text-base text-gray-600">
             Select all issues that apply to your device
           </p>
         </div>
 
         {/* Choose another Make/Model Link */}
-        <div className="mb-8">
+        <div className="mb-6 lg:mb-8 px-2">
           <button
             onClick={() => setCurrentStep(2)}
-            className="text-primary hover:text-primary/80 underline text-sm font-medium"
+            className="text-primary hover:text-primary/80 underline text-xs lg:text-sm font-medium"
           >
             Choose another Make/Model
           </button>
         </div>
 
         {/* Damage Selection Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
           {damageTypes.map((damage) => {
             const isSelected = selectedDamages.includes(damage.id);
 
             return (
               <div
                 key={damage.id}
-                className={`p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
+                className={`p-2 sm:p-3 lg:p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
                   isSelected
                     ? 'border-primary bg-primary/10 shadow-lg'
                     : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
                 }`}
                 onClick={() => handleDamageToggle(damage.id)}
               >
-                <div className="flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
+                <div className="flex flex-col items-center text-center space-y-1 sm:space-y-1.5 lg:space-y-2">
                   {/* Placeholder Image */}
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center text-xl sm:text-2xl ${
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center text-lg sm:text-xl lg:text-2xl ${
                     isSelected ? 'bg-primary/20' : 'bg-gray-100'
                   }`}>
                     {damage.placeholder}
                   </div>
 
                   {/* Label */}
-                  <span className={`font-medium text-[10px] sm:text-xs leading-tight ${
+                  <span className={`font-medium text-[9px] sm:text-[10px] lg:text-xs leading-tight ${
                     isSelected ? 'text-primary' : 'text-gray-700'
                   }`}>
                     {damage.label}
@@ -473,15 +649,15 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
         </div>
 
         {/* Next Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center px-2">
           <Button
             onClick={handleStep3Next}
             disabled={selectedDamages.length === 0}
             size="lg"
-            className="btn-primary brand-shadow px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary brand-shadow px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base lg:text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             Next Step
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
       </CardContent>
@@ -495,23 +671,23 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
     return (
       <Card className="shadow-xl border-0 w-full">
-        <CardContent className="p-8">
+        <CardContent className="p-4 sm:p-6 lg:p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+          <div className="text-center mb-6 lg:mb-8">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">
               Let Us Fix It!
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm lg:text-base text-gray-600 px-2">
               Please provide your contact information to complete your repair request
             </p>
           </div>
 
           {/* Contact Form */}
-          <div className="max-w-2xl mx-auto space-y-6">
+          <div className="max-w-2xl mx-auto space-y-4 lg:space-y-6 px-2">
             {/* First Name & Last Name Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
               <div>
-                <Label htmlFor="firstName" className="text-sm font-medium">
+                <Label htmlFor="firstName" className="text-xs lg:text-sm font-medium">
                   <span className="text-primary">*</span> First Name
                 </Label>
                 <Input
@@ -519,12 +695,12 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   type="text"
                   value={customerInfo.firstName}
                   onChange={(e) => handleCustomerInfoChange('firstName', e.target.value)}
-                  className="mt-2 h-12"
+                  className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
                   placeholder="Enter your first name"
                 />
               </div>
               <div>
-                <Label htmlFor="lastName" className="text-sm font-medium">
+                <Label htmlFor="lastName" className="text-xs lg:text-sm font-medium">
                   <span className="text-primary">*</span> Last Name
                 </Label>
                 <Input
@@ -532,7 +708,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   type="text"
                   value={customerInfo.lastName}
                   onChange={(e) => handleCustomerInfoChange('lastName', e.target.value)}
-                  className="mt-2 h-12"
+                  className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
                   placeholder="Enter your last name"
                 />
               </div>
@@ -540,7 +716,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
             {/* Phone Number */}
             <div>
-              <Label htmlFor="phone" className="text-sm font-medium">
+              <Label htmlFor="phone" className="text-xs lg:text-sm font-medium">
                 <span className="text-primary">*</span> Phone Number
               </Label>
               <Input
@@ -548,14 +724,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 type="tel"
                 value={customerInfo.phone}
                 onChange={(e) => handleCustomerInfoChange('phone', e.target.value)}
-                className="mt-2 h-12"
+                className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
                 placeholder="Enter your phone number"
               />
             </div>
 
             {/* Email */}
             <div>
-              <Label htmlFor="email" className="text-sm font-medium">
+              <Label htmlFor="email" className="text-xs lg:text-sm font-medium">
                 <span className="text-primary">*</span> Email
               </Label>
               <Input
@@ -563,19 +739,19 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 type="email"
                 value={customerInfo.email}
                 onChange={(e) => handleCustomerInfoChange('email', e.target.value)}
-                className="mt-2 h-12"
+                className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
                 placeholder="Enter your email address"
               />
             </div>
 
             {/* Description */}
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <Label htmlFor="description" className="text-sm font-medium">
+              <div className="flex justify-between items-center mb-1.5 lg:mb-2">
+                <Label htmlFor="description" className="text-xs lg:text-sm font-medium">
                   <span className="text-primary">*</span> Tell Us About Your Device's Problem
                 </Label>
-                <span className="text-sm text-primary">
-                  {remainingChars} characters left
+                <span className="text-xs lg:text-sm text-primary">
+                  {remainingChars} left
                 </span>
               </div>
               <Textarea
@@ -586,19 +762,19 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                     handleCustomerInfoChange('description', e.target.value);
                   }
                 }}
-                className="mt-2 min-h-[120px] resize-none"
+                className="mt-1.5 lg:mt-2 min-h-[100px] lg:min-h-[120px] resize-none text-sm lg:text-base"
                 placeholder="Please describe the issue with your device in detail..."
               />
             </div>
 
             {/* Error Display */}
             {submitError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 lg:p-4 mt-4 lg:mt-6">
                 <div className="flex items-center gap-2">
-                  <div className="text-red-600">⚠️</div>
+                  <div className="text-red-600 text-lg lg:text-xl">⚠️</div>
                   <div>
-                    <p className="text-red-800 font-medium">Error submitting request</p>
-                    <p className="text-red-600 text-sm">{submitError}</p>
+                    <p className="text-red-800 font-medium text-sm lg:text-base">Error submitting request</p>
+                    <p className="text-red-600 text-xs lg:text-sm">{submitError}</p>
                   </div>
                 </div>
               </div>
@@ -606,32 +782,32 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
             {/* Success Display */}
             {isSubmitted && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 lg:p-4 mt-4 lg:mt-6">
                 <div className="flex items-center gap-2">
-                  <div className="text-green-600">✅</div>
+                  <div className="text-green-600 text-lg lg:text-xl">✅</div>
                   <div>
-                    <p className="text-green-800 font-medium">Request submitted successfully!</p>
-                    <p className="text-green-600 text-sm">We'll contact you shortly to discuss your repair.</p>
+                    <p className="text-green-800 font-medium text-sm lg:text-base">Request submitted successfully!</p>
+                    <p className="text-green-600 text-xs lg:text-sm">We'll contact you shortly to discuss your repair.</p>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Disclaimer */}
-            <div className="text-center text-sm text-gray-600 mt-6">
+            <div className="text-center text-xs lg:text-sm text-gray-600 mt-4 lg:mt-6 px-2">
               *By submitting this request, I understand that I may receive an email, text or phone call regarding my request. You can unsubscribe at any time.
             </div>
 
             {/* Continue Button */}
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center pt-3 lg:pt-4">
               <Button
                 onClick={handleStep4Next}
                 disabled={!isFormValid || isSubmitting || isSubmitted}
                 size="lg"
-                className="btn-primary brand-shadow px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary brand-shadow px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base lg:text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               >
                 {isSubmitted ? 'REQUEST SUBMITTED' : 'CONTINUE TO CONFIRMATION'}
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
           </div>
@@ -640,91 +816,179 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     );
   };
 
+  // Helper function to convert 24-hour time to 12-hour format
+  const formatTimeTo12Hour = (time24: string): string => {
+    if (!time24) return '';
+    const [hour, minute] = time24.split(':').map(Number);
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`;
+  };
+
   const renderStep5 = () => {
-    const availableTimeSlots = generateTimeSlots(selectedDate);
     const deviceLabel = deviceTypes.find(d => d.id === selectedDevice)?.label;
+
+    // Get the model name from the nested structure
+    const selectedDeviceData = deviceTypes.find(d => d.id === selectedDevice);
+    const selectedBrandData = selectedDeviceData?.brands.find((b: any) => b.value === selectedMake);
+    const selectedModelData = selectedBrandData?.models.find((m: any) => m.value === selectedModel);
+    const modelName = selectedModelData?.name || selectedModel;
+
     const selectedIssues = selectedDamages.map(id =>
       damageTypes.find(d => d.id === id)?.label
     ).join(', ');
 
+    // Format the selected time for display
+    const formattedTime = formatTimeTo12Hour(selectedTime);
+
     if (appointmentMode === "quote") {
       return (
         <Card className="shadow-xl border-0 w-full">
-          <CardContent className="p-8">
-            {/* Mode Toggle */}
-            <div className="flex justify-center mb-8">
-              <div className="inline-flex bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => setAppointmentMode("appointment")}
-                  className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${
-                    appointmentMode === "appointment"
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  Book Appointment
-                </button>
-                <button
-                  onClick={() => setAppointmentMode("quote")}
-                  className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${
-                    appointmentMode === "quote"
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  Get Quote Only
-                </button>
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            {/* Mode Toggle - Only show if not yet submitted */}
+            {!isSubmitted && (
+              <div className="flex justify-center mb-6 lg:mb-8">
+                <div className="inline-flex bg-gray-100 rounded-lg p-1 w-full sm:w-auto">
+                  <button
+                    onClick={() => setAppointmentMode("appointment")}
+                    className="px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-all text-gray-600 hover:text-gray-900 flex-1 sm:flex-initial"
+                  >
+                    Book Appointment
+                  </button>
+                  <button
+                    onClick={() => setAppointmentMode("quote")}
+                    className="px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-all bg-primary text-white shadow-sm flex-1 sm:flex-initial"
+                  >
+                    Get Quote Only
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Quote Request Confirmation */}
-            <div className="text-center max-w-2xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                Quote Request Submitted!
+            {/* Quote Request Review */}
+            <div className="text-center max-w-2xl mx-auto px-2">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">
+                Review Your Quote Request
               </h2>
-              <p className="text-gray-600 mb-8 text-lg">
-                Thank you for your quote request. We'll review your device information and contact you shortly with an estimate.
+              <p className="text-sm lg:text-base text-gray-600 mb-6 lg:mb-8">
+                We'll prepare a detailed estimate for your repair and contact you shortly
               </p>
 
               {/* Summary */}
-              <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
-                <h3 className="font-semibold text-lg mb-4">Request Summary:</h3>
-                <div className="space-y-2 text-sm">
-                  <p><span className="font-medium">Device:</span> {deviceLabel}</p>
-                  <p><span className="font-medium">Make:</span> {selectedMake}</p>
-                  <p><span className="font-medium">Model:</span> {selectedModel}</p>
-                  <p><span className="font-medium">Issues:</span> {selectedIssues}</p>
-                  <p><span className="font-medium">Name:</span> {customerInfo.firstName} {customerInfo.lastName}</p>
-                  <p><span className="font-medium">Phone:</span> {customerInfo.phone}</p>
-                  <p><span className="font-medium">Email:</span> {customerInfo.email}</p>
+              <div className="grid md:grid-cols-2 gap-3 lg:gap-4 mb-4 lg:mb-6">
+                {/* Device Information */}
+                <div className="bg-gray-50 rounded-lg p-4 lg:p-6 text-left">
+                  <h3 className="font-semibold text-base lg:text-lg mb-3 lg:mb-4">Device Information</h3>
+                  <div className="space-y-1.5 lg:space-y-2 text-xs lg:text-sm">
+                    <p><span className="font-medium">Device:</span> {deviceLabel}</p>
+                    <p><span className="font-medium">Make:</span> {selectedMake}</p>
+                    <p><span className="font-medium">Model:</span> {modelName}</p>
+                    <p><span className="font-medium">Issues:</span> {selectedIssues}</p>
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="bg-gray-50 rounded-lg p-4 lg:p-6 text-left">
+                  <h3 className="font-semibold text-base lg:text-lg mb-3 lg:mb-4">Contact Information</h3>
+                  <div className="space-y-1.5 lg:space-y-2 text-xs lg:text-sm">
+                    <p><span className="font-medium">Name:</span> {customerInfo.firstName} {customerInfo.lastName}</p>
+                    <p><span className="font-medium">Email:</span> {customerInfo.email}</p>
+                    <p><span className="font-medium">Phone:</span> {customerInfo.phone}</p>
+                  </div>
                 </div>
               </div>
 
-              <p className="text-sm text-gray-500 mb-6">
-                We typically respond to quote requests within 2-4 hours during business hours.
-              </p>
+              {/* What Happens Next */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-4 lg:mb-6 text-left">
+                <h3 className="font-semibold text-base lg:text-lg mb-2 lg:mb-3 text-blue-900">What Happens Next?</h3>
+                <ol className="space-y-1.5 lg:space-y-2 text-xs lg:text-sm text-gray-700">
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2 text-blue-600">1.</span>
+                    <span>Our technician will review your device information</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2 text-blue-600">2.</span>
+                    <span>We'll prepare a detailed quote for the repairs needed</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2 text-blue-600">3.</span>
+                    <span>You'll receive a call or email with the estimate within <strong>2-4 hours during business hours</strong></span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="font-semibold mr-2 text-blue-600">4.</span>
+                    <span>Once approved, you can schedule an appointment or drop off your device</span>
+                  </li>
+                </ol>
+              </div>
 
-              <Button
-                onClick={() => {
-                  if (!isSubmitting) {
-                    submitRepairRequest('quote');
-                  }
-                }}
-                disabled={isSubmitting}
-                size="lg"
-                className="btn-primary brand-shadow"
-              >
-                {isSubmitting ? 'SUBMITTING...' : 'SUBMIT QUOTE REQUEST'}
-              </Button>
+              {/* Business Hours */}
+              <div className="bg-gray-100 rounded-lg p-3 lg:p-4 mb-4 lg:mb-6">
+                <p className="text-xs lg:text-sm font-medium text-gray-700 mb-1">Our Business Hours:</p>
+                <p className="text-sm lg:text-base font-semibold text-gray-900">{siteConfig.hours.display}</p>
+              </div>
 
-              <Button
-                onClick={() => setCurrentStep(4)}
-                variant="outline"
-                size="lg"
-                disabled={isSubmitting}
-              >
-                Back to Contact Info
-              </Button>
+              {/* Error Display */}
+              {submitError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="text-red-600">⚠️</div>
+                    <div>
+                      <p className="text-red-800 font-medium">Error submitting request</p>
+                      <p className="text-red-600 text-sm">{submitError}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Success Display */}
+              {isSubmitted && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="text-green-600 text-2xl">✓</div>
+                    <div className="text-left">
+                      <p className="text-green-800 font-medium">Quote request submitted successfully!</p>
+                      <p className="text-green-600 text-sm">Check your email for confirmation. We'll contact you within 2-4 hours during business hours.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                {!isSubmitted ? (
+                  <>
+                    <Button
+                      onClick={() => setCurrentStep(4)}
+                      variant="outline"
+                      size="lg"
+                      disabled={isSubmitting}
+                      className="order-2 sm:order-1"
+                    >
+                      Back to Contact Info
+                    </Button>
+
+                    <Button
+                      onClick={() => {
+                        if (!isSubmitting) {
+                          submitRepairRequest('quote');
+                        }
+                      }}
+                      disabled={isSubmitting}
+                      size="lg"
+                      className="btn-primary brand-shadow order-1 sm:order-2"
+                    >
+                      {isSubmitting ? 'SUBMITTING...' : 'SUBMIT QUOTE REQUEST'}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => window.location.href = '/'}
+                    size="lg"
+                    className="btn-primary brand-shadow"
+                  >
+                    Return to Home
+                  </Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -739,21 +1003,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             <div className="inline-flex bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setAppointmentMode("appointment")}
-                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${
-                  appointmentMode === "appointment"
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className="px-6 py-2 rounded-md text-sm font-medium transition-all bg-primary text-white shadow-sm"
               >
                 Book Appointment
               </button>
               <button
                 onClick={() => setAppointmentMode("quote")}
-                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${
-                  appointmentMode === "quote"
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className="px-6 py-2 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-gray-900"
               >
                 Get Quote Only
               </button>
@@ -788,6 +1044,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   onChange={(e) => {
                     setSelectedDate(e.target.value);
                     setSelectedTime(""); // Reset time when date changes
+                    setSlotsFetchedForDate(null); // Reset cache when date changes
                   }}
                   min={new Date().toISOString().split('T')[0]}
                   className="h-12"
@@ -799,21 +1056,67 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 <Label className="text-sm font-medium mb-3 block">
                   Pick a time
                 </Label>
-                <div className="grid grid-cols-3 gap-3 max-h-96 overflow-y-auto">
-                  {availableTimeSlots.map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`p-3 text-sm border rounded-lg transition-all ${
-                        selectedTime === time
-                          ? 'border-primary bg-primary text-white'
-                          : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
+                {loadingSlots ? (
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-sm text-gray-600">Loading available times...</p>
+                    </div>
+                  </div>
+                ) : availableSlots.length === 0 ? (
+                  (() => {
+                    // Check if selected date is Sunday
+                    const selectedDateObj = new Date(selectedDate + 'T00:00:00');
+                    const isSunday = selectedDateObj.getDay() === 0;
+
+                    return isSunday ? (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+                        <p className="text-blue-800 font-medium mb-2">🗓️ We're Closed on Sundays</p>
+                        <p className="text-sm text-blue-700 mb-3">
+                          Please select another date to book your appointment.
+                        </p>
+                        <div className="bg-white border border-blue-300 rounded-lg p-4 mt-4">
+                          <p className="text-sm font-semibold text-blue-900 mb-2">Need Emergency Repair?</p>
+                          <p className="text-sm text-blue-700 mb-3">
+                            For urgent repairs that can't wait, please call us:
+                          </p>
+                          <a
+                            href={siteConfig.phoneHref}
+                            className="inline-block px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                          >
+                            {siteConfig.phoneFormatted}
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                        <p className="text-yellow-800 font-medium mb-2">No appointments available</p>
+                        <p className="text-sm text-yellow-700">
+                          We're fully booked for this date. Please select another date or call us at{' '}
+                          <a href={siteConfig.phoneHref} className="underline font-medium">
+                            {siteConfig.phoneFormatted}
+                          </a>
+                        </p>
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <div className="grid grid-cols-3 gap-3 max-h-96 overflow-y-auto">
+                    {availableSlots.map((slot) => (
+                      <button
+                        key={slot.value}
+                        onClick={() => setSelectedTime(slot.value)}
+                        className={`p-3 text-sm border rounded-lg transition-all ${
+                          selectedTime === slot.value
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
+                        }`}
+                      >
+                        {slot.time}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -826,7 +1129,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 <h4 className="font-medium mb-3">Device Details</h4>
                 <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
                   <p><span className="font-medium">Brand:</span> {selectedMake}</p>
-                  <p><span className="font-medium">Device:</span> {selectedModel}</p>
+                  <p><span className="font-medium">Device:</span> {modelName}</p>
                   <p><span className="font-medium">Issues:</span> {selectedIssues}</p>
                 </div>
               </div>
@@ -846,7 +1149,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                     <h4 className="font-medium mb-2">When</h4>
                     <p className="text-sm text-gray-600">
                       {selectedDate && new Date(selectedDate + 'T00:00:00').toLocaleDateString()}<br />
-                      {selectedTime}
+                      {formattedTime}
                     </p>
                   </div>
                 </div>

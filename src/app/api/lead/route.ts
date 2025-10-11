@@ -1,5 +1,127 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
+import nodemailer from 'nodemailer';
+
+interface LeadData {
+  id: string;
+  timestamp: string;
+  type: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  [key: string]: unknown;
+}
+
+async function createEmailTransporter() {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    tls: {
+      rejectUnauthorized: process.env.NODE_ENV === 'production',
+      minVersion: 'TLSv1.2',
+      ciphers: 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4'
+    }
+  });
+
+  try {
+    await transporter.verify();
+    console.log('SMTP connection verified successfully');
+  } catch (error) {
+    console.error('SMTP verification failed:', error);
+    throw new Error('Email service configuration error');
+  }
+
+  return transporter;
+}
+
+function formatLeadEmail(leadData: LeadData): { subject: string; html: string; text: string } {
+  const timestamp = new Date(leadData.timestamp).toLocaleString('en-US', {
+    timeZone: 'America/Chicago',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const subject = `New ${leadData.type} Lead from ${leadData.name || 'Website Visitor'}`;
+
+  const html = `
+    <h2>New Lead: ${leadData.type}</h2>
+    <p><strong>Lead ID:</strong> ${leadData.id}</p>
+    <p><strong>Submitted:</strong> ${timestamp}</p>
+
+    <h3>Contact Information</h3>
+    <ul>
+      ${leadData.name ? `<li><strong>Name:</strong> ${leadData.name}</li>` : ''}
+      ${leadData.phone ? `<li><strong>Phone:</strong> <a href="tel:${leadData.phone}">${leadData.phone}</a></li>` : ''}
+      ${leadData.email ? `<li><strong>Email:</strong> <a href="mailto:${leadData.email}">${leadData.email}</a></li>` : ''}
+    </ul>
+
+    <h3>Additional Details</h3>
+    <pre>${JSON.stringify(leadData, null, 2)}</pre>
+
+    <hr>
+    <p><small>This lead was submitted through the Nexus Tech Solutions website.</small></p>
+  `;
+
+  const text = `
+New Lead: ${leadData.type}
+Lead ID: ${leadData.id}
+Submitted: ${timestamp}
+
+Contact Information:
+${leadData.name ? `- Name: ${leadData.name}` : ''}
+${leadData.phone ? `- Phone: ${leadData.phone}` : ''}
+${leadData.email ? `- Email: ${leadData.email}` : ''}
+
+Additional Details:
+${JSON.stringify(leadData, null, 2)}
+
+This lead was submitted through the Nexus Tech Solutions website.
+  `;
+
+  return { subject, html, text };
+}
+
+async function sendEmailWithRetry(leadData: LeadData, maxRetries = 3): Promise<void> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const transporter = await createEmailTransporter();
+      const { subject, html, text } = formatLeadEmail(leadData);
+
+      await transporter.sendMail({
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        to: process.env.BUSINESS_EMAIL,
+        subject,
+        html,
+        text,
+        replyTo: leadData.email as string || undefined,
+      });
+
+      console.log(`Email sent successfully for lead ${leadData.id}`);
+      return;
+    } catch (error) {
+      lastError = error as Error;
+      console.error(`Email send attempt ${attempt} failed:`, error);
+
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000;
+        console.log(`Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw new Error(`Failed to send email after ${maxRetries} attempts: ${lastError?.message}`);
+}
 
 export async function POST(request: NextRequest) {
   // Apply rate limiting
@@ -10,33 +132,30 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { type, ...data } = body;
 
-    // Log the lead for now - in production, this would integrate with email service
-    console.log(`New ${type} lead received:`, {
-      timestamp: new Date().toISOString(),
-      type,
-      ...data,
-    });
+    // Validate required fields
+    if (!type) {
+      return NextResponse.json(
+        { success: false, message: "Lead type is required" },
+        { status: 400 }
+      );
+    }
 
-    // TODO: Integrate with email service (SendGrid, Resend, etc.)
-    // TODO: Store in database if needed
-    // TODO: Send notification to business owner
-
-    // For now, just return success
-    // In production, you would:
-    // 1. Validate the data more thoroughly
-    // 2. Send an email notification to the business
-    // 3. Optionally store in a database
-    // 4. Send confirmation email to customer
-
-    const leadData = {
+    const leadData: LeadData = {
       id: generateLeadId(),
       timestamp: new Date().toISOString(),
       type,
       ...data,
     };
 
-    // Simulate email sending (replace with actual email service)
-    await simulateEmailNotification(leadData);
+    console.log(`New ${type} lead received:`, leadData);
+
+    // Send email notification with retry logic
+    try {
+      await sendEmailWithRetry(leadData);
+    } catch (emailError) {
+      console.error('Failed to send email notification:', emailError);
+      // Continue processing - don't fail the request if email fails
+    }
 
     return NextResponse.json(
       {
@@ -53,7 +172,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to process lead"
+        message: "Failed to process lead",
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
       },
       { status: 500 }
     );
@@ -62,29 +182,6 @@ export async function POST(request: NextRequest) {
 
 function generateLeadId(): string {
   return `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-}
-
-async function simulateEmailNotification(leadData: Record<string, unknown>): Promise<void> {
-  // This is a placeholder for actual email integration
-  // In production, replace with actual email service like:
-  // - SendGrid
-  // - Resend
-  // - Nodemailer with SMTP
-  // - AWS SES
-
-  console.log("📧 Email notification would be sent:");
-  console.log(`To: ${process.env.NOTIFICATION_EMAIL || "owner@nexustechsolutions.com"}`);
-  console.log(`Subject: New ${leadData.type} request from ${leadData.name}`);
-  console.log("Body:", {
-    leadId: leadData.id,
-    timestamp: leadData.timestamp,
-    name: leadData.name,
-    phone: leadData.phone,
-    details: leadData,
-  });
-
-  // Simulate async operation
-  await new Promise(resolve => setTimeout(resolve, 100));
 }
 
 // Handle other HTTP methods

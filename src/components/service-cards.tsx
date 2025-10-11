@@ -10,6 +10,8 @@ import {
   HardDrive,
   Gamepad2,
   Wrench,
+  DollarSign,
+  ShoppingCart,
   ArrowRight
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -22,6 +24,8 @@ const iconMap = {
   harddrive: HardDrive,
   gamepad2: Gamepad2,
   wrench: Wrench,
+  dollarSign: DollarSign,
+  shoppingCart: ShoppingCart,
 };
 
 export function ServiceCards() {
@@ -64,7 +68,11 @@ export function ServiceCards() {
         </motion.div>
 
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {siteConfig.services.map((service, index) => {
+          {siteConfig.services
+            .filter((service) =>
+              service.id !== 'device-buyback' && service.id !== 'pre-owned-sales'
+            )
+            .map((service, index) => {
             const Icon = iconMap[service.icon as keyof typeof iconMap];
 
             return (

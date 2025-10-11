@@ -14,7 +14,8 @@ import {
   X,
   ChevronRight,
   LogOut,
-  User as UserIcon
+  User as UserIcon,
+  Wrench
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,16 @@ const navigation = [
       { name: "Pricing", href: "/admin/buyback/pricing" },
       { name: "Margins", href: "/admin/buyback/margins" },
       { name: "Analytics", href: "/admin/buyback/analytics" },
+    ],
+  },
+  {
+    name: "Repair Management",
+    icon: Wrench,
+    children: [
+      { name: "Configure Form", href: "/admin/repairs/configure" },
+      { name: "Bookings", href: "/admin/repairs/bookings" },
+      { name: "Devices", href: "/admin/repairs/devices" },
+      { name: "Issues", href: "/admin/repairs/issues" },
     ],
   },
   {
@@ -60,7 +71,7 @@ interface User {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<string[]>(["Buyback Management", "Settings"]);
+  const [expandedSections, setExpandedSections] = useState<string[]>(["Buyback Management", "Repair Management", "Settings"]);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();

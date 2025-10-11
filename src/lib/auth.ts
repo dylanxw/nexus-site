@@ -5,7 +5,13 @@ import { prisma } from '@/lib/prisma';
 import { User } from '@prisma/client';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-this-in-production'
+  process.env.JWT_SECRET ?? (() => {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET environment variable is required in production');
+    }
+    console.warn('⚠️  Using development JWT secret. DO NOT use in production!');
+    return 'dev-jwt-secret-not-for-production-use';
+  })()
 );
 
 const SESSION_COOKIE = 'nexus-admin-session';

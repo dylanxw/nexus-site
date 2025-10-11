@@ -66,37 +66,37 @@ export function CommonDroneRepairs() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900">
+        <div className="text-center mb-8 lg:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-4 text-gray-900">
             Common Drone Repairs in Denton, TX
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
             Expert drone repair services for all types of damage. Same-day service with 60-day warranty on all repairs.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
           {repairs.map((repair, index) => {
             const Icon = repair.icon;
             return (
               <div
                 key={repair.id}
                 style={{ transition: 'background-color 0.3s ease, box-shadow 0.3s ease' }}
-                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
+                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
               >
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                 <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[#DB5858]/20" style={{ transition: 'background-color 0.3s ease' }}>
-                      <Icon className="h-6 w-6 text-[#DB5858]" />
+                  <div className="flex items-center gap-3 lg:gap-4 mb-3 lg:mb-4">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-[#DB5858]/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[#DB5858]/20" style={{ transition: 'background-color 0.3s ease' }}>
+                      <Icon className="h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
+                      <h3 className="text-base lg:text-lg font-bold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
                         {repair.title}
                       </h3>
-                      <div className="flex items-center gap-3 text-sm">
+                      <div className="flex items-center gap-2 lg:gap-3 text-xs lg:text-sm">
                         <span className="text-[#DB5858] font-semibold">{repair.price}</span>
                         <span className="text-gray-500">•</span>
                         <span className="text-gray-500">{repair.timeframe}</span>
@@ -104,12 +104,12 @@ export function CommonDroneRepairs() {
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">
+                  <p className="text-gray-600 text-xs lg:text-sm leading-relaxed mb-3 lg:mb-4 flex-grow">
                     {repair.description}
                   </p>
 
                   <button
-                    className="w-full py-2 px-4 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white rounded-lg font-semibold transition-all duration-300 text-sm shadow-lg hover:shadow-xl mt-auto"
+                    className="w-full py-2 px-4 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white rounded-lg font-semibold transition-all duration-300 text-xs lg:text-sm shadow-lg hover:shadow-xl mt-auto"
                   >
                     Get Quote
                   </button>
@@ -120,25 +120,25 @@ export function CommonDroneRepairs() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-12">
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 relative overflow-hidden group hover:bg-white/80 hover:shadow-xl transition-all duration-300">
+        <div className="text-center mt-8 lg:mt-12">
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 relative overflow-hidden group hover:bg-white/80 hover:shadow-xl transition-all duration-300">
             {/* Glass shine animation */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
             <div className="relative z-10">
-              <p className="text-lg font-semibold mb-2 text-gray-900">
+              <p className="text-sm lg:text-lg font-semibold mb-1 lg:mb-2 text-gray-900">
                 Don't see your drone repair listed? We fix all drone brands and models!
               </p>
-              <p className="text-gray-600 text-sm mb-6">
+              <p className="text-gray-600 text-xs lg:text-sm mb-4 lg:mb-6">
                 Call now for a free diagnostic and custom repair quote for your specific drone issue.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center max-w-md mx-auto">
                 <a
                   href="tel:940-600-1012"
-                  className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-center"
+                  className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-2 lg:py-3 px-4 lg:px-6 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-center text-sm lg:text-base"
                 >
                   Call Now
                 </a>
-                <button className="backdrop-blur-md bg-white/40 border border-white/60 text-gray-800 hover:bg-white/60 hover:border-white/80 py-3 px-6 rounded-lg font-semibold transition-all duration-300">
+                <button className="backdrop-blur-md bg-white/40 border border-white/60 text-gray-800 hover:bg-white/60 hover:border-white/80 py-2 lg:py-3 px-4 lg:px-6 rounded-lg font-semibold transition-all duration-300 text-sm lg:text-base">
                   Free Diagnostic
                 </button>
               </div>

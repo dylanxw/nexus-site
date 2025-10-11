@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { AboutHero } from "@/components/about/hero";
-import { FounderStory } from "@/components/about/founder-story";
-import { OurMission } from "@/components/about/our-mission";
-import { WhatMakesUsDifferent } from "@/components/about/what-makes-us-different";
-import { OurValues } from "@/components/about/our-values";
-import { TeamSection } from "@/components/about/team-section";
-import { CommunityInvolvement } from "@/components/about/community-involvement";
+import { siteConfig } from "@/config/site";
+import { SimpleAboutHero } from "@/components/about/simple-hero";
+import { OurStory } from "@/components/about/our-story";
+import { CoreValues } from "@/components/about/core-values";
+import { WhyChooseUs } from "@/components/about/why-choose-us";
 
 export const metadata: Metadata = {
-  title: "About Us | Nexus Tech Solutions - Local Device Repair Experts in Denton, TX",
-  description: "Learn about Nexus Tech Solutions, founded by a passionate tech expert in Denton, TX. Our mission is to provide honest, reliable device repair services to the local community with exceptional customer care.",
+  title: "About Us | Nexus Tech Solutions - Denton, TX Device Repair",
+  description: "Learn about Nexus Tech Solutions, founded in Denton, TX. Our mission is to provide honest, reliable device repair with exceptional customer care.",
   keywords: [
     "About Nexus Tech Solutions",
     "Denton TX device repair company",
@@ -30,8 +28,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Us | Nexus Tech Solutions - Local Device Repair Experts",
     description: "Discover the story behind Nexus Tech Solutions and our commitment to providing exceptional device repair services to the Denton, TX community.",
-    url: "https://nexustechsolutions.io/about",
-    siteName: "Nexus Tech Solutions",
+    url: `${siteConfig.url}/about`,
+    siteName: siteConfig.name,
     locale: "en_US",
     type: "website",
   },
@@ -41,20 +39,36 @@ export const metadata: Metadata = {
     description: "Learn about our mission to provide honest, reliable device repair services to Denton, TX and surrounding areas.",
   },
   alternates: {
-    canonical: "https://nexustechsolutions.io/about",
+    canonical: `${siteConfig.url}/about`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen">
-      <AboutHero />
+      <SimpleAboutHero />
+      <OurStory />
+      <CoreValues />
+      <WhyChooseUs />
+      {/* Original components commented out for future use */}
+      {/* <AboutHero />
       <FounderStory />
       <OurMission />
       <WhatMakesUsDifferent />
       <OurValues />
       <TeamSection />
-      <CommunityInvolvement />
+      <CommunityInvolvement /> */}
     </main>
   );
 }

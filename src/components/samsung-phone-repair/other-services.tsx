@@ -7,42 +7,42 @@ const otherServices = [
     id: 1,
     icon: Smartphone,
     title: "iPhone Repair",
-    description: "Professional iPhone repair including screen replacement, battery repair, and water damage restoration for all iPhone models.",
+    description: "Professional iPhone repair including screen replacement, battery repair, and water damage restoration.",
     link: "/services/iphone-repair"
   },
   {
     id: 2,
     icon: Tablet,
-    title: "Tablet Repair",
-    description: "Expert tablet repair for iPad, Samsung Galaxy Tab, Microsoft Surface, and all other tablet brands and models.",
-    link: "/services/tablet-repair"
+    title: "iPad Repair",
+    description: "Expert iPad repair for all models including screen, battery, and charging port replacement.",
+    link: "/services/ipad-repair"
   },
   {
     id: 3,
     icon: Laptop,
     title: "MacBook Repair",
-    description: "Expert MacBook repair including screen replacement, keyboard repair, logic board issues, and battery replacement.",
+    description: "Expert MacBook repair including screen replacement, keyboard repair, and battery replacement.",
     link: "#" // Will be updated when pages are created
   },
   {
     id: 4,
-    icon: Monitor,
-    title: "iMac Repair",
-    description: "Complete iMac repair services including screen replacement, hard drive upgrades, and component repairs.",
-    link: "#" // Will be updated when pages are created
+    icon: Tablet,
+    title: "Tablet Repair",
+    description: "Tablet repair for Samsung Galaxy Tab, Microsoft Surface, and all other tablet brands.",
+    link: "/services/tablet-repair"
   },
   {
     id: 5,
-    icon: Gamepad2,
-    title: "Gaming Console Repair",
-    description: "PlayStation, Xbox, and Nintendo console repair including HDMI port repair and overheating issues.",
+    icon: Smartphone,
+    title: "Android Repair",
+    description: "Android phone repair for Google Pixel, LG, Motorola, OnePlus and other Android devices.",
     link: "#" // Will be updated when pages are created
   },
   {
     id: 6,
     icon: HardDrive,
     title: "Data Recovery",
-    description: "Professional data recovery services for phones, tablets, computers, and external storage devices.",
+    description: "Professional data recovery services for phones, tablets, computers, and storage devices.",
     link: "#" // Will be updated when pages are created
   }
 ];
@@ -60,46 +60,46 @@ export function OtherSamsungServices() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900">
+        <div className="text-center mb-8 lg:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-4 text-gray-900">
             Other Repair Services
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
             Beyond Samsung Galaxy repair, we fix all your tech devices with the same quality and expertise
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {otherServices.map((service, index) => {
             const Icon = service.icon;
             return (
               <div
                 key={service.id}
                 style={{ transition: 'background-color 0.3s ease, box-shadow 0.3s ease' }}
-                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
+                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl group relative overflow-hidden flex flex-col h-full"
               >
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                 <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#DB5858]/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[#DB5858]/20" style={{ transition: 'background-color 0.3s ease' }}>
-                      <Icon className="h-6 w-6 text-[#DB5858]" />
+                  <div className="flex flex-col lg:flex-row items-center lg:items-center gap-3 lg:gap-4 mb-3 lg:mb-4">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg lg:rounded-xl bg-[#DB5858]/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-[#DB5858]/20" style={{ transition: 'background-color 0.3s ease' }}>
+                      <Icon className="h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]" />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
+                    <div className="text-center lg:text-left">
+                      <h3 className="text-sm lg:text-lg font-bold text-gray-900 group-hover:text-[#DB5858]" style={{ transition: 'color 0.3s ease' }}>
                         {service.title}
                       </h3>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">
+                  <p className="text-gray-600 text-xs lg:text-sm leading-relaxed mb-3 lg:mb-4 hidden lg:block">
                     {service.description}
                   </p>
 
-                  <a href={service.link}>
+                  <a href={service.link} className="mt-auto">
                     <button
-                      className={`w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 text-sm shadow-lg hover:shadow-xl mt-auto ${
+                      className={`w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 text-xs lg:text-sm shadow-lg hover:shadow-xl ${
                         service.link === "#"
                           ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                           : "bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white"

@@ -57,64 +57,64 @@ export function IPhoneReviews() {
   return (
     <section className="section-padding bg-white">
       <div className="wide-container">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-gray-900">
+        <div className="text-center mb-8 lg:mb-16">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             What Our iPhone Repair Customers Say
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-base lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-4 lg:mb-8">
             Don't just take our word for it. Here's what real customers say about our iPhone repair services in Denton, TX.
           </p>
 
           {/* Stats */}
-          <div className="flex flex-wrap justify-center items-center gap-8 mb-8">
+          <div className="flex flex-wrap justify-center items-center gap-3 lg:gap-8 mb-4 lg:mb-8 text-sm lg:text-base">
             <div className="flex items-center gap-2">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="h-4 w-4 lg:h-5 lg:w-5 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
-              <span className="text-lg font-semibold text-gray-900">4.9/5 Rating</span>
+              <span className="font-semibold text-gray-900">4.9/5 Rating</span>
             </div>
-            <div className="h-6 w-px bg-gray-300" />
-            <div className="text-lg font-semibold text-gray-900">150+ iPhone Repair Reviews</div>
-            <div className="h-6 w-px bg-gray-300" />
-            <div className="text-lg font-semibold text-gray-900">98% Customer Satisfaction</div>
+            <div className="h-4 lg:h-6 w-px bg-gray-300 hidden sm:block" />
+            <div className="font-semibold text-gray-900">150+ Reviews</div>
+            <div className="h-4 lg:h-6 w-px bg-gray-300 hidden sm:block" />
+            <div className="font-semibold text-gray-900">98% Satisfied</div>
           </div>
         </div>
 
         {/* Reviews Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-8 lg:mb-16">
           {reviews.map((review, index) => (
             <div
               key={review.id}
               style={{ transition: 'box-shadow 0.3s ease' }}
-              className="bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:shadow-lg relative"
+              className="bg-gray-50 rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-gray-200 hover:shadow-lg relative"
             >
               {/* Quote Icon */}
-              <div className="absolute top-4 right-4">
-                <Quote className="h-6 w-6 text-[#DB5858]/30" />
+              <div className="absolute top-3 right-3 lg:top-4 lg:right-4">
+                <Quote className="h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]/30" />
               </div>
 
               {/* Rating */}
-              <div className="flex items-center gap-1 mb-4">
+              <div className="flex items-center gap-1 mb-3 lg:mb-4">
                 {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="h-3 w-3 lg:h-4 lg:w-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
 
               {/* Review Text */}
-              <p className="text-gray-700 mb-4 leading-relaxed text-sm">
+              <p className="text-gray-700 mb-3 lg:mb-4 leading-relaxed text-xs lg:text-sm">
                 "{review.text}"
               </p>
 
               {/* Customer Info */}
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 pt-3 lg:pt-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 flex items-center gap-2 text-sm lg:text-base">
                       {review.name}
                       {review.verified && (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <CheckCircle className="h-3 w-3 lg:h-4 lg:w-4 text-green-500" />
                       )}
                     </h4>
                     <p className="text-xs text-gray-500 mt-1">{review.repair}</p>
@@ -132,18 +132,18 @@ export function IPhoneReviews() {
 
         {/* Bottom CTA */}
         <div className="text-center">
-          <div className="bg-gradient-to-r from-[#DB5858] to-[#c94848] rounded-2xl p-8 text-white">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">
+          <div className="bg-gradient-to-r from-[#DB5858] to-[#c94848] rounded-xl lg:rounded-2xl p-6 lg:p-8 text-white">
+            <h3 className="text-xl lg:text-3xl font-bold mb-3 lg:mb-4">
               Join Our Satisfied iPhone Repair Customers
             </h3>
-            <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
+            <p className="text-sm lg:text-lg mb-4 lg:mb-6 opacity-90 max-w-2xl mx-auto">
               Experience the same quality iPhone repair service that has earned us 150+ five-star reviews in Denton, TX.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
-              <button className="bg-white text-[#DB5858] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center max-w-lg mx-auto">
+              <button className="bg-white text-[#DB5858] px-6 lg:px-8 py-2.5 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:bg-gray-100 transition-colors">
                 Get Your Free Quote
               </button>
-              <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#DB5858] transition-colors">
+              <button className="border-2 border-white text-white px-6 lg:px-8 py-2.5 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:bg-white hover:text-[#DB5858] transition-colors">
                 Read More Reviews
               </button>
             </div>

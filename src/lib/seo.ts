@@ -47,12 +47,14 @@ export function generateLocalBusinessJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    '@id': siteConfig.url,
+    '@id': `${siteConfig.url}/#business`,
     name: siteConfig.name,
     description: siteConfig.description,
     url: siteConfig.url,
     telephone: siteConfig.phone,
     email: siteConfig.email,
+    image: `${siteConfig.url}/images/hero/nexus-storefront-image.jpeg`,
+    logo: `${siteConfig.url}/images/nexus-favicon.png`,
     address: {
       '@type': 'PostalAddress',
       streetAddress: siteConfig.address.street,
@@ -63,7 +65,6 @@ export function generateLocalBusinessJsonLd() {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      // These would need to be filled in with actual coordinates
       latitude: '33.2148',
       longitude: '-97.1331',
     },
@@ -77,34 +78,149 @@ export function generateLocalBusinessJsonLd() {
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: 'Saturday',
-        opens: '10:00',
-        closes: '18:00',
+        opens: '13:00',
+        closes: '17:00',
       },
     ],
-    serviceArea: {
-      '@type': 'City',
-      name: 'Denton, TX',
-    },
+    areaServed: [
+      {
+        '@type': 'City',
+        name: 'Denton',
+        '@id': 'https://en.wikipedia.org/wiki/Denton,_Texas',
+      },
+      {
+        '@type': 'City',
+        name: 'Lewisville',
+      },
+      {
+        '@type': 'City',
+        name: 'Flower Mound',
+      },
+      {
+        '@type': 'City',
+        name: 'Highland Village',
+      },
+      {
+        '@type': 'City',
+        name: 'Corinth',
+      },
+      {
+        '@type': 'City',
+        name: 'Lake Dallas',
+      },
+    ],
     priceRange: '$$',
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: siteConfig.trustSignals.rating,
-      reviewCount: siteConfig.trustSignals.reviewCount.replace('+', ''),
+      reviewCount: '150',
+      bestRating: '5',
+      worstRating: '1',
     },
-    paymentAccepted: 'Cash, Credit Card, Check',
+    paymentAccepted: 'Cash, Credit Card, Debit Card, Check',
     currenciesAccepted: 'USD',
+    sameAs: [
+      'https://www.facebook.com/NexusTechSolutionsLLC',
+      'https://www.google.com/maps/place/Nexus+Tech+Solutions',
+    ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Electronics Repair Services',
-      itemListElement: siteConfig.services.map((service, index) => ({
-        '@type': 'Offer',
-        itemOffered: {
-          '@type': 'Service',
-          name: service.name,
-          description: service.description,
+      name: 'Device Repair, Buyback & Sales Services',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'iPhone Repair',
+            description: 'Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair',
+            areaServed: 'Denton, TX',
+            provider: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
         },
-        position: index + 1,
-      })),
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Samsung Phone Repair',
+            description: 'Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services',
+            areaServed: 'Denton, TX',
+            provider: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Computer & Laptop Repair',
+            description: 'MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades',
+            areaServed: 'Denton, TX',
+            provider: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Game Console Repair',
+            description: 'PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs',
+            areaServed: 'Denton, TX',
+            provider: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Drone Repair',
+            description: 'Professional DJI, Autel, and other drone repair services including crash damage repair',
+            areaServed: 'Denton, TX',
+            provider: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Device Buyback',
+            description: 'Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices',
+            areaServed: 'Denton, TX',
+            provider: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Product',
+            name: 'Pre-Owned Device Sales',
+            description: 'Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage',
+            category: 'Electronics',
+            brand: 'Various',
+            areaServed: 'Denton, TX',
+            seller: {
+              '@type': 'LocalBusiness',
+              name: siteConfig.name,
+            },
+          },
+        },
+      ],
     },
   };
 }

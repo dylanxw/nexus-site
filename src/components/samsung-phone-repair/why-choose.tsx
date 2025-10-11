@@ -48,16 +48,16 @@ export function WhyChooseSamsung() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6 text-gray-900">
+        <div className="text-center mb-8 lg:mb-16">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-6 text-gray-900">
             Why Choose Nexus Tech for Samsung Galaxy Repair?
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             With over 2,800+ Samsung Galaxy phones repaired and a 98% success rate, we're Denton's trusted Samsung repair experts.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -65,15 +65,15 @@ export function WhyChooseSamsung() {
                 key={feature.title}
                 className="text-center"
               >
-                <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden h-full flex flex-col">
+                <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden h-full flex flex-col">
                   {/* Glass shine animation */}
                   <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
                   <div className="relative z-10 text-center flex flex-col h-full">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-[#DB5858]/10 rounded-2xl mb-4 backdrop-blur-sm mx-auto">
-                      <Icon className="h-8 w-8 text-[#DB5858]" />
+                    <div className="inline-flex items-center justify-center w-12 h-12 lg:w-16 lg:h-16 bg-[#DB5858]/10 rounded-xl lg:rounded-2xl mb-3 lg:mb-4 backdrop-blur-sm mx-auto">
+                      <Icon className="h-6 w-6 lg:h-8 lg:w-8 text-[#DB5858]" />
                     </div>
-                    <h3 className="text-xl font-bold mb-4 text-gray-900">{feature.title}</h3>
-                    <p className="text-gray-600 flex-grow">{feature.description}</p>
+                    <h3 className="text-base lg:text-xl font-bold mb-2 lg:mb-4 text-gray-900">{feature.title}</h3>
+                    <p className="text-xs lg:text-base text-gray-600 flex-grow">{feature.description}</p>
                   </div>
                 </div>
               </div>
@@ -82,7 +82,7 @@ export function WhyChooseSamsung() {
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-8 mt-8 lg:mt-16">
           {[
             { number: "2,800+", label: "Galaxy Phones Repaired" },
             { number: "98%", label: "Success Rate" },
@@ -90,12 +90,12 @@ export function WhyChooseSamsung() {
             { number: "60-Day", label: "Warranty" }
           ].map((stat, index) => (
             <div key={stat.label} className="text-center">
-              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+              <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
                 <div className="relative z-10">
-                  <div className="text-2xl md:text-3xl font-bold text-[#DB5858] mb-2">{stat.number}</div>
-                  <div className="text-sm font-semibold text-gray-700">{stat.label}</div>
+                  <div className="text-xl lg:text-2xl xl:text-3xl font-bold text-[#DB5858] mb-1 lg:mb-2">{stat.number}</div>
+                  <div className="text-xs lg:text-sm font-semibold text-gray-700">{stat.label}</div>
                 </div>
               </div>
             </div>

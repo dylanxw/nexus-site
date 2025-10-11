@@ -49,48 +49,48 @@ export function CitiesCoverage() {
       </div>
 
       <div className="wide-container relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900">
+        <div className="text-center mb-8 lg:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 lg:mb-4 text-gray-900">
             Cities We Serve in North Texas
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
             Professional device repair services for Denton and surrounding communities. Same-day service available for most North Texas cities.
           </p>
         </div>
 
         {/* Primary Cities */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Primary Service Areas</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mb-12 lg:mb-16">
+          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6 lg:mb-8 text-center">Primary Service Areas</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {primaryCities.map((city, index) => (
               <div
                 key={city.name}
-                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full"
+                className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-4 lg:p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full"
               >
                 {/* Glass shine animation */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
 
                 <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex items-center gap-3 mb-4">
-                    <MapPin className="h-6 w-6 text-[#DB5858]" />
+                  <div className="flex items-center gap-2 lg:gap-3 mb-3 lg:mb-4">
+                    <MapPin className="h-5 w-5 lg:h-6 lg:w-6 text-[#DB5858]" />
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900">{city.name}</h4>
-                      <p className="text-sm text-[#DB5858] font-medium">{city.distance}</p>
+                      <h4 className="text-base lg:text-lg font-bold text-gray-900">{city.name}</h4>
+                      <p className="text-xs lg:text-sm text-[#DB5858] font-medium">{city.distance}</p>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm mb-3 flex-grow">
+                  <p className="text-gray-600 text-xs lg:text-sm mb-2 lg:mb-3 flex-grow">
                     {city.description}
                   </p>
 
-                  <div className="flex items-center gap-2 mb-4">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  <div className="flex items-center gap-2 mb-3 lg:mb-4">
+                    <CheckCircle className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-green-500" />
                     <span className="text-xs text-gray-600">{city.services}</span>
                   </div>
 
                   <a
                     href={`tel:${siteConfig.phone}`}
-                    className="w-full py-2 px-4 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white rounded-lg font-semibold transition-all duration-300 text-sm shadow-lg hover:shadow-xl text-center mt-auto"
+                    className="w-full py-2 px-3 lg:px-4 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white rounded-lg font-semibold transition-all duration-300 text-xs lg:text-sm shadow-lg hover:shadow-xl text-center mt-auto"
                   >
                     Call for Service
                   </a>
@@ -101,29 +101,29 @@ export function CitiesCoverage() {
         </div>
 
         {/* Secondary Cities */}
-        <div className="mb-12">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Additional Service Areas</h3>
-          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-2xl p-8 shadow-lg">
-            <p className="text-gray-600 mb-6 text-center">
+        <div className="mb-8 lg:mb-12">
+          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6 lg:mb-8 text-center">Additional Service Areas</h3>
+          <div className="backdrop-blur-md bg-white/60 border border-white/80 rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-lg">
+            <p className="text-gray-600 mb-4 lg:mb-6 text-center text-sm lg:text-base">
               We also provide device repair services to residents of these North Texas communities:
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
               {secondaryCities.map((city, index) => (
                 <div key={city} className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-[#DB5858] rounded-full"></div>
-                  <span className="text-sm text-gray-700">{city}</span>
+                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-[#DB5858] rounded-full flex-shrink-0"></div>
+                  <span className="text-xs lg:text-sm text-gray-700">{city}</span>
                 </div>
               ))}
             </div>
-            <div className="text-center mt-8">
-              <p className="text-gray-600 mb-4">
+            <div className="text-center mt-6 lg:mt-8">
+              <p className="text-gray-600 mb-3 lg:mb-4 text-sm lg:text-base">
                 Don't see your city listed? We serve the entire North Texas region!
               </p>
               <a
                 href={`tel:${siteConfig.phone}`}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white px-4 py-2.5 lg:px-6 lg:py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-sm lg:text-base"
               >
-                <Phone className="h-4 w-4" />
+                <Phone className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
                 Call to Confirm Service
               </a>
             </div>
@@ -131,27 +131,27 @@ export function CitiesCoverage() {
         </div>
 
         {/* Service Benefits */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           <div className="text-center">
-            <Clock className="h-12 w-12 text-[#DB5858] mx-auto mb-4" />
-            <h4 className="text-lg font-bold text-gray-900 mb-2">Fast Service</h4>
-            <p className="text-gray-600 text-sm">
+            <Clock className="h-10 w-10 lg:h-12 lg:w-12 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+            <h4 className="text-base lg:text-lg font-bold text-gray-900 mb-2">Fast Service</h4>
+            <p className="text-gray-600 text-xs lg:text-sm px-4">
               Same-day repairs available for most North Texas locations within 30 miles of Denton
             </p>
           </div>
 
           <div className="text-center">
-            <CheckCircle className="h-12 w-12 text-[#DB5858] mx-auto mb-4" />
-            <h4 className="text-lg font-bold text-gray-900 mb-2">Quality Guarantee</h4>
-            <p className="text-gray-600 text-sm">
+            <CheckCircle className="h-10 w-10 lg:h-12 lg:w-12 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+            <h4 className="text-base lg:text-lg font-bold text-gray-900 mb-2">Quality Guarantee</h4>
+            <p className="text-gray-600 text-xs lg:text-sm px-4">
               60-day warranty on all repairs regardless of your location in our service area
             </p>
           </div>
 
-          <div className="text-center">
-            <MapPin className="h-12 w-12 text-[#DB5858] mx-auto mb-4" />
-            <h4 className="text-lg font-bold text-gray-900 mb-2">Convenient Location</h4>
-            <p className="text-gray-600 text-sm">
+          <div className="text-center sm:col-span-2 lg:col-span-1">
+            <MapPin className="h-10 w-10 lg:h-12 lg:w-12 text-[#DB5858] mx-auto mb-3 lg:mb-4" />
+            <h4 className="text-base lg:text-lg font-bold text-gray-900 mb-2">Convenient Location</h4>
+            <p className="text-gray-600 text-xs lg:text-sm px-4">
               Easy highway access from I-35E, I-35W, and Highway 380 for quick drop-off and pickup
             </p>
           </div>

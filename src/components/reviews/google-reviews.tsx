@@ -1,6 +1,7 @@
 "use client";
 
 import { Star, ExternalLink, CheckCircle } from "lucide-react";
+import Image from "next/image";
 
 // Placeholder Google reviews - will be replaced with live API integration
 const googleReviews = [
@@ -68,7 +69,7 @@ const googleReviews = [
 
 export function GoogleReviews() {
   return (
-    <section className="section-padding relative overflow-hidden" style={{
+    <section id="google-reviews" className="section-padding relative overflow-hidden" style={{
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%)'
     }}>
       {/* Background elements */}
@@ -80,8 +81,14 @@ export function GoogleReviews() {
       <div className="wide-container relative z-10">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xl">G</span>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden">
+              <Image
+                src="/images/social-icons/google-icon.png"
+                alt="Google"
+                width={48}
+                height={48}
+                className="w-full h-full object-contain"
+              />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
               Google Reviews
@@ -98,9 +105,9 @@ export function GoogleReviews() {
                 <Star key={i} className="h-6 w-6 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <span className="text-2xl font-bold text-gray-900">4.9</span>
+            <span className="text-2xl font-bold text-gray-900">5.0</span>
             <span className="text-gray-600">•</span>
-            <span className="text-gray-600">150+ Google Reviews</span>
+            <span className="text-gray-600">115+ Google Reviews</span>
           </div>
         </div>
 
@@ -131,8 +138,14 @@ export function GoogleReviews() {
                       <p className="text-xs text-gray-500">{review.date}</p>
                     </div>
                   </div>
-                  <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
-                    <span className="text-white font-bold text-xs">G</span>
+                  <div className="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <Image
+                      src="/images/social-icons/google-icon.png"
+                      alt="Google"
+                      width={24}
+                      height={24}
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 </div>
 
@@ -169,16 +182,13 @@ export function GoogleReviews() {
               See what all our customers are saying about our device repair services on Google.
             </p>
             <a
-              href="#"
+              href="https://share.google/8oT0yoc5YiQ3ySQWA"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               View All Google Reviews <ExternalLink className="h-4 w-4" />
             </a>
-            <p className="text-xs text-gray-500 mt-3">
-              Google My Business integration coming soon
-            </p>
           </div>
         </div>
       </div>

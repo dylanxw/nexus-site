@@ -14,7 +14,7 @@ import { FAQ } from "@/components/faq";
 import { ScheduleModal } from "@/components/schedule-modal";
 import { QuoteModal } from "@/components/quote-modal";
 
-export default function Home() {
+export function HomePage() {
   const router = useRouter();
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);

@@ -1,5 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { createBooking } from '@/lib/google-calendar';
+import { siteConfig } from '@/config/site';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+// Helper function to format issue slugs to readable labels
+function formatIssues(issues: string[]): string {
+  return issues.map(issue => {
+    // Convert kebab-case to Title Case
+    return issue
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }).join(', ');
+}
 
 interface RepairRequestData {
   deviceType: string;
@@ -27,8 +43,9 @@ async function createEmailTransporter() {
     },
     // Add TLS options for better Hostinger compatibility
     tls: {
-      rejectUnauthorized: false,
-      ciphers: 'SSLv3'
+      rejectUnauthorized: process.env.NODE_ENV === 'production',
+      minVersion: 'TLSv1.2',
+      ciphers: 'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4'
     }
   });
 
@@ -44,7 +61,7 @@ async function createEmailTransporter() {
   return transporter;
 }
 
-function formatRepairRequestEmail(data: RepairRequestData): { subject: string; html: string; text: string } {
+function formatInternalEmail(data: RepairRequestData, calendarLink?: string): { subject: string; html: string; text: string } {
   const timestamp = new Date().toLocaleString('en-US', {
     timeZone: 'America/Chicago',
     year: 'numeric',
@@ -54,18 +71,25 @@ function formatRepairRequestEmail(data: RepairRequestData): { subject: string; h
     minute: '2-digit'
   });
 
-  const subject = `${data.requestType === 'appointment' ? 'New Appointment Request' : 'New Quote Request'} - ${data.make} ${data.model}`;
+  const subject = `${data.requestType === 'appointment' ? 'New Appointment Booked' : 'New Quote Request'} - ${data.make} ${data.model}`;
 
   const html = `
-    <h2>New Repair Request - ${data.requestType.toUpperCase()}</h2>
+    <h2>New Repair ${data.requestType === 'appointment' ? 'Appointment' : 'Quote Request'}</h2>
     <p><strong>Submitted:</strong> ${timestamp}</p>
+
+    ${calendarLink ? `
+    <div style="background-color: #f0f9ff; padding: 15px; border-left: 4px solid #3b82f6; margin: 20px 0;">
+      <strong>📅 View in Calendar:</strong><br>
+      <a href="${calendarLink}" style="color: #3b82f6; text-decoration: underline;">Open Google Calendar Event</a>
+    </div>
+    ` : ''}
 
     <h3>Device Information</h3>
     <ul>
       <li><strong>Type:</strong> ${data.deviceType}</li>
       <li><strong>Make:</strong> ${data.make}</li>
       <li><strong>Model:</strong> ${data.model}</li>
-      <li><strong>Issues:</strong> ${data.issues.join(', ')}</li>
+      <li><strong>Issues:</strong> ${formatIssues(data.issues)}</li>
     </ul>
 
     <h3>Customer Information</h3>
@@ -81,8 +105,8 @@ function formatRepairRequestEmail(data: RepairRequestData): { subject: string; h
     ${data.requestType === 'appointment' && data.appointmentDate ? `
     <h3>Appointment Details</h3>
     <ul>
-      <li><strong>Preferred Date:</strong> ${data.appointmentDate}</li>
-      <li><strong>Preferred Time:</strong> ${data.appointmentTime || 'Not specified'}</li>
+      <li><strong>Date:</strong> ${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</li>
+      <li><strong>Time:</strong> ${data.appointmentTime || 'Not specified'}</li>
     </ul>
     ` : ''}
 
@@ -91,14 +115,16 @@ function formatRepairRequestEmail(data: RepairRequestData): { subject: string; h
   `;
 
   const text = `
-New Repair Request - ${data.requestType.toUpperCase()}
+New Repair ${data.requestType === 'appointment' ? 'Appointment' : 'Quote Request'}
 Submitted: ${timestamp}
+
+${calendarLink ? `View in Calendar: ${calendarLink}\n` : ''}
 
 Device Information:
 - Type: ${data.deviceType}
 - Make: ${data.make}
 - Model: ${data.model}
-- Issues: ${data.issues.join(', ')}
+- Issues: ${formatIssues(data.issues)}
 
 Customer Information:
 - Name: ${data.firstName} ${data.lastName}
@@ -109,13 +135,216 @@ Problem Description:
 ${data.description || 'No description provided'}
 
 ${data.requestType === 'appointment' && data.appointmentDate ? `Appointment Details:
-- Preferred Date: ${data.appointmentDate}
-- Preferred Time: ${data.appointmentTime || 'Not specified'}
+- Date: ${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+- Time: ${data.appointmentTime || 'Not specified'}
 
 ` : ''}This request was submitted through the Nexus Tech Solutions website.
   `;
 
   return { subject, html, text };
+}
+
+function formatCustomerEmail(data: RepairRequestData): { subject: string; html: string; text: string } {
+  const isAppointment = data.requestType === 'appointment';
+
+  if (isAppointment) {
+    const appointmentDate = data.appointmentDate ? new Date(data.appointmentDate) : null;
+    const formattedDate = appointmentDate ? appointmentDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }) : '';
+
+    const subject = `Appointment Confirmed - ${data.make} ${data.model} Repair`;
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #DB5858;">✓ Your Appointment is Confirmed!</h2>
+        <p>Hi ${data.firstName},</p>
+        <p>Great news! Your repair appointment has been confirmed.</p>
+
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #111827;">Appointment Details</h3>
+          <p style="margin: 5px 0;"><strong>Date:</strong> ${formattedDate}</p>
+          <p style="margin: 5px 0;"><strong>Time:</strong> ${data.appointmentTime}</p>
+          <p style="margin: 5px 0;"><strong>Device:</strong> ${data.make} ${data.model}</p>
+          <p style="margin: 5px 0;"><strong>Issues:</strong> ${formatIssues(data.issues)}</p>
+        </div>
+
+        <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #111827;">Location</h3>
+          <p style="margin: 5px 0;"><strong>${siteConfig.name}</strong></p>
+          <p style="margin: 5px 0;">${siteConfig.address.street}</p>
+          <p style="margin: 5px 0;">${siteConfig.address.city}, ${siteConfig.address.state} ${siteConfig.address.zip}</p>
+          <p style="margin: 15px 0 5px 0;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address.full)}"
+               style="color: #3b82f6; text-decoration: underline;">Get Directions</a>
+          </p>
+        </div>
+
+        <div style="border-left: 4px solid #10b981; padding-left: 15px; margin: 20px 0;">
+          <h4 style="margin-top: 0; color: #059669;">What to Bring:</h4>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>Your device (${data.make} ${data.model})</li>
+            <li>Charger or charging cable (if available)</li>
+            <li>Any accessories related to the repair</li>
+            <li>Photo ID</li>
+          </ul>
+        </div>
+
+        <h3>What Happens Next?</h3>
+        <ol style="line-height: 1.8;">
+          <li>Bring your device to our store at the scheduled time</li>
+          <li>Our technician will diagnose the issue and provide a quote</li>
+          <li>Most repairs are completed the same day</li>
+          <li>We'll notify you when your device is ready for pickup</li>
+        </ol>
+
+        <div style="background-color: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <p style="margin: 0;"><strong>Need to reschedule?</strong></p>
+          <p style="margin: 10px 0 0 0;">Call us at <a href="tel:${siteConfig.phoneHref}" style="color: #DB5858;">${siteConfig.phoneFormatted}</a></p>
+        </div>
+
+        <p><strong>Questions?</strong> Feel free to call or text us at <a href="tel:${siteConfig.phoneHref}">${siteConfig.phoneFormatted}</a></p>
+
+        <p style="margin-top: 30px;">Thank you for choosing ${siteConfig.name}!</p>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+        <p style="font-size: 12px; color: #6b7280;">
+          ${siteConfig.name}<br>
+          ${siteConfig.address.full}<br>
+          Phone: ${siteConfig.phoneFormatted}<br>
+          <em>This is an automated confirmation. Please do not reply to this email.</em>
+        </p>
+      </div>
+    `;
+
+    const text = `
+Your Appointment is Confirmed!
+
+Hi ${data.firstName},
+
+Great news! Your repair appointment has been confirmed.
+
+APPOINTMENT DETAILS:
+Date: ${formattedDate}
+Time: ${data.appointmentTime}
+Device: ${data.make} ${data.model}
+Issues: ${formatIssues(data.issues)}
+
+LOCATION:
+${siteConfig.name}
+${siteConfig.address.full}
+Get Directions: https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address.full)}
+
+WHAT TO BRING:
+- Your device (${data.make} ${data.model})
+- Charger or charging cable (if available)
+- Any accessories related to the repair
+- Photo ID
+
+WHAT HAPPENS NEXT:
+1. Bring your device to our store at the scheduled time
+2. Our technician will diagnose the issue and provide a quote
+3. Most repairs are completed the same day
+4. We'll notify you when your device is ready for pickup
+
+Need to reschedule? Call us at ${siteConfig.phoneFormatted}
+
+Questions? Feel free to call or text us at ${siteConfig.phoneFormatted}
+
+Thank you for choosing ${siteConfig.name}!
+
+---
+${siteConfig.name}
+${siteConfig.address.full}
+Phone: ${siteConfig.phoneFormatted}
+This is an automated confirmation. Please do not reply to this email.
+    `.trim();
+
+    return { subject, html, text };
+  } else {
+    // Quote request
+    const subject = `Quote Request Received - ${data.make} ${data.model}`;
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #DB5858;">✓ Quote Request Received!</h2>
+        <p>Hi ${data.firstName},</p>
+        <p>Thank you for your quote request. We've received your information and will prepare an estimate for your ${data.make} ${data.model} repair.</p>
+
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #111827;">Device Details</h3>
+          <p style="margin: 5px 0;"><strong>Device:</strong> ${data.make} ${data.model}</p>
+          <p style="margin: 5px 0;"><strong>Type:</strong> ${data.deviceType}</p>
+          <p style="margin: 5px 0;"><strong>Issues:</strong> ${formatIssues(data.issues)}</p>
+        </div>
+
+        <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #111827;">What Happens Next?</h3>
+          <ol style="line-height: 1.8; margin: 10px 0; padding-left: 20px;">
+            <li>Our technician will review your device information</li>
+            <li>We'll prepare a detailed quote for the repairs needed</li>
+            <li>You'll receive a call or email with the estimate within 2-4 hours during business hours</li>
+            <li>Once approved, you can schedule an appointment or drop off your device</li>
+          </ol>
+        </div>
+
+        <div style="border-left: 4px solid #3b82f6; padding-left: 15px; margin: 20px 0;">
+          <h4 style="margin-top: 0; color: #1e40af;">Our Business Hours:</h4>
+          <p style="margin: 5px 0;">${siteConfig.hours.display}</p>
+        </div>
+
+        <p><strong>Need immediate assistance?</strong><br>
+        Call us at <a href="tel:${siteConfig.phoneHref}" style="color: #DB5858; text-decoration: underline;">${siteConfig.phoneFormatted}</a></p>
+
+        <p style="margin-top: 30px;">Thank you for choosing ${siteConfig.name}!</p>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+        <p style="font-size: 12px; color: #6b7280;">
+          ${siteConfig.name}<br>
+          ${siteConfig.address.full}<br>
+          Phone: ${siteConfig.phoneFormatted}<br>
+          <em>This is an automated confirmation. Please do not reply to this email.</em>
+        </p>
+      </div>
+    `;
+
+    const text = `
+Quote Request Received!
+
+Hi ${data.firstName},
+
+Thank you for your quote request. We've received your information and will prepare an estimate for your ${data.make} ${data.model} repair.
+
+DEVICE DETAILS:
+Device: ${data.make} ${data.model}
+Type: ${data.deviceType}
+Issues: ${formatIssues(data.issues)}
+
+WHAT HAPPENS NEXT:
+1. Our technician will review your device information
+2. We'll prepare a detailed quote for the repairs needed
+3. You'll receive a call or email with the estimate within 2-4 hours during business hours
+4. Once approved, you can schedule an appointment or drop off your device
+
+OUR BUSINESS HOURS:
+${siteConfig.hours.display}
+
+Need immediate assistance? Call us at ${siteConfig.phoneFormatted}
+
+Thank you for choosing ${siteConfig.name}!
+
+---
+${siteConfig.name}
+${siteConfig.address.full}
+Phone: ${siteConfig.phoneFormatted}
+This is an automated confirmation. Please do not reply to this email.
+    `.trim();
+
+    return { subject, html, text };
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -133,58 +362,107 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate appointment-specific fields
+    if (data.requestType === 'appointment') {
+      if (!data.appointmentDate || !data.appointmentTime) {
+        return NextResponse.json(
+          { error: 'Appointment date and time are required for appointments' },
+          { status: 400 }
+        );
+      }
+    }
+
+    let calendarEvent;
+    let calendarEventLink;
+
+    // Create calendar booking for appointments
+    if (data.requestType === 'appointment' && data.appointmentDate && data.appointmentTime) {
+      try {
+        calendarEvent = await createBooking({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          deviceType: data.deviceType,
+          make: data.make,
+          model: data.model,
+          issues: data.issues,
+          description: data.description,
+          appointmentDate: data.appointmentDate,
+          appointmentTime: data.appointmentTime,
+        });
+
+        calendarEventLink = calendarEvent.htmlLink;
+        console.log('Calendar event created:', calendarEvent.id);
+
+      } catch (calendarError) {
+        console.error('Calendar booking failed:', calendarError);
+        // Don't fail the entire request, just log the error
+        // The email will still be sent
+      }
+    }
+
     // Create email transporter
     const transporter = await createEmailTransporter();
 
-    // Format email content
-    const { subject, html, text } = formatRepairRequestEmail(data);
-
-    // Send email to business
+    // Send email to business (internal)
+    const internalEmail = formatInternalEmail(data, calendarEventLink);
     await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      from: `${siteConfig.name} <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
       to: process.env.BUSINESS_EMAIL,
-      subject,
-      html,
-      text,
+      subject: internalEmail.subject,
+      html: internalEmail.html,
+      text: internalEmail.text,
       replyTo: data.email,
     });
 
     // Send confirmation email to customer
-    const customerSubject = `Thank you for your ${data.requestType} request - Nexus Tech Solutions`;
-    const customerHtml = `
-      <h2>Thank you for your ${data.requestType} request!</h2>
-      <p>Hi ${data.firstName},</p>
-      <p>We've received your ${data.requestType} request for your ${data.make} ${data.model}. Our team will review your request and get back to you shortly.</p>
-
-      <h3>What happens next?</h3>
-      <ul>
-        <li>We'll review your device information and issues</li>
-        <li>${data.requestType === 'appointment' ? 'We\'ll confirm your appointment time' : 'We\'ll prepare a detailed quote'}</li>
-        <li>We\'ll contact you within 2-4 business hours</li>
-      </ul>
-
-      <p><strong>Need immediate assistance?</strong><br>
-      Call us at <a href="tel:940-600-1012">940-600-1012</a></p>
-
-      <p>Thank you for choosing Nexus Tech Solutions!</p>
-
-      <hr>
-      <p><small>Nexus Tech Solutions<br>
-      Phone: 940-600-1012<br>
-      This is an automated message, please do not reply directly.</small></p>
-    `;
-
+    const customerEmail = formatCustomerEmail(data);
     await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      from: `${siteConfig.name} <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
       to: data.email,
-      subject: customerSubject,
-      html: customerHtml,
+      subject: customerEmail.subject,
+      html: customerEmail.html,
+      text: customerEmail.text,
     });
+
+    // Generate booking number
+    const year = new Date().getFullYear();
+    const count = await prisma.repairBooking.count() + 1;
+    const bookingNumber = `REP-${year}-${count.toString().padStart(4, '0')}`;
+
+    // Save booking to database
+    const booking = await prisma.repairBooking.create({
+      data: {
+        bookingNumber,
+        deviceType: data.deviceType,
+        make: data.make,
+        model: data.model,
+        issues: JSON.stringify(data.issues),
+        description: data.description || '',
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        appointmentDate: data.appointmentDate || null,
+        appointmentTime: data.appointmentTime || null,
+        requestType: data.requestType,
+        status: data.requestType === 'appointment' ? 'CONFIRMED' : 'PENDING',
+        calendarEventId: calendarEvent?.id || null,
+      },
+    });
+
+    console.log('Booking saved to database:', booking.bookingNumber);
 
     // Return success response
     return NextResponse.json({
       success: true,
-      message: 'Repair request submitted successfully. We\'ll contact you shortly!'
+      message: data.requestType === 'appointment'
+        ? 'Appointment booked successfully! Check your email for confirmation.'
+        : 'Quote request submitted successfully. We\'ll contact you within 2-4 hours during business hours.',
+      bookingNumber: booking.bookingNumber,
+      calendarEventId: calendarEvent?.id,
+      redirect: data.requestType === 'appointment' ? '/denton-tx/repair-form/confirmation' : undefined,
     });
 
   } catch (error) {
