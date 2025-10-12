@@ -10,13 +10,13 @@ import {
   sendAdminEmailFailureNotification,
 } from "@/lib/backend/email-service";
 import { calculateQuotePricing } from "@/lib/backend/offer-calculator";
-import { quoteSubmissionSchema } from "@/lib/validations/buyback";
+import { quoteSubmissionSchema } from "@/lib/validations/sell-a-device";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit-production";
 import { logger, handleApiError } from "@/lib/logger";
 import { z } from "zod";
 
 export async function POST(request: NextRequest) {
-  logger.apiRequest('POST', '/api/buyback/quote');
+  logger.apiRequest('POST', '/api/sell-a-device/quote');
 
   // Apply rate limiting
   const rateLimitResult = await rateLimit(request, RateLimitPresets.QUOTE_SUBMISSION);

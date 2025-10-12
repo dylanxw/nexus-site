@@ -12,7 +12,7 @@ const samsungSeries = [
   {
     id: "galaxy-s",
     name: "Galaxy S Series",
-    image: "/images/buyback/sell-samsung/galaxy-s-series.avif",
+    image: "/images/sell-a-device/sell-samsung/galaxy-s-series.avif",
     maxPrice: 800,
     models: ["S24 Ultra", "S24+", "S24", "S23 Ultra", "S23+", "S23", "S22 Ultra", "S21 Ultra"],
     popular: true,
@@ -21,7 +21,7 @@ const samsungSeries = [
     id: "galaxy-z",
     name: "Galaxy Z Series",
 
-    image: "/images/buyback/sell-samsung/galaxy-z-series.avif",
+    image: "/images/sell-a-device/sell-samsung/galaxy-z-series.avif",
     maxPrice: 900,
     models: ["Z Fold 6", "Z Flip 6", "Z Fold 5", "Z Flip 5", "Z Fold 4", "Z Flip 4"],
     popular: true,
@@ -30,7 +30,7 @@ const samsungSeries = [
     id: "galaxy-note",
     name: "Galaxy Note Series",
 
-    image: "/images/buyback/sell-samsung/galaxy-note-series.avif",
+    image: "/images/sell-a-device/sell-samsung/galaxy-note-series.avif",
     maxPrice: 450,
     models: ["Note 20 Ultra", "Note 20", "Note 10+", "Note 10", "Note 9", "Note 8"],
   },
@@ -38,7 +38,7 @@ const samsungSeries = [
     id: "galaxy-a",
     name: "Galaxy A Series",
 
-    image: "/images/buyback/sell-samsung/galaxy-a-series.avif",
+    image: "/images/sell-a-device/sell-samsung/galaxy-a-series.avif",
     maxPrice: 250,
     models: ["A54", "A34", "A14", "A53", "A33", "A13"],
   },
@@ -50,7 +50,7 @@ export function SamsungBuybackPage() {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   const handleSeriesSelect = (seriesId: string) => {
-    router.push(`/buyback/samsung/${seriesId}`);
+    router.push(`/sell-a-device/samsung/${seriesId}`);
   };
 
   // Filter series based on search query
@@ -70,7 +70,7 @@ export function SamsungBuybackPage() {
               Home
             </Link>
             <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
-            <Link href="/buyback" className="text-[#DB5858] hover:text-[#c94848]">
+            <Link href="/sell-a-device" className="text-[#DB5858] hover:text-[#c94848]">
               Device Buyback
             </Link>
             <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />

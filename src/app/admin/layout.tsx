@@ -31,10 +31,10 @@ const navigation = [
     name: "Buyback Management",
     icon: DollarSign,
     children: [
-      { name: "Leads", href: "/admin/buyback/leads" },
-      { name: "Pricing", href: "/admin/buyback/pricing" },
-      { name: "Margins", href: "/admin/buyback/margins" },
-      { name: "Analytics", href: "/admin/buyback/analytics" },
+      { name: "Leads", href: "/admin/sell-a-device/leads" },
+      { name: "Pricing", href: "/admin/sell-a-device/pricing" },
+      { name: "Margins", href: "/admin/sell-a-device/margins" },
+      { name: "Analytics", href: "/admin/sell-a-device/analytics" },
     ],
   },
   {

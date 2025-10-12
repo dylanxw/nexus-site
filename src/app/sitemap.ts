@@ -62,21 +62,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
 
-    // Buyback pages
+    // Sell a device pages
     {
-      url: `${baseUrl}/buyback`,
+      url: `${baseUrl}/sell-a-device`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/buyback/iphone`,
+      url: `${baseUrl}/sell-a-device/iphone`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/buyback/samsung`,
+      url: `${baseUrl}/sell-a-device/samsung`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,

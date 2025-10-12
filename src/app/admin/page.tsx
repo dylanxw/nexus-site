@@ -183,7 +183,7 @@ export default function AdminDashboard() {
             >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Buyback Management</h2>
               <div className="space-y-3">
-                <Link href="/admin/buyback/leads">
+                <Link href="/admin/sell-a-device/leads">
                   <Button variant="outline" className="w-full justify-between">
                     <span className="flex items-center">
                       <Users className="w-4 h-4 mr-2" />
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
-                <Link href="/admin/buyback/pricing">
+                <Link href="/admin/sell-a-device/pricing">
                   <Button variant="outline" className="w-full justify-between">
                     <span className="flex items-center">
                       <DollarSign className="w-4 h-4 mr-2" />
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
-                <Link href="/admin/buyback/analytics">
+                <Link href="/admin/sell-a-device/analytics">
                   <Button variant="outline" className="w-full justify-between">
                     <span className="flex items-center">
                       <TrendingUp className="w-4 h-4 mr-2" />

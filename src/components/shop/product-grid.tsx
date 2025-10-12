@@ -190,12 +190,13 @@ export function ProductGrid({ filters }: ProductGridProps) {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<"price-low" | "price-high" | "newest" | "brand">("newest");
 
-  // Fetch products from inventory API
+  // Fetch products from optimized shop inventory API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/inventory?inStock=true');
+        // Use the new optimized API endpoint that reads from cached data
+        const response = await fetch('/api/shop-inventory');
 
         if (!response.ok) {
           throw new Error('Failed to fetch inventory');
@@ -222,9 +223,25 @@ export function ProductGrid({ filters }: ProductGridProps) {
           const productId = item.SKU || item.IMEI || Math.random().toString();
           const originalPrice = calculateOriginalPrice(price, productId);
 
+          // Clean up model name for Apple Watches
+          let modelName = item.Model || 'Unknown Model';
+          if (deviceType === 'smartwatch' && brand === 'Apple') {
+            // Remove parenthetical notes from model name
+            modelName = modelName
+              .replace(/\s*\([^)]*\)/g, '') // Remove all parenthetical content
+              .replace(/\s+/g, ' ') // Clean up extra spaces
+              .trim();
+
+            // Extract just the main model name (e.g., "Apple Watch Series 10")
+            const watchMatch = modelName.match(/(Apple Watch.*?(?:Series \d+|SE|Ultra))/i);
+            if (watchMatch) {
+              modelName = watchMatch[1];
+            }
+          }
+
           return {
             id: productId,
-            model: item.Model || 'Unknown Model',
+            model: modelName,
             brand: brand,
             deviceType: deviceType,
             condition: (item.Condition?.toLowerCase() || 'good') as "excellent" | "good" | "fair",
@@ -233,7 +250,7 @@ export function ProductGrid({ filters }: ProductGridProps) {
             storage: item.Storage || '',
             color: item.Color || '',
             batteryHealth: cleanBatteryHealth,
-            carrier: item.Carrier || 'Unlocked',
+            carrier: item.Carrier || item.Connectivity || 'Unlocked',
             images: item.photos || [],
             features: [], // Can be populated based on model later
             inStock: true, // Already filtered for in-stock items
@@ -448,19 +465,28 @@ export function ProductGrid({ filters }: ProductGridProps) {
                   </>
                 )}
 
-                {/* Smartwatches */}
+                {/* Smartwatches - Apple Watch formatting */}
                 {product.deviceType === 'smartwatch' && (
                   <>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      {product.size && <span>{product.size}</span>}
-                      {product.material && <span>{product.material}</span>}
+                    {/* Size and Material on same line */}
+                    <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+                      {product.size && (
+                        <span className="font-medium">{product.size}</span>
+                      )}
+                      {product.material && (
+                        <span>{product.material}</span>
+                      )}
                     </div>
-                    {product.connectivity && (
+
+                    {/* Connectivity/Carrier info */}
+                    {(product.connectivity || product.carrier) && (
                       <div className="flex items-center gap-1 text-sm text-gray-600">
                         <Wifi className="h-3 w-3" />
-                        {product.connectivity}
+                        {product.connectivity || product.carrier}
                       </div>
                     )}
+
+                    {/* Color if present */}
                     {product.color && (
                       <div className="text-sm text-gray-600">
                         {product.color}

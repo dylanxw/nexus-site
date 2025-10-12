@@ -30,7 +30,7 @@ const deviceCategories = [
     id: "iphone",
     title: "iPhone",
     buttonText: "Sell iPhone",
-    image: "/images/buyback/categories/sell-iphone.jpg",
+    image: "/images/sell-a-device/categories/sell-iphone.jpg",
     available: true,
     popular: true,
   },
@@ -38,35 +38,35 @@ const deviceCategories = [
     id: "samsung",
     title: "Samsung",
     buttonText: "Sell Samsung",
-    image: "/images/buyback/categories/sell-samsung.jpg",
+    image: "/images/sell-a-device/categories/sell-samsung.jpg",
     available: false,
   },
   {
     id: "ipad",
     title: "iPad / Tablet",
     buttonText: "Sell iPad / Tablet",
-    image: "/images/buyback/categories/sell-ipad.jpg",
+    image: "/images/sell-a-device/categories/sell-ipad.jpg",
     available: false,
   },
   {
     id: "smartwatch",
     title: "Smartwatch",
     buttonText: "Sell Smartwatch",
-    image: "/images/buyback/categories/sell-smartwatch.jpg",
+    image: "/images/sell-a-device/categories/sell-smartwatch.jpg",
     available: false,
   },
   {
     id: "macbook",
     title: "MacBook",
     buttonText: "Sell MacBook",
-    image: "/images/buyback/categories/sell-macbook.jpg",
+    image: "/images/sell-a-device/categories/sell-macbook.jpg",
     available: false,
   },
   {
     id: "other",
     title: "Other Devices",
     buttonText: "Sell Other Items",
-    image: "/images/buyback/categories/sell-other.jpg",
+    image: "/images/sell-a-device/categories/sell-other.jpg",
     available: false,
   },
 ];
@@ -79,11 +79,11 @@ export function BuybackPage() {
     if (!available) return;
 
     if (categoryId === "iphone") {
-      router.push("/buyback/iphone");
+      router.push("/sell-a-device/iphone");
     } else if (categoryId === "samsung") {
-      router.push("/buyback/samsung");
+      router.push("/sell-a-device/samsung");
     } else if (categoryId === "other") {
-      router.push("/buyback/other");
+      router.push("/sell-a-device/other");
     }
     // Other categories will be added later
   };

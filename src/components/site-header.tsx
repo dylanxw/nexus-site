@@ -249,7 +249,7 @@ export function SiteHeader() {
                 SHOP PRE-OWNED
               </Link>
 
-              <Link href="/buyback" className="text-white font-semibold hover:text-primary transition-colors">
+              <Link href="/sell-a-device" className="text-white font-semibold hover:text-primary transition-colors">
                 SELL A DEVICE
               </Link>
 
@@ -353,7 +353,7 @@ export function SiteHeader() {
             </Link>
 
             <Link
-              href="/buyback"
+              href="/sell-a-device"
               className="block text-white font-semibold py-2 hover:text-primary transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >

@@ -4,7 +4,7 @@ import { requireAdminAuth } from "@/lib/auth";
 import { logger } from "@/lib/logger";
 
 /**
- * GET /api/admin/buyback/pricing/stats
+ * GET /api/admin/sell-a-device/pricing/stats
  * Returns summary statistics for ALL pricing data (not paginated)
  * Used for dashboard summary cards
  */

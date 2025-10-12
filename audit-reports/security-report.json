@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-10-11T21:20:59.394Z",
+  "checks": [],
+  "vulnerabilities": [
+    {
+      "type": "sensitive_files",
+      "files": [
+        ".env.production.template"
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "headers",
+      "message": "Add missing security headers using middleware or next.config.js",
+      "headers": [
+        "X-Frame-Options",
+        "X-Content-Type-Options",
+        "X-XSS-Protection",
+        "Strict-Transport-Security",
+        "Content-Security-Policy",
+        "Referrer-Policy",
+        "Permissions-Policy"
+      ],
+      "priority": "high"
+    }
+  ],
+  "typescript": {
+    "strict": true
+  },
+  "headers": {
+    "present": [],
+    "missing": [
+      "X-Frame-Options",
+      "X-Content-Type-Options",
+      "X-XSS-Protection",
+      "Strict-Transport-Security",
+      "Content-Security-Policy",
+      "Referrer-Policy",
+      "Permissions-Policy"
+    ]
+  },
+  "authentication": {
+    "hasJWT": true,
+    "hasBcrypt": true,
+    "has2FA": true,
+    "hasCSRF": true
+  },
+  "validation": {
+    "zod": true,
+    "joi": false,
+    "validator": false
+  }
+}

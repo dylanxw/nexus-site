@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Smartphone, Eye, Check, X as XIcon } from "lucide-react";
+import { Edit, Smartphone, Eye, Check, X as XIcon, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import { InventoryModal } from "@/components/admin/inventory-modal";
 
@@ -47,6 +47,7 @@ export default function AdminPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | undefined>();
   const [searchQuery, setSearchQuery] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchInventory();
@@ -79,6 +80,30 @@ export default function AdminPage() {
 
   const handleModalSave = () => {
     fetchInventory(); // Refresh the list after save
+  };
+
+  const handleRefreshCache = async () => {
+    try {
+      setRefreshing(true);
+      const response = await fetch('/api/admin/refresh-cache', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to refresh cache');
+      }
+
+      const data = await response.json();
+      alert(`Cache refreshed successfully! ${data.itemsCount} items updated.`);
+
+      // Refresh the inventory display
+      await fetchInventory();
+    } catch (err) {
+      console.error('Error refreshing cache:', err);
+      alert('Failed to refresh cache. Check console for details.');
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   // Filter inventory based on search query
@@ -177,10 +202,20 @@ export default function AdminPage() {
                 <h1 className="text-2xl font-bold text-gray-900">Inventory Management</h1>
                 <p className="text-gray-600">Manage product descriptions, photos, and status</p>
               </div>
-              <Button variant="outline" onClick={fetchInventory}>
-                <Eye className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleRefreshCache}
+                  disabled={refreshing}
+                >
+                  <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                  {refreshing ? 'Refreshing...' : 'Sync from Sheets'}
+                </Button>
+                <Button variant="outline" onClick={fetchInventory}>
+                  <Eye className="h-4 w-4 mr-2" />
+                  Refresh View
+                </Button>
+              </div>
             </div>
 
             {/* Search Bar */}

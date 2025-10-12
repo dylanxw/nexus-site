@@ -14,220 +14,220 @@ import { Button } from "@/components/ui/button";
 const iphoneModelsWithPrices = [
   {
     model: "iPhone 17 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-17-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-17-pro-max.avif",
     maxPrice: 1013,
     storage: ["256GB", "512GB", "1TB", "2TB"],
     popular: true,
   },
   {
     model: "iPhone 17 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-17-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-17-pro.avif",
     maxPrice: 780,
     storage: ["256GB", "512GB", "1TB"],
     popular: true,
   },
   {
     model: "iPhone 17 Air",
-    image: "/images/buyback/sell-iphone/apple-iphone-17-air.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-17-air.avif",
     maxPrice: 670,
     storage: ["256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 17",
-    image: "/images/buyback/sell-iphone/apple-iphone-17.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-17.avif",
     maxPrice: 491,
     storage: ["256GB", "512GB"],
   },
   {
     model: "iPhone 16e",
-    image: "/images/buyback/sell-iphone/apple-iphone-16e.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-16e.avif",
     maxPrice: 319,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 16 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-16-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-16-pro-max.avif",
     maxPrice: 733,
     storage: ["256GB", "512GB", "1TB"],
     popular: true,
   },
   {
     model: "iPhone 16 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-16-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-16-pro.avif",
     maxPrice: 677,
     storage: ["128GB", "256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 16 Plus",
-    image: "/images/buyback/sell-iphone/apple-iphone-16-plus.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-16-plus.avif",
     maxPrice: 519,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 16",
-    image: "/images/buyback/sell-iphone/apple-iphone-16.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-16.avif",
     maxPrice: 445,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 15 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-15-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-15-pro-max.avif",
     maxPrice: 580,
     storage: ["256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 15 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-15-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-15-pro.avif",
     maxPrice: 520,
     storage: ["128GB", "256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 15 Plus",
-    image: "/images/buyback/sell-iphone/apple-iphone-15-plus.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-15-plus.avif",
     maxPrice: 385,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 15",
-    image: "/images/buyback/sell-iphone/apple-iphone-15.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-15.avif",
     maxPrice: 350,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 14 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-14-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-14-pro-max.avif",
     maxPrice: 460,
     storage: ["128GB", "256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 14 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-14-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-14-pro.avif",
     maxPrice: 380,
     storage: ["128GB", "256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 14 Plus",
-    image: "/images/buyback/sell-iphone/apple-iphone-14-plus.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-14-plus.avif",
     maxPrice: 295,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 14",
-    image: "/images/buyback/sell-iphone/apple-iphone-14.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-14.avif",
     maxPrice: 220,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 13 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-13-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-13-pro-max.avif",
     maxPrice: 340,
     storage: ["128GB", "256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 13 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-13-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-13-pro.avif",
     maxPrice: 285,
     storage: ["128GB", "256GB", "512GB", "1TB"],
   },
   {
     model: "iPhone 13",
-    image: "/images/buyback/sell-iphone/apple-iphone-13.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-13.avif",
     maxPrice: 195,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 13 Mini",
-    image: "/images/buyback/sell-iphone/apple-iphone-13-mini.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-13-mini.avif",
     maxPrice: 170,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 12 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-12-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-12-pro-max.avif",
     maxPrice: 275,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 12 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-12-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-12-pro.avif",
     maxPrice: 230,
     storage: ["128GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 12",
-    image: "/images/buyback/sell-iphone/apple-iphone-12.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-12.avif",
     maxPrice: 165,
     storage: ["64GB", "128GB", "256GB"],
   },
   {
     model: "iPhone 12 Mini",
-    image: "/images/buyback/sell-iphone/apple-iphone-12-mini.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-12-mini.avif",
     maxPrice: 145,
     storage: ["64GB", "128GB", "256GB"],
   },
   {
     model: "iPhone 11 Pro Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-11-pro-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-11-pro-max.avif",
     maxPrice: 195,
     storage: ["64GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 11 Pro",
-    image: "/images/buyback/sell-iphone/apple-iphone-11-pro.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-11-pro.avif",
     maxPrice: 165,
     storage: ["64GB", "256GB", "512GB"],
   },
   {
     model: "iPhone 11",
-    image: "/images/buyback/sell-iphone/apple-iphone-11.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-11.avif",
     maxPrice: 125,
     storage: ["64GB", "128GB", "256GB"],
   },
   {
     model: "iPhone XS Max",
-    image: "/images/buyback/sell-iphone/apple-iphone-xs-max.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-xs-max.avif",
     maxPrice: 130,
     storage: ["64GB", "256GB", "512GB"],
   },
   {
     model: "iPhone XS",
-    image: "/images/buyback/sell-iphone/apple-iphone-xs.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-xs.avif",
     maxPrice: 95,
     storage: ["64GB", "256GB", "512GB"],
   },
   {
     model: "iPhone XR",
-    image: "/images/buyback/sell-iphone/apple-iphone-xr.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-xr.avif",
     maxPrice: 90,
     storage: ["64GB", "128GB", "256GB"],
   },
   {
     model: "iPhone X",
-    image: "/images/buyback/sell-iphone/apple-iphone-x.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-x.avif",
     maxPrice: 85,
     storage: ["64GB", "256GB"],
   },
   {
     model: "iPhone 8 Plus",
-    image: "/images/buyback/sell-iphone/apple-iphone-8-plus.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-8-plus.avif",
     maxPrice: 70,
     storage: ["64GB", "128GB", "256GB"],
   },
   {
     model: "iPhone 8",
-    image: "/images/buyback/sell-iphone/apple-iphone-8.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-8.avif",
     maxPrice: 50,
     storage: ["64GB", "128GB", "256GB"],
   },
   {
     model: "iPhone 7 Plus",
-    image: "/images/buyback/sell-iphone/apple-iphone-7-plus.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-7-plus.avif",
     maxPrice: 45,
     storage: ["32GB", "128GB", "256GB"],
   },
   {
     model: "iPhone 7",
-    image: "/images/buyback/sell-iphone/apple-iphone-7.avif",
+    image: "/images/sell-a-device/sell-iphone/apple-iphone-7.avif",
     maxPrice: 35,
     storage: ["32GB", "128GB", "256GB"],
   },
@@ -244,7 +244,7 @@ export function IphoneBuybackPage() {
   useEffect(() => {
     async function fetchMaxPrices() {
       try {
-        const response = await fetch('/api/buyback/max-prices');
+        const response = await fetch('/api/sell-a-device/max-prices');
         const data = await response.json();
 
         if (data.success) {
@@ -262,7 +262,7 @@ export function IphoneBuybackPage() {
 
   const handleModelSelect = (model: string) => {
     const slug = modelToSlug(model);
-    router.push(`/buyback/iphone/${slug}`);
+    router.push(`/sell-a-device/iphone/${slug}`);
   };
 
   // Merge dynamic prices with static model data
@@ -287,7 +287,7 @@ export function IphoneBuybackPage() {
               Home
             </Link>
             <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
-            <Link href="/buyback" className="text-[#DB5858] hover:text-[#c94848]">
+            <Link href="/sell-a-device" className="text-[#DB5858] hover:text-[#c94848]">
               Device Buyback
             </Link>
             <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />

@@ -1,0 +1,2210 @@
+{
+  "timestamp": "2025-10-11T21:21:57.441Z",
+  "baseUrl": "http://localhost:3000",
+  "routesTested": 9,
+  "results": [
+    {
+      "route": "/",
+      "name": "Homepage",
+      "seoData": {
+        "title": "Device Repair & Buyback in Denton, TX | iPhone, Samsung, Laptop Repair | Nexus Tech Solutions",
+        "description": "Expert device repair & instant cash buyback in Denton, TX. Same-day iPhone, Samsung, laptop repair. Sell your phone for cash with instant quotes. 60-day warranty. Call 940-600-1012.",
+        "keywords": "phone repair Denton TX,iPhone repair Denton,Samsung repair Denton,laptop repair Denton TX,computer repair Denton,iPad repair Denton,gaming console repair Denton,PlayStation repair Denton,Xbox repair Denton,drone repair Denton TX,device repair near me,cell phone repair Denton,screen repair Denton,UNT phone repair,North Texas device repair,same day phone repair Denton,sell my phone for cash Denton,where to sell my phone for cash,sell phone for cash Denton TX,sell iPhone for cash Denton,sell Samsung for cash Denton,cash for phones Denton,instant cash for phones,phone buyback Denton,sell broken phone Denton,trade in phone Denton,EcoATM alternative Denton,better than EcoATM Denton,EcoATM near me,sell phone near me,get cash for phone instantly Denton,phone trade in near UNT,sell old phone Denton TX,instant phone quote Denton,beat EcoATM prices",
+        "canonical": "https://nexustechsolutions.io/",
+        "robots": "index, follow",
+        "og": {
+          "title": "Device Repair & Buyback in Denton, TX | iPhone, Samsung, Laptop Repair",
+          "description": "Expert device repair & instant cash buyback in Denton, TX. Same-day repairs. Sell phones for cash with instant quotes. 60-day warranty. Serving UNT & North Texas.",
+          "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+          "url": "https://nexustechsolutions.io",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Device Repair & Buyback in Denton, TX | iPhone, Samsung, Laptop Repair",
+          "description": "Expert device repair & instant cash buyback in Denton, TX. Same-day service. Sell phones for cash with instant quotes. Call 940-600-1012.",
+          "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Fast, reliable electronics repair in Denton, TX",
+            "Get Your Device Repaired Today"
+          ],
+          "h1Count": 2,
+          "h2Count": 8,
+          "h3Count": 34
+        },
+        "images": {
+          "total": 5,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 19,
+          "external": 1,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (93 chars, recommended: 30-60)"
+        },
+        {
+          "type": "warning",
+          "message": "Description too long (181 chars, recommended: 120-160)"
+        },
+        {
+          "type": "warning",
+          "message": "Multiple H1 tags found (2)"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "route": "/services",
+      "name": "Services",
+      "seoData": {
+        "title": "Repair Services | Nexus Tech Solutions",
+        "description": "Professional electronics repair services in Denton, TX. iPhone, Mac, PC, tablet, and game console repairs with 60-day warranty.",
+        "keywords": "phone repair,iphone repair,computer repair,tablet repair,game console repair,data recovery,denton tx,electronics repair,buy sell devices,buy sell phones,buy sell laptops,buy sell tablets,buy sell game consoles,buy sell drones,buy sell cameras",
+        "robots": null,
+        "og": {
+          "title": "Nexus Tech Solutions",
+          "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+          "image": "http://localhost:3000/opengraph-image.jpg?opengraph-image.fa14a5c7.jpg",
+          "url": "https://nexustechsolutions.io",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Nexus Tech Solutions",
+          "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+          "image": "http://localhost:3000/opengraph-image.jpg?opengraph-image.fa14a5c7.jpg",
+          "creator": "@nexustechsolutions"
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Repair Services"
+          ],
+          "h1Count": 1,
+          "h2Count": 9,
+          "h3Count": 11
+        },
+        "images": {
+          "total": 2,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 9,
+          "external": 0,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [],
+      "score": 100
+    },
+    {
+      "route": "/services/iphone-repair",
+      "name": "iPhone Repair",
+      "seoData": {
+        "title": "iPhone Repair Denton TX | Same-Day Screen & Battery Repair Service | Nexus Tech Solutions",
+        "description": "Professional iPhone repair in Denton, TX. Screen replacement, battery repair, water damage restoration. Same-day service, 60-day warranty, genuine parts. Call 940-600-1012!",
+        "keywords": "iPhone repair Denton TX,iPhone screen replacement Denton,iPhone battery repair Denton,same day iPhone repair,iPhone water damage repair Denton,iPhone charging port repair,iPhone camera repair Denton,iPhone back glass repair,iPhone repair near me,Denton iPhone repair shop,UNT iPhone repair,North Texas iPhone repair,iPhone 15 repair Denton,iPhone 14 repair Denton,iPhone 13 repair Denton",
+        "canonical": "https://nexustechsolutions.io/services/iphone-repair",
+        "robots": "index, follow",
+        "og": {
+          "title": "iPhone Repair Denton TX | Same-Day Screen & Battery Repair Service",
+          "description": "Professional iPhone repair in Denton, TX. Screen replacement, battery repair, water damage restoration. Same-day service, 60-day warranty, genuine parts.",
+          "image": null,
+          "url": "https://nexustechsolutions.io/services/iphone-repair",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "iPhone Repair Denton TX | Same-Day Screen & Battery Repair",
+          "description": "Professional iPhone repair in Denton, TX. Same-day service, 60-day warranty, genuine parts. All iPhone models.",
+          "image": null,
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "iPhone Repair Denton, TX"
+          ],
+          "h1Count": 1,
+          "h2Count": 6,
+          "h3Count": 39
+        },
+        "images": {
+          "total": 3,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 15,
+          "external": 1,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (89 chars, recommended: 30-60)"
+        },
+        {
+          "type": "warning",
+          "message": "Description too long (172 chars, recommended: 120-160)"
+        },
+        {
+          "type": "warning",
+          "message": "Missing Open Graph image"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "route": "/shop",
+      "name": "Shop",
+      "seoData": {
+        "title": "Nexus Tech Solutions",
+        "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+        "keywords": "phone repair,iphone repair,computer repair,tablet repair,game console repair,data recovery,denton tx,electronics repair,buy sell devices,buy sell phones,buy sell laptops,buy sell tablets,buy sell game consoles,buy sell drones,buy sell cameras",
+        "robots": null,
+        "og": {
+          "title": "Nexus Tech Solutions",
+          "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+          "image": "http://localhost:3000/opengraph-image.jpg?opengraph-image.fa14a5c7.jpg",
+          "url": "https://nexustechsolutions.io",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Nexus Tech Solutions",
+          "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+          "image": "http://localhost:3000/opengraph-image.jpg?opengraph-image.fa14a5c7.jpg",
+          "creator": "@nexustechsolutions"
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Shop Certified Pre-Owned Devices"
+          ],
+          "h1Count": 1,
+          "h2Count": 2,
+          "h3Count": 17
+        },
+        "images": {
+          "total": 9,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 9,
+          "external": 0,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too short (20 chars, recommended: 30-60)"
+        }
+      ],
+      "score": 95
+    },
+    {
+      "route": "/sell-a-device",
+      "name": "Sell Device",
+      "seoData": {
+        "title": "Sell Phone for Cash Denton TX | Instant Quote | Phone Buyback | Nexus Tech Solutions",
+        "description": "Sell your phone for cash in Denton, TX. Instant quotes, same-day payment. Sell iPhone, Samsung, broken phones. Higher prices guaranteed. Call 940-600-1012.",
+        "keywords": "sell phone for cash Denton TX,EcoATM alternative Denton,better than EcoATM,beat EcoATM prices,EcoATM near me,where to sell my phone for cash,sell iPhone for cash Denton,sell iPhone Denton TX,iPhone buyback Denton,trade in iPhone Denton,cash for iPhone Denton,sell Samsung for cash Denton,sell Samsung phone Denton,Samsung buyback Denton,trade in Samsung Denton,instant phone buyback Denton,cash for phones Denton,phone trade in Denton,sell broken phone Denton,sell old phone Denton TX,instant cash for phones,phone buyback near me,sell phone near me,instant phone quote Denton,sell iPad for cash Denton,sell MacBook Denton,sell laptop for cash Denton,sell smartwatch Denton,sell Apple Watch Denton,sell AirPods Denton,sell broken iPhone Denton,sell cracked phone Denton,sell water damaged phone Denton,sell phone with broken screen Denton,phone buyback Denton Texas,sell phone UNT,phone trade in near UNT,cash for phones North Texas,device buyback Denton,EcoATM Denton,EcoATM alternative,better prices than EcoATM,higher prices than EcoATM,EcoATM competitor,get instant quote phone,same day phone payment,immediate cash for phone,quick phone buyback,fast phone trade in",
+        "canonical": "https://nexustechsolutions.io/sell-a-device",
+        "robots": "index, follow",
+        "og": {
+          "title": "Sell Phone for Cash Denton TX | Instant Quote | Phone Buyback",
+          "description": "Sell your phone for cash in Denton, TX. Instant quotes, same-day payment. Sell iPhone, Samsung, broken phones. Higher prices guaranteed.",
+          "image": "https://nexustechsolutions.io/images/sell-a-device/categories/sell-iphone.jpg",
+          "url": "https://nexustechsolutions.io/sell-a-device",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Sell Phone for Cash Denton TX | Instant Quote | Phone Buyback",
+          "description": "Sell your phone for cash in Denton, TX. Instant quotes, same-day payment. Higher prices guaranteed. Call 940-600-1012.",
+          "image": "https://nexustechsolutions.io/images/sell-a-device/categories/sell-iphone.jpg",
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Sell Your Phone for Cash in Denton, TX - Instant Quotes"
+          ],
+          "h1Count": 1,
+          "h2Count": 3,
+          "h3Count": 19
+        },
+        "images": {
+          "total": 8,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 11,
+          "external": 0,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (84 chars, recommended: 30-60)"
+        }
+      ],
+      "score": 95
+    },
+    {
+      "route": "/about",
+      "name": "About",
+      "seoData": {
+        "title": "About Us | Nexus Tech Solutions - Denton, TX Device Repair | Nexus Tech Solutions",
+        "description": "Learn about Nexus Tech Solutions, founded in Denton, TX. Our mission is to provide honest, reliable device repair with exceptional customer care.",
+        "keywords": "About Nexus Tech Solutions,Denton TX device repair company,local tech repair business,founder story device repair,Denton electronics repair history,independent tech repair shop,community tech services,device repair mission,local business Denton TX,tech repair values,honest device repair,reliable tech services,UNT area tech repair,North Texas electronics,family owned tech business",
+        "canonical": "https://nexustechsolutions.io/about",
+        "robots": "index, follow",
+        "og": {
+          "title": "About Us | Nexus Tech Solutions - Local Device Repair Experts",
+          "description": "Discover the story behind Nexus Tech Solutions and our commitment to providing exceptional device repair services to the Denton, TX community.",
+          "image": null,
+          "url": "https://nexustechsolutions.io/about",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "About Us | Nexus Tech Solutions - Local Device Repair Experts",
+          "description": "Learn about our mission to provide honest, reliable device repair services to Denton, TX and surrounding areas.",
+          "image": null,
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "About Nexus Tech Solutions"
+          ],
+          "h1Count": 1,
+          "h2Count": 3,
+          "h3Count": 14
+        },
+        "images": {
+          "total": 3,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 9,
+          "external": 0,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (81 chars, recommended: 30-60)"
+        },
+        {
+          "type": "warning",
+          "message": "Missing Open Graph image"
+        }
+      ],
+      "score": 90
+    },
+    {
+      "route": "/contact",
+      "name": "Contact",
+      "seoData": {
+        "title": "Contact Us | Nexus Tech Solutions - Device Repair in Denton, TX | Nexus Tech Solutions",
+        "description": "Contact Nexus Tech Solutions for expert device repair in Denton, TX. Visit our store at 3305 S Mayhill Rd, call 940-600-1012, or schedule repairs online. iPhone, Samsung, computer, drone repair.",
+        "keywords": "contact Nexus Tech Solutions,device repair Denton TX,repair shop location Denton,phone repair near me,computer repair Denton contact,drone repair contact,Denton repair shop hours,device repair quote,repair shop Denton Texas,tech repair Denton phone number,iPhone repair contact,Samsung repair Denton,laptop repair contact,UNT device repair",
+        "canonical": "https://nexustechsolutions.io/contact",
+        "robots": "index, follow",
+        "og": {
+          "title": "Contact Us | Nexus Tech Solutions - Device Repair in Denton, TX",
+          "description": "Get in touch with Denton's premier device repair shop. Same-day repairs, expert technicians, 60-day warranty.",
+          "image": null,
+          "url": "https://nexustechsolutions.io/contact",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Contact Us | Nexus Tech Solutions - Device Repair in Denton, TX",
+          "description": "Contact Denton's trusted device repair experts. Same-day service for phones, tablets, computers, and drones.",
+          "image": null,
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Contact Nexus Tech Solutions"
+          ],
+          "h1Count": 1,
+          "h2Count": 3,
+          "h3Count": 11
+        },
+        "images": {
+          "total": 2,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 9,
+          "external": 2,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (86 chars, recommended: 30-60)"
+        },
+        {
+          "type": "warning",
+          "message": "Description too long (194 chars, recommended: 120-160)"
+        },
+        {
+          "type": "warning",
+          "message": "Missing Open Graph image"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "route": "/services/computer-repair",
+      "name": "Computer Repair",
+      "seoData": {
+        "title": "Computer & Laptop Repair Denton TX | MacBook, PC Service | Nexus Tech Solutions",
+        "description": "Professional computer and laptop repair in Denton, TX. Same-day MacBook, PC, and laptop repairs. Screen replacement, battery repair, virus removal, and more. 60-day warranty. Call 940-600-1012!",
+        "keywords": "computer repair Denton TX,laptop repair Denton,MacBook repair Denton,PC repair Denton,laptop screen replacement,computer virus removal,laptop battery replacement,computer repair near me,MacBook Pro repair,MacBook Air repair,Windows laptop repair,Dell laptop repair Denton,HP laptop repair Denton,Lenovo laptop repair,gaming laptop repair,UNT laptop repair,North Texas computer repair",
+        "canonical": "https://nexustechsolutions.io/services/computer-repair",
+        "robots": "index, follow",
+        "og": {
+          "title": "Computer & Laptop Repair Services in Denton, TX | Nexus Tech Solutions",
+          "description": "Expert computer and laptop repair services in Denton, Texas. Same-day repairs with 60-day warranty for MacBook, PC, Windows laptops, and all computer systems.",
+          "image": null,
+          "url": "https://nexustechsolutions.io/services/computer-repair",
+          "type": "website",
+          "siteName": "Nexus Tech Solutions"
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Computer & Laptop Repair Services in Denton, TX | Nexus Tech Solutions",
+          "description": "Professional computer and laptop repair in Denton, TX. Same-day service for MacBook, PC, laptops with expert technicians.",
+          "image": null,
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Computer & Laptop Repair Denton, TX"
+          ],
+          "h1Count": 1,
+          "h2Count": 6,
+          "h3Count": 36
+        },
+        "images": {
+          "total": 3,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 13,
+          "external": 1,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (79 chars, recommended: 30-60)"
+        },
+        {
+          "type": "warning",
+          "message": "Description too long (193 chars, recommended: 120-160)"
+        },
+        {
+          "type": "warning",
+          "message": "Missing Open Graph image"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "route": "/services/console-repair",
+      "name": "Console Repair",
+      "seoData": {
+        "title": "Game Console Repair Services in Denton, TX | PlayStation, Xbox & Nintendo Repair | Nexus Tech Solutions",
+        "description": "Professional game console repair in Denton, TX. Same-day PlayStation, Xbox, and Nintendo repairs. HDMI port fixes, overheating solutions, and more. 60-day warranty, expert technicians.",
+        "keywords": "game console repair Denton TX, PlayStation repair, Xbox repair, Nintendo repair, PS5 repair, Xbox Series X repair, Nintendo Switch repair, console repair near me",
+        "canonical": "http://localhost:3000/services/console-repair",
+        "robots": null,
+        "og": {
+          "title": "Game Console Repair Services in Denton, TX | Nexus Tech Solutions",
+          "description": "Expert game console repair services in Denton, Texas. Same-day repairs with 60-day warranty for PlayStation, Xbox, Nintendo Switch, and all gaming consoles.",
+          "image": null,
+          "url": null,
+          "type": "website",
+          "siteName": null
+        },
+        "twitter": {
+          "card": "summary_large_image",
+          "title": "Game Console Repair Services in Denton, TX | Nexus Tech Solutions",
+          "description": "Professional game console repair in Denton, TX. Same-day service for PlayStation, Xbox, Nintendo with expert technicians.",
+          "image": null,
+          "creator": null
+        },
+        "structuredData": [
+          {
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://nexustechsolutions.io/#business",
+            "name": "Nexus Tech Solutions",
+            "description": "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+            "url": "https://nexustechsolutions.io",
+            "telephone": "940-600-1012",
+            "email": "info@nexustechsolutions.io",
+            "image": "https://nexustechsolutions.io/images/hero/nexus-storefront-image.jpeg",
+            "logo": "https://nexustechsolutions.io/images/nexus-favicon.png",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "3305 S Mayhill Rd, STE 109",
+              "addressLocality": "Denton",
+              "addressRegion": "TX",
+              "postalCode": "76208",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "33.2148",
+              "longitude": "-97.1331"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday"
+                ],
+                "opens": "10:00",
+                "closes": "19:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "17:00"
+              }
+            ],
+            "areaServed": [
+              {
+                "@type": "City",
+                "name": "Denton",
+                "@id": "https://en.wikipedia.org/wiki/Denton,_Texas"
+              },
+              {
+                "@type": "City",
+                "name": "Lewisville"
+              },
+              {
+                "@type": "City",
+                "name": "Flower Mound"
+              },
+              {
+                "@type": "City",
+                "name": "Highland Village"
+              },
+              {
+                "@type": "City",
+                "name": "Corinth"
+              },
+              {
+                "@type": "City",
+                "name": "Lake Dallas"
+              }
+            ],
+            "priceRange": "$$",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "150",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "paymentAccepted": "Cash, Credit Card, Debit Card, Check",
+            "currenciesAccepted": "USD",
+            "sameAs": [
+              "https://www.facebook.com/NexusTechSolutionsLLC",
+              "https://www.google.com/maps/place/Nexus+Tech+Solutions"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Device Repair, Buyback & Sales Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "iPhone Repair",
+                    "description": "Professional iPhone screen replacement, battery repair, charging port repair, water damage restoration, and camera repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Samsung Phone Repair",
+                    "description": "Expert Samsung Galaxy phone repair including screen replacement, battery repair, and charging port services",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Computer & Laptop Repair",
+                    "description": "MacBook, PC, and laptop repair services including hardware diagnostics, virus removal, and upgrades",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Game Console Repair",
+                    "description": "PlayStation, Xbox, and Nintendo Switch repair services with 1-year warranty on HDMI port repairs",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Drone Repair",
+                    "description": "Professional DJI, Autel, and other drone repair services including crash damage repair",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Device Buyback",
+                    "description": "Instant cash for phones, tablets, laptops, and other electronics. Same-day payment with competitive prices",
+                    "areaServed": "Denton, TX",
+                    "provider": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Product",
+                    "name": "Pre-Owned Device Sales",
+                    "description": "Quality refurbished phones, tablets, laptops, and electronics. Professionally tested with warranty coverage",
+                    "category": "Electronics",
+                    "brand": "Various",
+                    "areaServed": "Denton, TX",
+                    "seller": {
+                      "@type": "LocalBusiness",
+                      "name": "Nexus Tech Solutions"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "headings": {
+          "h1": [
+            "Game Console Repair Denton, TX"
+          ],
+          "h1Count": 1,
+          "h2Count": 6,
+          "h3Count": 36
+        },
+        "images": {
+          "total": 3,
+          "withoutAlt": 0,
+          "withEmptyAlt": 0
+        },
+        "links": {
+          "internal": 12,
+          "external": 1,
+          "withoutText": 0
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "lang": "en"
+      },
+      "issues": [
+        {
+          "type": "warning",
+          "message": "Title too long (103 chars, recommended: 30-60)"
+        },
+        {
+          "type": "warning",
+          "message": "Description too long (184 chars, recommended: 120-160)"
+        },
+        {
+          "type": "warning",
+          "message": "Missing Open Graph image"
+        }
+      ],
+      "score": 85
+    }
+  ],
+  "summary": {
+    "averageScore": 89.44444444444444,
+    "totalErrors": 0,
+    "totalWarnings": 19
+  }
+}

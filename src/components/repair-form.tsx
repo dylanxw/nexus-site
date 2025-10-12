@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
 import { Smartphone, Tablet, Monitor, Gamepad2, Watch, HardDrive, ArrowRight, Package } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { RepairFormAnalytics } from "@/lib/analytics";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Icon mapping for dynamic devices
 const iconMap: Record<string, any> = {
@@ -76,6 +78,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     email: "",
     description: ""
   });
+  const [formErrors, setFormErrors] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    description: ""
+  });
   const [appointmentMode, setAppointmentMode] = useState<"appointment" | "quote">("appointment");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState("");
@@ -85,6 +94,8 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   const [availableSlots, setAvailableSlots] = useState<{ time: string; value: string }[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotsFetchedForDate, setSlotsFetchedForDate] = useState<string | null>(null);
+  const [csrfToken, setCsrfToken] = useState<string>('');
+  const formStartTime = useRef<number>(Date.now());
 
   // Dynamic data from database
   const [deviceTypes, setDeviceTypes] = useState<any[]>(() => {
@@ -103,6 +114,123 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   const [loadingDevices, setLoadingDevices] = useState(!initialDevices.length);
   const [loadingIssues, setLoadingIssues] = useState(false);
 
+  // Restore form state from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('repairFormState');
+      if (saved) {
+        const state = JSON.parse(saved);
+        const age = Date.now() - (state.timestamp || 0);
+
+        // Only restore if less than 1 hour old
+        if (age < 3600000) {
+          console.log('Restoring saved form state');
+          if (state.selectedDevice) setSelectedDevice(state.selectedDevice);
+          if (state.selectedMake) setSelectedMake(state.selectedMake);
+          if (state.selectedModel) setSelectedModel(state.selectedModel);
+          if (state.customMake) setCustomMake(state.customMake);
+          if (state.customModel) setCustomModel(state.customModel);
+          if (state.selectedDamages) setSelectedDamages(state.selectedDamages);
+          if (state.customerInfo) setCustomerInfo(state.customerInfo);
+          if (state.appointmentMode) setAppointmentMode(state.appointmentMode);
+          if (state.selectedDate) setSelectedDate(state.selectedDate);
+          if (state.currentStep && !initialStep) setCurrentStep(state.currentStep);
+        } else {
+          // Clear expired state
+          localStorage.removeItem('repairFormState');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to restore form state:', error);
+      localStorage.removeItem('repairFormState');
+    }
+  }, []);
+
+  // Fetch CSRF token on mount
+  useEffect(() => {
+    const fetchCSRFToken = async () => {
+      try {
+        const response = await fetch('/api/csrf-token');
+        const data = await response.json();
+        if (data.token) {
+          setCsrfToken(data.token);
+        }
+      } catch (error) {
+        console.error('Failed to fetch CSRF token:', error);
+      }
+    };
+
+    fetchCSRFToken();
+
+    // Track form started
+    RepairFormAnalytics.formStarted();
+  }, []);
+
+  // Track form abandonment on page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (!isSubmitted && currentStep > 1 && currentStep < 5) {
+        const timeSpent = Date.now() - formStartTime.current;
+        RepairFormAnalytics.stepAbandoned(currentStep, timeSpent);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isSubmitted, currentStep]);
+
+  // Browser back button integration - sync step with URL
+  useEffect(() => {
+    // Update URL when step changes
+    const url = new URL(window.location.href);
+    const urlStep = url.searchParams.get('step');
+
+    // Only update if different from current URL
+    if (urlStep !== currentStep.toString()) {
+      url.searchParams.set('step', currentStep.toString());
+      window.history.pushState({ step: currentStep }, '', url.toString());
+    }
+  }, [currentStep]);
+
+  // Listen for back/forward button clicks
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state?.step) {
+        const targetStep = Number(event.state.step);
+        // Only allow going back to valid steps
+        if (targetStep >= 1 && targetStep <= 5) {
+          setCurrentStep(targetStep);
+        }
+      } else {
+        // If no state, check URL params
+        const url = new URL(window.location.href);
+        const urlStep = url.searchParams.get('step');
+        if (urlStep) {
+          const targetStep = Number(urlStep);
+          if (targetStep >= 1 && targetStep <= 5) {
+            setCurrentStep(targetStep);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Initialize step from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const urlStep = url.searchParams.get('step');
+
+    if (urlStep && !initialStep) {
+      const targetStep = Number(urlStep);
+      if (targetStep >= 1 && targetStep <= 5) {
+        setCurrentStep(targetStep);
+      }
+    }
+  }, [initialStep]);
+
   // Only fetch devices if not provided initially
   useEffect(() => {
     if (initialDevices.length === 0) {
@@ -116,6 +244,44 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
       fetchIssues(selectedModel);
     }
   }, [selectedModel, currentStep]);
+
+  // Auto-save form state to localStorage
+  useEffect(() => {
+    // Don't save if form is already submitted
+    if (isSubmitted) return;
+
+    try {
+      const formState = {
+        currentStep,
+        selectedDevice,
+        selectedMake,
+        selectedModel,
+        customMake,
+        customModel,
+        selectedDamages,
+        customerInfo,
+        appointmentMode,
+        selectedDate,
+        timestamp: Date.now(),
+      };
+
+      localStorage.setItem('repairFormState', JSON.stringify(formState));
+    } catch (error) {
+      console.error('Failed to save form state:', error);
+    }
+  }, [
+    currentStep,
+    selectedDevice,
+    selectedMake,
+    selectedModel,
+    customMake,
+    customModel,
+    selectedDamages,
+    customerInfo,
+    appointmentMode,
+    selectedDate,
+    isSubmitted,
+  ]);
 
   // Initialize form state when props change
   useEffect(() => {
@@ -232,6 +398,11 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     setSelectedMake(""); // Reset make when device changes
     setSelectedModel(""); // Reset model when device changes
 
+    // Track device selection
+    const deviceLabel = deviceTypes.find(d => d.id === deviceId)?.label || deviceId;
+    RepairFormAnalytics.deviceSelected(deviceLabel);
+    RepairFormAnalytics.stepCompleted(1, { device_type: deviceLabel });
+
     if (!standalone) {
       // Redirect to dedicated form page with selected device
       router.push(`/denton-tx/repair-form?device=${deviceId}`);
@@ -249,6 +420,11 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
   const handleModelSelect = (model: string) => {
     setSelectedModel(model);
+
+    // Track make/model selection
+    RepairFormAnalytics.makeModelSelected(selectedMake, model);
+    RepairFormAnalytics.stepCompleted(2, { make: selectedMake, model });
+
     // Start fetching issues immediately for faster load
     fetchIssues(model);
     // Auto-advance to step 3 immediately (no delay)
@@ -280,6 +456,10 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
   const handleStep3Next = () => {
     if (selectedDamages.length > 0) {
+      // Track issue selection
+      RepairFormAnalytics.issueSelected(selectedDamages);
+      RepairFormAnalytics.stepCompleted(3, { issues: selectedDamages });
+
       setCurrentStep(4);
       console.log("Moving to step 4 with damages:", selectedDamages);
       // Prefetch calendar slots for today's date while user fills out contact info
@@ -287,22 +467,148 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     }
   };
 
+  // Phone number formatter - formats as (XXX) XXX-XXXX
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-numeric characters
+    const cleaned = value.replace(/\D/g, '');
+
+    // Limit to 10 digits
+    const limited = cleaned.slice(0, 10);
+
+    // Format based on length
+    if (limited.length <= 3) {
+      return limited;
+    } else if (limited.length <= 6) {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+    } else {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
+    }
+  };
+
+  // Email validation
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Phone validation - must be exactly 10 digits
+  const validatePhone = (phone: string): boolean => {
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length === 10;
+  };
+
+  // Name validation - must be at least 2 characters and only letters
+  const validateName = (name: string): boolean => {
+    const nameRegex = /^[a-zA-Z\s'-]{2,}$/;
+    return nameRegex.test(name.trim());
+  };
+
+  // Basic sanitization - prevent obvious XSS attempts
+  const sanitizeInput = (value: string): string => {
+    // Remove < and > to prevent HTML tags
+    return value.replace(/[<>]/g, '');
+  };
+
   const handleCustomerInfoChange = (field: string, value: string) => {
+    let processedValue = value;
+    let error = "";
+
+    // Format phone number as user types
+    if (field === 'phone') {
+      processedValue = formatPhoneNumber(value);
+
+      // Only validate if user has started typing
+      if (processedValue.length > 0) {
+        const cleaned = processedValue.replace(/\D/g, '');
+        if (cleaned.length > 0 && cleaned.length < 10) {
+          error = "Phone number must be 10 digits";
+        } else if (cleaned.length === 10 && !validatePhone(processedValue)) {
+          error = "Invalid phone number";
+        }
+      }
+    }
+    // Validate and sanitize email
+    else if (field === 'email') {
+      processedValue = value.toLowerCase().trim();
+      if (processedValue.length > 0 && !validateEmail(processedValue)) {
+        error = "Please enter a valid email address";
+      }
+    }
+    // Validate and sanitize first and last name
+    else if (field === 'firstName' || field === 'lastName') {
+      processedValue = sanitizeInput(value);
+      if (processedValue.length > 0 && !validateName(processedValue)) {
+        error = "Name must be at least 2 letters and contain only letters";
+        RepairFormAnalytics.validationError(field, error);
+      }
+    }
+    // Sanitize description
+    else if (field === 'description') {
+      processedValue = sanitizeInput(value);
+    }
+
+    // Update customer info
     setCustomerInfo(prev => ({
       ...prev,
-      [field]: value
+      [field]: processedValue
+    }));
+
+    // Update error state
+    setFormErrors(prev => ({
+      ...prev,
+      [field]: error
     }));
   };
 
   const handleStep4Next = () => {
     const { firstName, lastName, phone, email } = customerInfo;
-    if (firstName && lastName && phone && email) {
-      setCurrentStep(5);
-      console.log("Moving to step 5 with customer info:", customerInfo);
+
+    // Check if all fields are filled
+    if (!firstName || !lastName || !phone || !email) {
+      return;
     }
+
+    // Check if there are any validation errors
+    const hasErrors = Object.values(formErrors).some(error => error !== "");
+    if (hasErrors) {
+      return;
+    }
+
+    // Final validation check
+    if (!validateName(firstName) || !validateName(lastName) ||
+        !validatePhone(phone) || !validateEmail(email)) {
+      return;
+    }
+
+    // Track step completion
+    RepairFormAnalytics.stepCompleted(4, { has_description: !!customerInfo.description });
+
+    setCurrentStep(5);
+    console.log("Moving to step 5 with customer info:", customerInfo);
   };
 
+  // Track last submission time to prevent duplicates
+  const lastSubmitTime = useRef<number>(0);
+  const submissionCount = useRef<number>(0);
+
   const submitRepairRequest = async (requestType: 'quote' | 'appointment') => {
+    // Prevent duplicate submissions within 10 seconds
+    const now = Date.now();
+    if (now - lastSubmitTime.current < 10000) {
+      console.log('Duplicate submission prevented - please wait');
+      setSubmitError('Please wait a moment before submitting again.');
+      return;
+    }
+
+    // Check CSRF token
+    if (!csrfToken) {
+      setSubmitError('Security token missing. Please refresh the page and try again.');
+      return;
+    }
+
+    lastSubmitTime.current = now;
+    submissionCount.current += 1;
+
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -331,6 +637,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
         },
         body: JSON.stringify(requestData),
       });
@@ -338,11 +645,34 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to submit request');
+        // Handle specific error types
+        if (response.status === 429) {
+          throw new Error('Too many requests. Please try again in a few minutes.');
+        } else if (response.status === 403) {
+          throw new Error('Security verification failed. Please refresh the page and try again.');
+        } else if (result.error?.includes('calendar')) {
+          throw new Error('Unable to book calendar slot. Please call us to schedule at ' + siteConfig.phoneFormatted);
+        } else if (result.error?.includes('email')) {
+          throw new Error('Booking saved but confirmation email failed. We\'ll contact you shortly.');
+        } else {
+          throw new Error(result.error || 'Failed to submit request. Please try again or call us.');
+        }
       }
 
       setIsSubmitted(true);
       console.log('Request submitted successfully:', result);
+
+      // Track successful submission
+      RepairFormAnalytics.formSubmitted(requestType, {
+        device_type: deviceLabel || selectedDevice,
+        make: isOtherDevice ? customMake : selectedMake,
+        model: isOtherDevice ? customModel : selectedModel,
+        issue_count: selectedDamages.length,
+        booking_number: result.bookingNumber,
+      });
+
+      // Clear form data on success
+      localStorage.removeItem('repairFormState');
 
       // Redirect to confirmation page for appointments
       if (requestType === 'appointment' && result.redirect) {
@@ -353,7 +683,12 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
     } catch (error) {
       console.error('Error submitting request:', error);
-      setSubmitError(error instanceof Error ? error.message : 'Failed to submit request');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit request. Please call us at ' + siteConfig.phoneFormatted;
+
+      // Track form error
+      RepairFormAnalytics.formError(errorMessage, 5);
+
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -418,13 +753,17 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
           </p>
         </div>
 
-        {/* Loading State */}
+        {/* Loading State with Skeleton */}
         {loadingDevices ? (
-          <div className="flex items-center justify-center py-8 lg:py-12">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-10 w-10 lg:h-12 lg:w-12 border-b-2 border-primary mx-auto mb-3 lg:mb-4"></div>
-              <p className="text-xs lg:text-sm text-gray-600">Loading device types...</p>
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="p-3 sm:p-4 lg:p-6 border-2 border-gray-200 rounded-lg lg:rounded-xl">
+                <div className="flex flex-col items-center space-y-1.5 sm:space-y-2 lg:space-y-3">
+                  <Skeleton className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-lg" />
+                  <Skeleton className="h-4 sm:h-5 lg:h-6 w-16 sm:w-20 lg:w-24 rounded" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : deviceTypes.length === 0 ? (
           <div className="text-center py-8 lg:py-12">
@@ -499,9 +838,10 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 <Input
                   type="text"
                   value={customMake}
-                  onChange={(e) => setCustomMake(e.target.value)}
+                  onChange={(e) => setCustomMake(sanitizeInput(e.target.value))}
                   placeholder="e.g., Sony, Canon, DJI"
                   className="h-10 lg:h-12 text-sm lg:text-base"
+                  maxLength={100}
                 />
               </div>
 
@@ -513,9 +853,10 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 <Input
                   type="text"
                   value={customModel}
-                  onChange={(e) => setCustomModel(e.target.value)}
+                  onChange={(e) => setCustomModel(sanitizeInput(e.target.value))}
                   placeholder="e.g., Alpha 7 IV, EOS R5, Mavic 3"
                   className="h-10 lg:h-12 text-sm lg:text-base"
+                  maxLength={100}
                 />
               </div>
             </>
@@ -613,40 +954,57 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
           </button>
         </div>
 
-        {/* Damage Selection Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
-          {damageTypes.map((damage) => {
-            const isSelected = selectedDamages.includes(damage.id);
-
-            return (
-              <div
-                key={damage.id}
-                className={`p-2 sm:p-3 lg:p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
-                  isSelected
-                    ? 'border-primary bg-primary/10 shadow-lg'
-                    : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
-                }`}
-                onClick={() => handleDamageToggle(damage.id)}
-              >
-                <div className="flex flex-col items-center text-center space-y-1 sm:space-y-1.5 lg:space-y-2">
-                  {/* Placeholder Image */}
-                  <div className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center text-lg sm:text-xl lg:text-2xl ${
-                    isSelected ? 'bg-primary/20' : 'bg-gray-100'
-                  }`}>
-                    {damage.placeholder}
-                  </div>
-
-                  {/* Label */}
-                  <span className={`font-medium text-[9px] sm:text-[10px] lg:text-xs leading-tight ${
-                    isSelected ? 'text-primary' : 'text-gray-700'
-                  }`}>
-                    {damage.label}
-                  </span>
+        {/* Damage Selection Grid with Loading Skeleton */}
+        {loadingIssues ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+              <div key={i} className="p-2 sm:p-3 lg:p-4 border-2 border-gray-200 rounded-lg">
+                <div className="flex flex-col items-center space-y-1 sm:space-y-1.5 lg:space-y-2">
+                  <Skeleton className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg" />
+                  <Skeleton className="h-3 sm:h-4 w-16 sm:w-20 rounded" />
                 </div>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        ) : damageTypes.length === 0 ? (
+          <div className="text-center py-8 lg:py-12 mb-6 lg:mb-8">
+            <p className="text-sm lg:text-base text-gray-600">No issues available for this model.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
+            {damageTypes.map((damage) => {
+              const isSelected = selectedDamages.includes(damage.id);
+
+              return (
+                <div
+                  key={damage.id}
+                  className={`p-2 sm:p-3 lg:p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
+                    isSelected
+                      ? 'border-primary bg-primary/10 shadow-lg'
+                      : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleDamageToggle(damage.id)}
+                >
+                  <div className="flex flex-col items-center text-center space-y-1 sm:space-y-1.5 lg:space-y-2">
+                    {/* Placeholder Image */}
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center text-lg sm:text-xl lg:text-2xl ${
+                      isSelected ? 'bg-primary/20' : 'bg-gray-100'
+                    }`}>
+                      {damage.placeholder}
+                    </div>
+
+                    {/* Label */}
+                    <span className={`font-medium text-[11px] sm:text-xs lg:text-sm leading-tight ${
+                      isSelected ? 'text-primary' : 'text-gray-700'
+                    }`}>
+                      {damage.label}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Next Button */}
         <div className="flex justify-center px-2">
@@ -665,8 +1023,11 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   );
 
   const renderStep4 = () => {
+    const hasErrors = Object.values(formErrors).some(error => error !== "");
     const isFormValid = customerInfo.firstName && customerInfo.lastName &&
-                       customerInfo.phone && customerInfo.email;
+                       customerInfo.phone && customerInfo.email && !hasErrors &&
+                       validateName(customerInfo.firstName) && validateName(customerInfo.lastName) &&
+                       validatePhone(customerInfo.phone) && validateEmail(customerInfo.email);
     const remainingChars = 300 - customerInfo.description.length;
 
     return (
@@ -695,9 +1056,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   type="text"
                   value={customerInfo.firstName}
                   onChange={(e) => handleCustomerInfoChange('firstName', e.target.value)}
-                  className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
+                  className={`mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base ${
+                    formErrors.firstName ? 'border-red-500 focus:ring-red-500' : ''
+                  }`}
                   placeholder="Enter your first name"
                 />
+                {formErrors.firstName && (
+                  <p className="text-red-600 text-xs mt-1">{formErrors.firstName}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="lastName" className="text-xs lg:text-sm font-medium">
@@ -708,9 +1074,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   type="text"
                   value={customerInfo.lastName}
                   onChange={(e) => handleCustomerInfoChange('lastName', e.target.value)}
-                  className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
+                  className={`mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base ${
+                    formErrors.lastName ? 'border-red-500 focus:ring-red-500' : ''
+                  }`}
                   placeholder="Enter your last name"
                 />
+                {formErrors.lastName && (
+                  <p className="text-red-600 text-xs mt-1">{formErrors.lastName}</p>
+                )}
               </div>
             </div>
 
@@ -724,9 +1095,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 type="tel"
                 value={customerInfo.phone}
                 onChange={(e) => handleCustomerInfoChange('phone', e.target.value)}
-                className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
-                placeholder="Enter your phone number"
+                className={`mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base ${
+                  formErrors.phone ? 'border-red-500 focus:ring-red-500' : ''
+                }`}
+                placeholder="(555) 555-5555"
               />
+              {formErrors.phone && (
+                <p className="text-red-600 text-xs mt-1">{formErrors.phone}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -739,16 +1115,21 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                 type="email"
                 value={customerInfo.email}
                 onChange={(e) => handleCustomerInfoChange('email', e.target.value)}
-                className="mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base"
-                placeholder="Enter your email address"
+                className={`mt-1.5 lg:mt-2 h-10 lg:h-12 text-sm lg:text-base ${
+                  formErrors.email ? 'border-red-500 focus:ring-red-500' : ''
+                }`}
+                placeholder="your@email.com"
               />
+              {formErrors.email && (
+                <p className="text-red-600 text-xs mt-1">{formErrors.email}</p>
+              )}
             </div>
 
             {/* Description */}
             <div>
               <div className="flex justify-between items-center mb-1.5 lg:mb-2">
                 <Label htmlFor="description" className="text-xs lg:text-sm font-medium">
-                  <span className="text-primary">*</span> Tell Us About Your Device's Problem
+                  Tell Us About Your Device's Problem
                 </Label>
                 <span className="text-xs lg:text-sm text-primary">
                   {remainingChars} left
@@ -850,13 +1231,19 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
               <div className="flex justify-center mb-6 lg:mb-8">
                 <div className="inline-flex bg-gray-100 rounded-lg p-1 w-full sm:w-auto">
                   <button
-                    onClick={() => setAppointmentMode("appointment")}
+                    onClick={() => {
+                      setAppointmentMode("appointment");
+                      RepairFormAnalytics.modeToggled("appointment");
+                    }}
                     className="px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-all text-gray-600 hover:text-gray-900 flex-1 sm:flex-initial"
                   >
                     Book Appointment
                   </button>
                   <button
-                    onClick={() => setAppointmentMode("quote")}
+                    onClick={() => {
+                      setAppointmentMode("quote");
+                      RepairFormAnalytics.modeToggled("quote");
+                    }}
                     className="px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-all bg-primary text-white shadow-sm flex-1 sm:flex-initial"
                   >
                     Get Quote Only
@@ -1002,13 +1389,19 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
           <div className="flex justify-center mb-8">
             <div className="inline-flex bg-gray-100 rounded-lg p-1">
               <button
-                onClick={() => setAppointmentMode("appointment")}
+                onClick={() => {
+                  setAppointmentMode("appointment");
+                  RepairFormAnalytics.modeToggled("appointment");
+                }}
                 className="px-6 py-2 rounded-md text-sm font-medium transition-all bg-primary text-white shadow-sm"
               >
                 Book Appointment
               </button>
               <button
-                onClick={() => setAppointmentMode("quote")}
+                onClick={() => {
+                  setAppointmentMode("quote");
+                  RepairFormAnalytics.modeToggled("quote");
+                }}
                 className="px-6 py-2 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-gray-900"
               >
                 Get Quote Only
@@ -1023,10 +1416,10 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             </h2>
           </div>
 
-          {/* Promotional Banner */}
-          <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-8 text-center">
-            <p className="text-primary font-semibold">
-              📱 ✚ ❌ Book today and save up to $10 ❌ ✚ 📱
+          {/* Promotional Banner - Compact */}
+          <div className="bg-primary/5 border border-primary/20 rounded-lg px-4 py-2.5 mb-6 text-center">
+            <p className="text-primary font-semibold text-sm">
+              <span className="text-xs uppercase tracking-wide opacity-80">Limited Time:</span> Book Today & Save Up To $10
             </p>
           </div>
 
@@ -1057,11 +1450,10 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   Pick a time
                 </Label>
                 {loadingSlots ? (
-                  <div className="flex items-center justify-center h-64">
-                    <div className="text-center">
-                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-sm text-gray-600">Loading available times...</p>
-                    </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                      <Skeleton key={i} className="h-10 sm:h-12 rounded-lg" />
+                    ))}
                   </div>
                 ) : availableSlots.length === 0 ? (
                   (() => {
@@ -1156,15 +1548,18 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
               </div>
 
               {/* Trust Badge */}
-              <div className="bg-primary/10 rounded-lg p-4 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary text-white rounded-full p-2">
-                    ✓
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-primary">SAME-DAY SERVICE</p>
-                    <p className="text-xs text-gray-600">Fast repairs with 60+ day warranty on all services.*</p>
-                    <p className="text-xs text-primary">*Most repairs completed same day.</p>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-bold text-gray-900 mb-1">Same-Day Service</h4>
+                    <p className="text-xs text-gray-700 leading-relaxed">
+                      Fast repairs with <span className="font-semibold text-green-700">60+ day warranty</span> on all services.
+                    </p>
                   </div>
                 </div>
               </div>

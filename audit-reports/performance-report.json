@@ -1,0 +1,246 @@
+{
+  "timestamp": "2025-10-11T21:23:52.880Z",
+  "baseUrl": "http://localhost:3000",
+  "performanceBudgets": {
+    "FCP": 1800,
+    "LCP": 2500,
+    "TTI": 3800,
+    "TBT": 200,
+    "CLS": 0.1,
+    "INP": 200
+  },
+  "routesTested": 6,
+  "results": [
+    {
+      "route": "/",
+      "name": "Homepage",
+      "loadTime": 1909,
+      "webVitals": {
+        "FCP": null,
+        "LCP": null,
+        "CLS": 0,
+        "TTI": 625.7000000178814,
+        "TBT": 219.09999999403954
+      },
+      "resources": {
+        "totalRequests": 44,
+        "totalSize": 4699732,
+        "byType": {
+          "link": {
+            "count": 7,
+            "size": 150693
+          },
+          "script": {
+            "count": 33,
+            "size": 1443760
+          },
+          "css": {
+            "count": 2,
+            "size": 3067591
+          },
+          "fetch": {
+            "count": 2,
+            "size": 37688
+          }
+        }
+      },
+      "budgetViolations": [],
+      "metrics": {
+        "domContentLoaded": 234364.275374,
+        "timestamp": 234365.55765
+      },
+      "screenshotPath": "C:\\Users\\dylan\\Desktop\\Nexus Site\\nexus-site\\audit-reports\\screenshots\\homepage.png"
+    },
+    {
+      "route": "/shop",
+      "name": "Shop",
+      "loadTime": 2702,
+      "webVitals": {
+        "FCP": null,
+        "LCP": null,
+        "CLS": 0,
+        "TTI": 450,
+        "TBT": 190.60000002384186
+      },
+      "resources": {
+        "totalRequests": 38,
+        "totalSize": 28546756,
+        "byType": {
+          "link": {
+            "count": 4,
+            "size": 56607
+          },
+          "script": {
+            "count": 32,
+            "size": 1227639
+          },
+          "fetch": {
+            "count": 2,
+            "size": 27262510
+          }
+        }
+      },
+      "budgetViolations": [],
+      "metrics": {
+        "domContentLoaded": 234369.368338,
+        "timestamp": 234371.620357
+      },
+      "screenshotPath": "C:\\Users\\dylan\\Desktop\\Nexus Site\\nexus-site\\audit-reports\\screenshots\\shop.png"
+    },
+    {
+      "route": "/sell-a-device",
+      "name": "Sell Device",
+      "loadTime": 1260,
+      "webVitals": {
+        "FCP": null,
+        "LCP": null,
+        "CLS": 0,
+        "TTI": 388.10000002384186,
+        "TBT": 172.7000000178814
+      },
+      "resources": {
+        "totalRequests": 41,
+        "totalSize": 1315619,
+        "byType": {
+          "link": {
+            "count": 4,
+            "size": 56607
+          },
+          "script": {
+            "count": 31,
+            "size": 1212599
+          },
+          "img": {
+            "count": 6,
+            "size": 46413
+          }
+        }
+      },
+      "budgetViolations": [],
+      "metrics": {
+        "domContentLoaded": 234375.303826,
+        "timestamp": 234376.176861
+      },
+      "screenshotPath": "C:\\Users\\dylan\\Desktop\\Nexus Site\\nexus-site\\audit-reports\\screenshots\\sell-device.png"
+    },
+    {
+      "route": "/sell-a-device/iphone",
+      "name": "iPhone Selection",
+      "loadTime": 1676,
+      "webVitals": {
+        "FCP": null,
+        "LCP": null,
+        "CLS": 0,
+        "TTI": 525.6999999880791,
+        "TBT": 251.7999999821186
+      },
+      "resources": {
+        "totalRequests": 75,
+        "totalSize": 1979236,
+        "byType": {
+          "link": {
+            "count": 4,
+            "size": 56607
+          },
+          "script": {
+            "count": 32,
+            "size": 1214268
+          },
+          "img": {
+            "count": 36,
+            "size": 661601
+          },
+          "fetch": {
+            "count": 2,
+            "size": 18104
+          },
+          "css": {
+            "count": 1,
+            "size": 28656
+          }
+        }
+      },
+      "budgetViolations": [],
+      "metrics": {
+        "domContentLoaded": 234379.893251,
+        "timestamp": 234381.042947
+      },
+      "screenshotPath": "C:\\Users\\dylan\\Desktop\\Nexus Site\\nexus-site\\audit-reports\\screenshots\\iphone-selection.png"
+    },
+    {
+      "route": "/denton-tx/repair-form",
+      "name": "Repair Form",
+      "loadTime": 1866,
+      "webVitals": {
+        "FCP": null,
+        "LCP": null,
+        "CLS": 0,
+        "TTI": 366.09999999403954,
+        "TBT": 200.30000001192093
+      },
+      "resources": {
+        "totalRequests": 38,
+        "totalSize": 1358156,
+        "byType": {
+          "link": {
+            "count": 4,
+            "size": 56607
+          },
+          "script": {
+            "count": 32,
+            "size": 1300763
+          },
+          "fetch": {
+            "count": 2,
+            "size": 786
+          }
+        }
+      },
+      "budgetViolations": [],
+      "metrics": {
+        "domContentLoaded": 234384.613653,
+        "timestamp": 234386.112593
+      },
+      "screenshotPath": "C:\\Users\\dylan\\Desktop\\Nexus Site\\nexus-site\\audit-reports\\screenshots\\repair-form.png"
+    },
+    {
+      "route": "/services/iphone-repair",
+      "name": "iPhone Repair",
+      "loadTime": 1539,
+      "webVitals": {
+        "FCP": null,
+        "LCP": null,
+        "CLS": 0,
+        "TTI": 553.0999999940395,
+        "TBT": 179.2000000178814
+      },
+      "resources": {
+        "totalRequests": 37,
+        "totalSize": 3171643,
+        "byType": {
+          "link": {
+            "count": 5,
+            "size": 1940488
+          },
+          "script": {
+            "count": 32,
+            "size": 1231155
+          }
+        }
+      },
+      "budgetViolations": [],
+      "metrics": {
+        "domContentLoaded": 234389.840928,
+        "timestamp": 234390.827303
+      },
+      "screenshotPath": "C:\\Users\\dylan\\Desktop\\Nexus Site\\nexus-site\\audit-reports\\screenshots\\iphone-repair.png"
+    }
+  ],
+  "summary": {
+    "averageLoadTime": 1825.3333333333333,
+    "averageLCP": 0,
+    "averageFCP": 0,
+    "averageCLS": 0,
+    "totalBudgetViolations": 0
+  }
+}
