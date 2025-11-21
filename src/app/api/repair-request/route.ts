@@ -3,6 +3,8 @@ import nodemailer from 'nodemailer';
 import { createBooking } from '@/lib/google-calendar';
 import { siteConfig } from '@/config/site';
 import { PrismaClient } from '@prisma/client';
+import { verifyCSRFToken } from '@/lib/csrf';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit-production';
 
 const prisma = new PrismaClient();
 
@@ -349,6 +351,25 @@ This is an automated confirmation. Please do not reply to this email.
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting - 5 submissions per hour per IP
+    const rateLimitResponse = await rateLimit(request, {
+      windowMs: 60 * 60 * 1000, // 1 hour
+      maxRequests: 5, // 5 repair requests per hour
+    });
+
+    if (rateLimitResponse) {
+      return rateLimitResponse; // Return 429 Too Many Requests
+    }
+
+    // Verify CSRF token after rate limiting
+    const csrfToken = request.headers.get('X-CSRF-Token');
+    if (!csrfToken || !verifyCSRFToken(csrfToken)) {
+      return NextResponse.json(
+        { error: 'Invalid security token. Please refresh the page and try again.' },
+        { status: 403 }
+      );
+    }
+
     const data: RepairRequestData = await request.json();
 
     // Validate required fields

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import RepairFormClient from "./repair-form-client";
 import { PrismaClient } from '@prisma/client';
+import { RepairFormErrorBoundary } from '@/components/repair-form-error-boundary';
 
 const prisma = new PrismaClient();
 
@@ -105,9 +106,11 @@ export default async function RepairFormPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-        <RepairFormClient initialDevices={devices} initialModelIssues={modelIssues} />
-      </Suspense>
+      <RepairFormErrorBoundary>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+          <RepairFormClient initialDevices={devices} initialModelIssues={modelIssues} />
+        </Suspense>
+      </RepairFormErrorBoundary>
     </div>
   );
 }

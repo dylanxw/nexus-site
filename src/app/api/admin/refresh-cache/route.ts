@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 import path from 'path';
+import { getSession } from '@/lib/auth';
+import { rateLimit } from '@/lib/rate-limit-production';
 
 const sheets = google.sheets('v4');
 
@@ -141,13 +143,34 @@ function parseInventoryString(inventoryStr: string) {
 // POST - Refresh cache from Google Sheets
 export async function POST(request: NextRequest) {
   try {
-    // In production, add authentication here
-    // const session = await getServerSession();
-    // if (!session || session.user?.role !== 'admin') {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
+    // Verify authentication
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please log in' },
+        { status: 401 }
+      );
+    }
 
-    console.log('Starting cache refresh from Google Sheets...');
+    // Check user has appropriate role (only admin and manager can refresh cache)
+    if (!['ADMIN', 'MANAGER'].includes(session.role)) {
+      return NextResponse.json(
+        { error: 'Forbidden - Only managers and admins can refresh inventory cache' },
+        { status: 403 }
+      );
+    }
+
+    // Apply rate limiting - 10 refreshes per hour
+    const rateLimitResponse = await rateLimit(request, {
+      windowMs: 60 * 60 * 1000, // 1 hour
+      maxRequests: 10, // 10 refreshes per hour
+    });
+
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    console.log(`Cache refresh initiated by ${session.email}`);
 
     // Check if Google Sheets credentials are configured
     const hasValidCredentials =

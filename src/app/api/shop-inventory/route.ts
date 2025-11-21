@@ -38,21 +38,51 @@ export async function GET(request: NextRequest) {
     const priceMin = searchParams.get('priceMin');
     const priceMax = searchParams.get('priceMax');
 
+    // Pagination parameters
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
+
     // Read cached inventory (much faster than Google Sheets)
     const inventory = await getCachedInventory();
     const metadata = await getProductMetadata();
 
     // Filter for available products only
     let availableProducts = inventory.filter((item: any) => {
+      // Skip section headers from spreadsheet
+      if (item.Inventory?.includes('Devices') ||
+          item.Inventory?.includes('Phones') ||
+          item.Brand?.includes('SECTION') ||
+          item.Brand?.includes('---') ||
+          !item.Inventory ||
+          !item.Brand) {
+        return false;
+      }
+
+      // Skip items with invalid battery health
+      if (item['Battery Health']) {
+        const battery = parseInt(item['Battery Health']?.toString().replace('%', ''));
+        if (isNaN(battery) || battery > 100 || battery < 0) {
+          // Clear invalid battery value but don't skip the item
+          item['Battery Health'] = null;
+        }
+      }
+
+      // Must have some form of identifier (IMEI, SKU, or Serial Number)
+      if (!item.IMEI && !item.SKU && !item['Serial Number']) {
+        return false;
+      }
+
       // Must be marked for Nexus Site
       const nexusSiteValue = item['Nexus Site']?.toString().toUpperCase();
       const isForNexusSite = nexusSiteValue === 'TRUE' || nexusSiteValue === 'YES' || nexusSiteValue === '1';
 
       if (!isForNexusSite) return false;
 
-      // Must have a price
-      const price = parseFloat(item.Price?.toString().replace(/[$,]/g, '') || '0');
-      if (!price || price <= 0) return false;
+      // Must have a valid price
+      const priceStr = item.Price?.toString().replace(/[$,]/g, '');
+      const price = parseFloat(priceStr || '0');
+      if (!price || price <= 0 || isNaN(price)) return false;
 
       // Check the product's status - either from cached inventory or metadata
       const productId = item.SKU || item.IMEI;
@@ -145,11 +175,23 @@ export async function GET(request: NextRequest) {
       return 0;
     });
 
+    // Apply pagination
+    const totalItems = enhancedProducts.length;
+    const totalPages = Math.ceil(totalItems / limit);
+    const paginatedProducts = enhancedProducts.slice(skip, skip + limit);
+
     // Return response with cache headers for better performance
     return NextResponse.json(
       {
-        items: enhancedProducts,
-        total: enhancedProducts.length,
+        items: paginatedProducts,
+        total: totalItems,
+        pagination: {
+          page,
+          limit,
+          totalPages,
+          hasMore: page < totalPages,
+          hasPrevious: page > 1,
+        },
         cached: true
       },
       {

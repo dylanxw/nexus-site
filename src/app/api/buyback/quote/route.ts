@@ -10,13 +10,27 @@ import {
   sendAdminEmailFailureNotification,
 } from "@/lib/backend/email-service";
 import { calculateQuotePricing } from "@/lib/backend/offer-calculator";
-import { quoteSubmissionSchema } from "@/lib/validations/sell-a-device";
+import { quoteSubmissionSchema } from "@/lib/validations/buyback";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit-production";
 import { logger, handleApiError } from "@/lib/logger";
+import { verifyCSRFToken } from "@/lib/csrf";
 import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   logger.apiRequest('POST', '/api/sell-a-device/quote');
+
+  // Verify CSRF token first
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  if (!csrfToken || !verifyCSRFToken(csrfToken)) {
+    logger.warn('Invalid CSRF token for quote submission', 'BUYBACK');
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid security token. Please refresh the page and try again.'
+      },
+      { status: 403 }
+    );
+  }
 
   // Apply rate limiting
   const rateLimitResult = await rateLimit(request, RateLimitPresets.QUOTE_SUBMISSION);
@@ -231,9 +245,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Remove sensitive business data before sending to client
+    const {
+      atlasPrice,  // Remove internal pricing
+      margin,      // Remove business margins
+      ...safeQuote
+    } = quote;
+
     return NextResponse.json({
       success: true,
-      quote,
+      quote: safeQuote,
     });
   } catch (error) {
     console.error("Quote retrieval error:", error);

@@ -9,7 +9,7 @@ import { Home, ChevronRight, Package, Truck, Check, CreditCard, Shield, Clock, Z
 import { formatPrice } from "@/lib/pricing-calculator";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { customerInfoSchema } from "@/lib/validations/sell-a-device";
+import { customerInfoSchema } from "@/lib/validations/buyback";
 import { z } from "zod";
 
 interface OverviewTemplateProps {
@@ -22,6 +22,7 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [quoteData, setQuoteData] = useState<any>(null);
+  const [csrfToken, setCsrfToken] = useState<string | null>(null);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     email: "",
@@ -42,6 +43,21 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
       // If no quote data, redirect back
       router.push(backPath);
     }
+
+    // Fetch CSRF token
+    const fetchCSRFToken = async () => {
+      try {
+        const response = await fetch('/api/csrf-token');
+        const data = await response.json();
+        if (data.token) {
+          setCsrfToken(data.token);
+        }
+      } catch (error) {
+        console.error('Failed to fetch CSRF token:', error);
+      }
+    };
+
+    fetchCSRFToken();
   }, [backPath, router]);
 
   const submitQuote = async () => {
@@ -88,9 +104,12 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
       const validatedData = validationResult.data;
 
       // Submit quote to API (prices calculated server-side for security)
-      const response = await fetch('/api/sell-a-device/quote', {
+      const response = await fetch('/api/buyback/quote', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken || '',
+        },
         body: JSON.stringify({
           model: quoteData.model,
           storage: quoteData.storage,

@@ -15,6 +15,7 @@ import { Smartphone, Tablet, Monitor, Gamepad2, Watch, HardDrive, ArrowRight, Pa
 import { siteConfig } from "@/config/site";
 import { RepairFormAnalytics } from "@/lib/analytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchWithTimeout, TimeoutError } from "@/lib/fetch-with-timeout";
 
 // Icon mapping for dynamic devices
 const iconMap: Record<string, any> = {
@@ -150,13 +151,20 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   useEffect(() => {
     const fetchCSRFToken = async () => {
       try {
-        const response = await fetch('/api/csrf-token');
+        const response = await fetchWithTimeout('/api/csrf-token', {
+          timeout: 10000, // 10 second timeout for CSRF token
+        });
         const data = await response.json();
         if (data.token) {
           setCsrfToken(data.token);
         }
       } catch (error) {
-        console.error('Failed to fetch CSRF token:', error);
+        if (error instanceof TimeoutError) {
+          console.error('CSRF token request timed out:', error.message);
+        } else {
+          console.error('Failed to fetch CSRF token:', error);
+        }
+        // Don't show error to user for CSRF token fetch, it will be caught on submit
       }
     };
 
@@ -375,7 +383,9 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     // Don't clear slots immediately - better UX
 
     try {
-      const response = await fetch(`/api/calendar/availability?date=${date}`);
+      const response = await fetchWithTimeout(`/api/calendar/availability?date=${date}`, {
+        timeout: 15000, // 15 second timeout for calendar availability
+      });
       const data = await response.json();
 
       if (response.ok && data.slots) {
@@ -386,8 +396,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
         setSubmitError('Unable to load available time slots. Please try again.');
       }
     } catch (error) {
-      console.error('Error fetching availability:', error);
-      setSubmitError('Unable to load available time slots. Please try again.');
+      if (error instanceof TimeoutError) {
+        console.error('Calendar availability request timed out:', error.message);
+        setSubmitError('Calendar is taking longer than expected to load. Please try again or call us directly.');
+      } else {
+        console.error('Error fetching availability:', error);
+        setSubmitError('Unable to load available time slots. Please try again.');
+      }
     } finally {
       setLoadingSlots(false);
     }
@@ -633,13 +648,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
         })
       };
 
-      const response = await fetch('/api/repair-request', {
+      const response = await fetchWithTimeout('/api/repair-request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken,
         },
         body: JSON.stringify(requestData),
+        timeout: 30000, // 30 second timeout for form submission
       });
 
       const result = await response.json();
@@ -683,7 +699,15 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
     } catch (error) {
       console.error('Error submitting request:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit request. Please call us at ' + siteConfig.phoneFormatted;
+
+      let errorMessage: string;
+      if (error instanceof TimeoutError) {
+        errorMessage = 'Request is taking longer than expected. Please wait a moment or call us directly at ' + siteConfig.phoneFormatted;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = 'Failed to submit request. Please call us at ' + siteConfig.phoneFormatted;
+      }
 
       // Track form error
       RepairFormAnalytics.formError(errorMessage, 5);
@@ -702,8 +726,15 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   };
 
   const renderProgressBar = () => (
-    <div className="mb-6 lg:mb-8">
-      <div className="flex items-center justify-center overflow-x-auto px-2 lg:px-4">
+    <div className="mb-6 lg:mb-8" role="group" aria-label="Form progress">
+      <div
+        className="flex items-center justify-center overflow-x-auto px-2 lg:px-4"
+        role="progressbar"
+        aria-valuenow={currentStep}
+        aria-valuemin={1}
+        aria-valuemax={5}
+        aria-label={`Step ${currentStep} of 5: ${steps[currentStep - 1]?.label}`}
+      >
         {steps.map((step, index) => (
           <div key={step.number} className="flex items-center flex-shrink-0">
             {/* Step Circle */}
@@ -716,12 +747,20 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                     ? 'bg-primary text-white'
                     : 'bg-gray-300 text-gray-600'
                 }`}
+                aria-current={step.number === currentStep ? 'step' : undefined}
+                aria-label={`Step ${step.number}: ${step.label} ${
+                  step.number === currentStep ? '(current)' :
+                  step.number < currentStep ? '(completed)' : '(upcoming)'
+                }`}
               >
                 {step.number}
               </div>
-              <span className={`text-[10px] lg:text-xs mt-1 hidden sm:block ${
-                step.number === currentStep ? 'text-primary font-medium' : 'text-gray-500'
-              }`}>
+              <span
+                className={`text-[10px] lg:text-xs mt-1 hidden sm:block ${
+                  step.number === currentStep ? 'text-primary font-medium' : 'text-gray-500'
+                }`}
+                aria-hidden="true"
+              >
                 {step.label}
               </span>
             </div>
@@ -1060,9 +1099,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                     formErrors.firstName ? 'border-red-500 focus:ring-red-500' : ''
                   }`}
                   placeholder="Enter your first name"
+                  aria-label="First Name"
+                  aria-required="true"
+                  aria-invalid={!!formErrors.firstName}
+                  aria-describedby={formErrors.firstName ? 'firstName-error' : undefined}
                 />
                 {formErrors.firstName && (
-                  <p className="text-red-600 text-xs mt-1">{formErrors.firstName}</p>
+                  <p id="firstName-error" className="text-red-600 text-xs mt-1" role="alert">{formErrors.firstName}</p>
                 )}
               </div>
               <div>
@@ -1078,9 +1121,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                     formErrors.lastName ? 'border-red-500 focus:ring-red-500' : ''
                   }`}
                   placeholder="Enter your last name"
+                  aria-label="Last Name"
+                  aria-required="true"
+                  aria-invalid={!!formErrors.lastName}
+                  aria-describedby={formErrors.lastName ? 'lastName-error' : undefined}
                 />
                 {formErrors.lastName && (
-                  <p className="text-red-600 text-xs mt-1">{formErrors.lastName}</p>
+                  <p id="lastName-error" className="text-red-600 text-xs mt-1" role="alert">{formErrors.lastName}</p>
                 )}
               </div>
             </div>
@@ -1099,9 +1146,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   formErrors.phone ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="(555) 555-5555"
+                aria-label="Phone Number"
+                aria-required="true"
+                aria-invalid={!!formErrors.phone}
+                aria-describedby={formErrors.phone ? 'phone-error' : undefined}
               />
               {formErrors.phone && (
-                <p className="text-red-600 text-xs mt-1">{formErrors.phone}</p>
+                <p id="phone-error" className="text-red-600 text-xs mt-1" role="alert">{formErrors.phone}</p>
               )}
             </div>
 
@@ -1119,9 +1170,13 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
                   formErrors.email ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="your@email.com"
+                aria-label="Email Address"
+                aria-required="true"
+                aria-invalid={!!formErrors.email}
+                aria-describedby={formErrors.email ? 'email-error' : undefined}
               />
               {formErrors.email && (
-                <p className="text-red-600 text-xs mt-1">{formErrors.email}</p>
+                <p id="email-error" className="text-red-600 text-xs mt-1" role="alert">{formErrors.email}</p>
               )}
             </div>
 
@@ -1669,6 +1724,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
             Quick & easy repair request in just a few steps
           </p>
         </motion.div>
+
+        {/* Screen reader announcements */}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {submitError && <p>Error: {submitError}</p>}
+          {Object.values(formErrors).filter(Boolean).length > 0 && (
+            <p>Form has {Object.values(formErrors).filter(Boolean).length} errors. Please review and correct them.</p>
+          )}
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}

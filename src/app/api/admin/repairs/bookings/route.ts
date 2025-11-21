@@ -1,12 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { getSession } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Add authentication check here
-    // Verify user is logged in and has admin/manager role
+    // Verify authentication and authorization
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please log in' },
+        { status: 401 }
+      );
+    }
+
+    // Check user has appropriate role
+    if (!['ADMIN', 'MANAGER', 'EMPLOYEE'].includes(session.role)) {
+      return NextResponse.json(
+        { error: 'Forbidden - Insufficient permissions' },
+        { status: 403 }
+      );
+    }
 
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get('status');
@@ -48,11 +63,20 @@ export async function GET(request: NextRequest) {
       prisma.repairBooking.count({ where }),
     ]);
 
-    // Parse issues JSON for each booking
-    const bookingsWithParsedIssues = bookings.map(booking => ({
-      ...booking,
-      issues: JSON.parse(booking.issues),
-    }));
+    // Parse issues JSON for each booking with error handling
+    const bookingsWithParsedIssues = bookings.map(booking => {
+      let parsedIssues;
+      try {
+        parsedIssues = JSON.parse(booking.issues);
+      } catch (error) {
+        console.error(`Failed to parse issues for booking ${booking.id}:`, error);
+        parsedIssues = [];
+      }
+      return {
+        ...booking,
+        issues: parsedIssues,
+      };
+    });
 
     return NextResponse.json({
       bookings: bookingsWithParsedIssues,
@@ -75,7 +99,22 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    // TODO: Add authentication check here
+    // Verify authentication and authorization
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please log in' },
+        { status: 401 }
+      );
+    }
+
+    // Check user has appropriate role
+    if (!['ADMIN', 'MANAGER'].includes(session.role)) {
+      return NextResponse.json(
+        { error: 'Forbidden - Only managers and admins can update bookings' },
+        { status: 403 }
+      );
+    }
 
     const body = await request.json();
     const { id, status, notes, staffNotes } = body;
@@ -97,11 +136,20 @@ export async function PATCH(request: NextRequest) {
       data: updateData,
     });
 
+    // Parse issues with error handling
+    let parsedIssues;
+    try {
+      parsedIssues = JSON.parse(booking.issues);
+    } catch (error) {
+      console.error(`Failed to parse issues for booking ${booking.id}:`, error);
+      parsedIssues = [];
+    }
+
     return NextResponse.json({
       success: true,
       booking: {
         ...booking,
-        issues: JSON.parse(booking.issues),
+        issues: parsedIssues,
       },
     });
 
