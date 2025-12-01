@@ -210,25 +210,26 @@ export function SiteHeader() {
             <nav className={`hidden lg:flex items-center relative transition-all duration-300 ${
               isScrolled ? 'gap-4' : 'gap-6'
             }`}>
-              {/* Repair Services Dropdown */}
+              {/* Repair Services with Dropdown */}
               <div
                 className="relative"
                 onMouseEnter={() => setActiveDropdown('repair')}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
-                <div
-                  className="flex items-center gap-1 text-white font-semibold hover:text-primary transition-colors cursor-pointer"
-                  onClick={() => handleDropdownToggle('repair')}
+                <Link
+                  href="/services"
+                  className="flex items-center gap-1 text-white font-semibold hover:text-primary transition-colors"
                 >
                   REPAIR SERVICES
                   <ChevronDown className="h-4 w-4" style={{ color: '#DB5858' }} />
-                </div>
+                </Link>
                 {activeDropdown === 'repair' && (
                   <div
                     className="absolute top-full left-0 w-56 rounded-md shadow-lg z-50 border border-gray-600"
                     style={{ backgroundColor: '#1D2228' }}
                   >
                     <div className="py-2">
+                      <Link href="/services" className="block px-4 py-2 text-white hover:bg-gray-800 transition-colors font-semibold border-b border-gray-700">View All Services</Link>
                       <Link href="/services/iphone-repair" className="block px-4 py-2 text-white hover:bg-gray-800 transition-colors">iPhone Repair</Link>
                       <Link href="/services/tablet-repair" className="block px-4 py-2 text-white hover:bg-gray-800 transition-colors">Tablet Repair</Link>
                       <Link href="/services/ipad-repair" className="block px-4 py-2 text-white hover:bg-gray-800 transition-colors">iPad Repair</Link>
@@ -314,17 +315,27 @@ export function SiteHeader() {
       {isMenuOpen && (
         <div className="lg:hidden border-t" style={{ backgroundColor: '#1D2228', borderTopColor: '#22272E' }}>
           <nav className="wide-container py-6 space-y-4">
-            {/* Mobile Repair Services */}
+            {/* Mobile Repair Services with Dropdown */}
             <div>
               <div
-                className="flex items-center gap-2 text-white font-semibold py-2 cursor-pointer"
+                className="flex items-center justify-between text-white font-semibold py-2 cursor-pointer"
                 onClick={() => handleDropdownToggle('mobile-repair')}
               >
-                REPAIR SERVICES
+                <Link
+                  href="/services"
+                  className="flex-1 text-white hover:text-primary transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  REPAIR SERVICES
+                </Link>
                 <ChevronDown className="h-4 w-4" style={{ color: '#DB5858' }} />
               </div>
               {activeDropdown === 'mobile-repair' && (
-                <div className="pl-4 space-y-2">
+                <div className="pl-4 space-y-2 mt-2">
+                  <Link href="/services" className="block text-gray-300 py-1 font-semibold" onClick={() => setIsMenuOpen(false)}>View All Services</Link>
                   <Link href="/services/iphone-repair" className="block text-gray-300 py-1" onClick={() => setIsMenuOpen(false)}>iPhone Repair</Link>
                   <Link href="/services/tablet-repair" className="block text-gray-300 py-1" onClick={() => setIsMenuOpen(false)}>Tablet Repair</Link>
                   <Link href="/services/ipad-repair" className="block text-gray-300 py-1" onClick={() => setIsMenuOpen(false)}>iPad Repair</Link>

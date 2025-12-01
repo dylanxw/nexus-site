@@ -32,7 +32,7 @@ export async function register() {
       enabled: process.env.NODE_ENV === 'production',
 
       // Capture additional context
-      beforeSend(event, hint) {
+      beforeSend(event) {
         // Don't send sensitive data
         if (event.request) {
           delete event.request.cookies;
@@ -53,5 +53,25 @@ export async function register() {
       environment: process.env.NODE_ENV,
       enabled: process.env.NODE_ENV === 'production',
     });
+  }
+}
+
+export async function onRequestError(
+  error: Error,
+  request: {
+    path: string;
+    method: string;
+    headers?: Record<string, string | string[] | undefined>;
+  },
+  context: { routerKind: string; routePath: string; routeType: string }
+) {
+  if (process.env.NEXT_RUNTIME === 'nodejs' || process.env.NEXT_RUNTIME === 'edge') {
+    const Sentry = await import('@sentry/nextjs');
+    // Ensure headers is always defined for Sentry
+    const requestWithHeaders = {
+      ...request,
+      headers: request.headers || {}
+    };
+    Sentry.captureRequestError(error, requestWithHeaders, context);
   }
 }

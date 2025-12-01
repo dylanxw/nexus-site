@@ -69,16 +69,32 @@ export function Footer() {
             </h3>
             <div className="space-y-1 text-sm text-muted-foreground">
               <div className="flex justify-between">
-                <span>Mon–Fri</span>
-                <span>10:00 AM–6:00 PM</span>
+                <span>Monday</span>
+                <span>{siteConfig.hours.monday}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Tuesday</span>
+                <span>{siteConfig.hours.tuesday}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Wednesday</span>
+                <span>{siteConfig.hours.wednesday}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Thursday</span>
+                <span>{siteConfig.hours.thursday}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Friday</span>
+                <span>{siteConfig.hours.friday}</span>
               </div>
               <div className="flex justify-between">
                 <span>Saturday</span>
-                <span>12:00–6:00 PM</span>
+                <span>{siteConfig.hours.saturday}</span>
               </div>
               <div className="flex justify-between">
                 <span>Sunday</span>
-                <span>Closed</span>
+                <span>{siteConfig.hours.sunday}</span>
               </div>
             </div>
           </div>

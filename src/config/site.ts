@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "Nexus Tech Solutions",
-  description: "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with lifetime warranty and same-day service.",
+  description: "Fast, reliable electronics repair in Denton, TX. Phones, tablets, computers & consoles with 60-day warranty and same-day service.",
   url: "https://nexustechsolutions.io",
   phone: "940-600-1012",
   phoneFormatted: "(940) 600-1012",
@@ -22,6 +22,7 @@ export const siteConfig = {
     friday: "10:00 AM - 7:00 PM",
     saturday: "1:00 PM - 5:00 PM",
     sunday: "Closed",
+    weekday: "Monday-Friday: 10:00 AM - 7:00 PM",
     weekdayShort: "Mon-Fri: 10am-7pm",
     saturdayShort: "Sat: 1pm-5pm",
     display: "Mon-Fri: 10am-7pm | Sat: 1pm-5pm"
@@ -91,7 +92,7 @@ export const siteConfig = {
     rating: "4.9",
     reviewCount: "150+",
     devicesServiced: "5,000+",
-    warranty: "Lifetime",
+    warranty: "60-Day",
     turnaround: "Same-Day"
   }
 } as const;

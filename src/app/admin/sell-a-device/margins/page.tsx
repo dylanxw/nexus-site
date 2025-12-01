@@ -137,7 +137,10 @@ export default function SimplifiedMarginPage() {
     } else if (settings.mode === "tiered" && settings.tieredMargins) {
       // Tiered mode: Find the right tier and use the dollar amount
       const tiers = settings.tieredMargins;
-      let tier = tiers.tier1;
+
+      // Define tier type for proper TypeScript inference
+      type TierType = typeof tiers.tier1 | typeof tiers.tier2 | typeof tiers.tier3 | typeof tiers.tier4 | typeof tiers.tier5;
+      let tier: TierType = tiers.tier1;
 
       if (atlasPrice >= tiers.tier5.min) tier = tiers.tier5;
       else if (atlasPrice >= tiers.tier4.min) tier = tiers.tier4;
