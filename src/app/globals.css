@@ -260,3 +260,147 @@
   }
 
 }
+
+/* ── Print Styles ── */
+@media print {
+  @page {
+    margin: 0;
+    size: letter;
+  }
+
+  /* Global reset for print */
+  * {
+    color: black !important;
+    background: white !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  body {
+    font-size: 11pt;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0.6in 0.75in;
+  }
+
+  /* Hide everything not needed on paper */
+  header, footer, nav,
+  [data-sonner-toaster],
+  .no-print {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Collapse spacing that creates the screen layout */
+  .min-h-screen {
+    min-height: auto !important;
+  }
+
+  .py-12 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .px-8 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .space-y-6 > :not(:first-child) {
+    margin-top: 12pt !important;
+  }
+
+  /* Remove the card wrapper styling */
+  .rounded-2xl {
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* Green success header → compact B&W */
+  [data-print-header] {
+    border-bottom: 2px solid black;
+    padding: 0 0 8pt 0 !important;
+    margin-bottom: 12pt;
+  }
+
+  /* Hide the animated checkmark circle on print */
+  [data-print-header] .rounded-full {
+    display: none !important;
+  }
+
+  [data-print-header] h1 {
+    font-size: 16pt !important;
+    margin: 0 !important;
+  }
+
+  [data-print-header] p {
+    font-size: 10pt !important;
+    margin: 2pt 0 0 0 !important;
+  }
+
+  /* Price box → bold bordered box, tighter */
+  [data-print-price] {
+    border: 2px solid black !important;
+    padding: 10pt !important;
+    margin: 12pt 0 !important;
+    page-break-inside: avoid;
+  }
+
+  [data-print-price] .text-5xl,
+  [data-print-price] .sm\:text-6xl {
+    font-size: 32pt !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Device details print table */
+  [data-print-device] {
+    border: 1px solid #999 !important;
+    padding: 8pt 12pt !important;
+  }
+
+  /* Next steps section → compact list */
+  .space-y-3 > :not(:first-child) {
+    margin-top: 6pt !important;
+  }
+
+  /* Icon containers → small and simple */
+  .bg-blue-50, .bg-green-50, .bg-purple-50 {
+    border: 1px solid #999 !important;
+    width: 24pt !important;
+    height: 24pt !important;
+    min-width: 24pt !important;
+  }
+
+  .bg-blue-50 svg, .bg-green-50 svg, .bg-purple-50 svg {
+    width: 12pt !important;
+    height: 12pt !important;
+  }
+
+  /* Important info box */
+  .bg-amber-50 {
+    border: 1px solid #999 !important;
+    padding: 6pt 8pt !important;
+  }
+
+  /* Separator */
+  hr {
+    border-color: #ccc !important;
+  }
+
+  /* Pipe separators in device details */
+  .text-gray-300 {
+    color: #999 !important;
+  }
+
+  /* Prevent page breaks inside sections */
+  [data-print-price],
+  [data-print-device],
+  .bg-amber-50 {
+    page-break-inside: avoid;
+  }
+}

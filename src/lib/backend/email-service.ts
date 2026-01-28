@@ -70,101 +70,209 @@ export async function sendQuoteConfirmationEmail(quote: Quote): Promise<boolean>
 
     const html = `
       <!DOCTYPE html>
-      <html>
+      <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
       <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="color-scheme" content="light dark">
+        <meta name="supported-color-schemes" content="light dark">
+        <title>Your Device Quote</title>
+        <!--[if mso]>
+        <style type="text/css">
+          table, td { font-family: Arial, sans-serif; }
+        </style>
+        <![endif]-->
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #DB5858 0%, #c94848 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; border-top: none; }
-          .quote-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #DB5858; }
-          .price { font-size: 36px; color: #DB5858; font-weight: bold; }
-          .details { margin: 20px 0; }
-          .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-          .cta-button { display: inline-block; background: #DB5858; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-size: 18px; }
-          .cta-button:hover { background: #c94848; }
-          .urgency { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0; }
-          .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+          :root { color-scheme: light dark; }
+          /* Apple Mail / iOS dark mode overrides */
+          @media (prefers-color-scheme: dark) {
+            .email-bg { background-color: #1a1a1a !important; }
+            .email-body { background-color: #232323 !important; }
+            /* Keep branded header colors intact */
+            .header-bg { background-color: #DB5858 !important; }
+            .header-bar { background-color: #c94848 !important; }
+            .header-text, .header-subtext { color: #ffffff !important; }
+            /* Body text */
+            .body-cell { background-color: #232323 !important; }
+            .text-heading { color: #f0f0f0 !important; }
+            .text-body { color: #cccccc !important; }
+            .text-muted { color: #aaaaaa !important; }
+            .text-detail-label { color: #aaaaaa !important; }
+            .text-detail-value { color: #f0f0f0 !important; }
+            .text-section-label { color: #888888 !important; }
+            /* Price card */
+            .price-card { background-color: #2a2a2a !important; border-color: #3a3a3a !important; }
+            .price-text { color: #e86a6a !important; }
+            .price-label { color: #aaaaaa !important; }
+            .price-sub { color: #888888 !important; }
+            /* Detail rows */
+            .detail-border { border-bottom-color: #333333 !important; }
+            /* Expiration notice */
+            .notice-bg { background-color: #342a14 !important; border-left-color: #E8A735 !important; }
+            .notice-text { color: #e8c56e !important; }
+            /* CTA button - keep as-is */
+            .cta-btn { background-color: #DB5858 !important; color: #ffffff !important; }
+            /* Divider */
+            .divider { border-top-color: #333333 !important; }
+            /* Why Nexus */
+            .text-why { color: #aaaaaa !important; }
+            /* Footer */
+            .footer-bg { background-color: #1e1e1e !important; border-top-color: #333333 !important; }
+            .footer-name { color: #dddddd !important; }
+            .footer-detail { color: #888888 !important; }
+            .footer-copy { color: #555555 !important; }
+            /* Step text */
+            .step-text { color: #cccccc !important; }
+          }
         </style>
       </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Your Device Quote is Ready!</h1>
-            <p style="font-size: 18px;">Quote #${quote.quoteNumber}</p>
-          </div>
+      <body style="margin:0; padding:0; background-color:#f4f4f5; -webkit-font-smoothing:antialiased;">
+        <!-- Outer wrapper -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;" class="email-bg">
+          <tr>
+            <td align="center" style="padding:32px 16px;">
 
-          <div class="content">
-            <h2>Great news, ${quote.customerName}!</h2>
-            <p>We've evaluated your device and have an instant cash offer ready for you.</p>
+              <!-- Email container -->
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.08);" class="email-body">
 
-            <div class="quote-box">
-              <div style="text-align: center;">
-                <p style="margin: 0; color: #666;">Your ${quote.model} is worth:</p>
-                <div class="price">${formatPrice(quote.offerPrice)}</div>
-                <p style="color: #666;">Cash in hand - no waiting!</p>
-              </div>
-            </div>
+                <!-- Header -->
+                <tr>
+                  <td style="background-color:#DB5858; padding:32px 40px; text-align:center;" class="header-bg">
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.85);" class="header-subtext">Nexus Tech Solutions</p>
+                    <h1 style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:24px; font-weight:700; color:#ffffff; line-height:1.3;" class="header-text">Your Device Quote is Ready</h1>
+                  </td>
+                </tr>
 
-            <div class="details">
-              <h3>Device Details:</h3>
-              <div class="detail-row">
-                <span>Model:</span>
-                <strong>${quote.model}</strong>
-              </div>
-              <div class="detail-row">
-                <span>Storage:</span>
-                <strong>${quote.storage}</strong>
-              </div>
-              <div class="detail-row">
-                <span>Network:</span>
-                <strong>${quote.network}</strong>
-              </div>
-              <div class="detail-row">
-                <span>Condition:</span>
-                <strong>${quote.condition}</strong>
-              </div>
-            </div>
+                <!-- Quote number bar -->
+                <tr>
+                  <td style="background-color:#c94848; padding:10px 40px; text-align:center;" class="header-bar">
+                    <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:rgba(255,255,255,0.9); letter-spacing:0.5px;" class="header-text">Quote #${quote.quoteNumber}</p>
+                  </td>
+                </tr>
 
-            <div class="urgency">
-              <strong>⏰ Limited Time Offer!</strong><br>
-              Your quote is valid for ${daysRemaining} days. After that, prices may change based on market conditions.
-            </div>
+                <!-- Body -->
+                <tr>
+                  <td style="padding:32px 40px;" class="body-cell">
 
-            <h3>How to Get Paid:</h3>
-            <ol>
-              <li><strong>Visit Our Store:</strong> Bring your device to our Denton location for instant payment</li>
-              <li><strong>Mail It In:</strong> Call us at ${siteConfig.phoneFormatted} for a prepaid shipping label</li>
-            </ol>
+                    <!-- Greeting -->
+                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:20px; font-weight:700; color:#1a1a1a;" class="text-heading">Hi ${quote.customerName},</p>
+                    <p style="margin:0 0 28px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:15px; color:#555555; line-height:1.5;" class="text-body">We've evaluated your device and have an instant cash offer ready for you.</p>
 
-            <div style="text-align: center;">
-              <a href="${siteConfig.phoneHref}" class="cta-button">Call Now to Sell</a>
-            </div>
+                    <!-- Price card -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                      <tr>
+                        <td style="background-color:#fafafa; border:1px solid #e5e5e5; border-radius:8px; padding:28px 24px; text-align:center;" class="price-card">
+                          <p style="margin:0 0 6px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="price-label">Your ${quote.model} is worth</p>
+                          <p style="margin:0 0 6px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:42px; font-weight:700; color:#DB5858; line-height:1.1;" class="price-text">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#999999;" class="price-sub">Instant cash &mdash; no waiting</p>
+                        </td>
+                      </tr>
+                    </table>
 
-            <p><strong>Why sell to ${siteConfig.name}?</strong></p>
-            <ul>
-              <li>✅ Instant cash payment - no waiting for checks</li>
-              <li>✅ Best prices in Denton, TX</li>
-              <li>✅ Safe, secure, and professional service</li>
-              <li>✅ Data wiping included for your security</li>
-              <li>✅ Trusted local electronics repair shop</li>
-            </ul>
+                    <!-- Device details -->
+                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">Device Details</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                      <tr>
+                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:100px;" class="text-detail-label detail-border">Model</td>
+                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${quote.model}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Storage</td>
+                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${quote.storage}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Network</td>
+                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${quote.network}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label">Condition</td>
+                        <td style="padding:10px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value">${quote.condition}</td>
+                      </tr>
+                    </table>
 
-            <p style="margin-top: 30px;">
-              <strong>Store Location:</strong><br>
-              ${siteConfig.name}<br>
-              ${siteConfig.address.full}<br>
-              Phone: ${siteConfig.phoneFormatted}<br>
-              Hours: ${siteConfig.hours.display}
-            </p>
-          </div>
+                    <!-- Expiration notice -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                      <tr>
+                        <td style="background-color:#FEF9EF; border-left:3px solid #E8A735; border-radius:0 6px 6px 0; padding:14px 16px;" class="notice-bg">
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#7A5D1E; line-height:1.5;" class="notice-text">
+                            <strong>Valid for ${daysRemaining} days.</strong> After ${new Date(quote.expiresAt).toLocaleDateString()}, pricing may change based on market conditions.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
 
-          <div class="footer">
-            <p>This quote is valid until ${new Date(quote.expiresAt).toLocaleDateString()}.</p>
-            <p>Quote reference: ${quote.quoteNumber}</p>
-            <p>© ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
-          </div>
-        </div>
+                    <!-- How to get paid -->
+                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">How to Get Paid</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+                      <tr>
+                        <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
+                        </td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">
+                          <strong>Visit our store</strong> &mdash; Bring your device to our Denton location for instant payment.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
+                        </td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">
+                          <strong>Mail it in</strong> &mdash; Call us at ${siteConfig.phoneFormatted} for a prepaid shipping label.
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- CTA Button -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 28px 0;">
+                      <tr>
+                        <td align="center">
+                          <!--[if mso]>
+                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${siteConfig.phoneHref}" style="height:48px; width:220px; v-text-anchor:middle;" arcsize="10%" fillcolor="#DB5858">
+                            <w:anchorlock/>
+                            <center style="font-family:Arial,sans-serif; font-size:16px; font-weight:bold; color:#ffffff;">Call Now to Sell</center>
+                          </v:roundrect>
+                          <![endif]-->
+                          <!--[if !mso]><!-->
+                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:6px; line-height:1;" class="cta-btn">Call Now to Sell</a>
+                          <!--<![endif]-->
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Divider -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                      <tr><td style="border-top:1px solid #eee;" class="divider"></td></tr>
+                    </table>
+
+                    <!-- Why sell to Nexus -->
+                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">Why Nexus?</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                      <tr>
+                        <td style="padding:4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#555555; line-height:1.6;" class="text-why">Instant cash payment &bull; Best prices in Denton &bull; Free data wiping &bull; Trusted local shop</td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color:#f9f9f9; border-top:1px solid #eeeeee; padding:24px 40px; text-align:center;" class="footer-bg">
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#333333;" class="footer-name">${siteConfig.name}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.address.full}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
+                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#bbbbbb;" class="footer-copy">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
+                  </td>
+                </tr>
+
+              </table>
+              <!-- /Email container -->
+
+            </td>
+          </tr>
+        </table>
+        <!-- /Outer wrapper -->
       </body>
       </html>
     `;

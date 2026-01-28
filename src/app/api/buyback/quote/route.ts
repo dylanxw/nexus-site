@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
           atlasPrice: atlasPrice!,  // TypeScript: we validated above
           offerPrice: offerPrice!,
           margin: margin!,
-          customerName: name,
+          customerName: name.split(/\s+/).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '),
           customerEmail: email.toLowerCase(),
           customerPhone: phone,
           expiresAt,
@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
         network,
         condition,
         offerPrice,
-        customerName: name,
+        customerName: name.split(/\s+/).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' '),
         customerEmail: email.toLowerCase(),
         customerPhone: phone,
         expiresAt,
