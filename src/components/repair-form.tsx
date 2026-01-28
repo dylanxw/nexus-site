@@ -115,8 +115,14 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
   const [loadingDevices, setLoadingDevices] = useState(!initialDevices.length);
   const [loadingIssues, setLoadingIssues] = useState(false);
 
-  // Restore form state from localStorage on mount
+  // Restore form state from localStorage on mount (only in standalone mode)
   useEffect(() => {
+    // On the home page, clear saved state so the form fully resets
+    if (!standalone) {
+      localStorage.removeItem('repairFormState');
+      return;
+    }
+
     try {
       const saved = localStorage.getItem('repairFormState');
       if (saved) {
@@ -187,8 +193,11 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isSubmitted, currentStep]);
 
-  // Browser back button integration - sync step with URL
+  // Browser back button integration - sync step with URL (standalone only)
   useEffect(() => {
+    // Don't modify the URL on the home page
+    if (!standalone) return;
+
     // Update URL when step changes
     const url = new URL(window.location.href);
     const urlStep = url.searchParams.get('step');
@@ -198,10 +207,12 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
       url.searchParams.set('step', currentStep.toString());
       window.history.pushState({ step: currentStep }, '', url.toString());
     }
-  }, [currentStep]);
+  }, [currentStep, standalone]);
 
-  // Listen for back/forward button clicks
+  // Listen for back/forward button clicks (standalone only)
   useEffect(() => {
+    if (!standalone) return;
+
     const handlePopState = (event: PopStateEvent) => {
       if (event.state?.step) {
         const targetStep = Number(event.state.step);
@@ -224,10 +235,12 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [standalone]);
 
-  // Initialize step from URL on mount
+  // Initialize step from URL on mount (standalone only)
   useEffect(() => {
+    if (!standalone) return;
+
     const url = new URL(window.location.href);
     const urlStep = url.searchParams.get('step');
 
@@ -237,7 +250,7 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
         setCurrentStep(targetStep);
       }
     }
-  }, [initialStep]);
+  }, [initialStep, standalone]);
 
   // Only fetch devices if not provided initially
   useEffect(() => {
@@ -253,8 +266,10 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
     }
   }, [selectedModel, currentStep]);
 
-  // Auto-save form state to localStorage
+  // Auto-save form state to localStorage (only in standalone mode)
   useEffect(() => {
+    // Don't save from the home page - only the standalone form should persist state
+    if (!standalone) return;
     // Don't save if form is already submitted
     if (isSubmitted) return;
 
@@ -631,10 +646,16 @@ export function RepairForm({ initialDevice = "", initialBrand = "", initialServi
       const deviceLabel = deviceTypes.find(d => d.id === selectedDevice)?.label;
       const isOtherDevice = selectedDevice === 'other';
 
+      // Resolve model name from the nested device data (selectedModel is a UUID)
+      const selectedDeviceData = deviceTypes.find(d => d.id === selectedDevice);
+      const selectedBrandData = selectedDeviceData?.brands.find((b: any) => b.value === selectedMake);
+      const selectedModelData = selectedBrandData?.models.find((m: any) => m.value === selectedModel);
+      const resolvedModelName = selectedModelData?.name || selectedModel;
+
       const requestData = {
         deviceType: deviceLabel || selectedDevice,
         make: isOtherDevice ? customMake : selectedMake,
-        model: isOtherDevice ? customModel : selectedModel,
+        model: isOtherDevice ? customModel : resolvedModelName,
         issues: selectedDamages,
         firstName: customerInfo.firstName,
         lastName: customerInfo.lastName,

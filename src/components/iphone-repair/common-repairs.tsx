@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
 import { ChevronDown, Smartphone, Battery, Droplets, Zap, Camera, RefreshCw, Wifi } from "lucide-react";
 import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 const repairs = [
   {
@@ -141,9 +141,12 @@ export function CommonRepairs() {
               <p className="text-gray-600 mb-4">
                 We repair all iPhone problems. Call for a free diagnostic and quote.
               </p>
-              <button className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
+              <a
+                href={siteConfig.phoneHref}
+                className="inline-block bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
                 Call for Free Diagnostic
-              </button>
+              </a>
             </div>
           </div>
         </div>

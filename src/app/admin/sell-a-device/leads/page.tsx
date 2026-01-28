@@ -115,7 +115,7 @@ export default function BuybackLeadsPage() {
         params.append('status', statusFilter);
       }
 
-      const response = await fetch(`/api/admin/sell-a-device/quotes?${params.toString()}`);
+      const response = await fetch(`/api/admin/buyback/quotes?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
         setQuotes(data.quotes);
@@ -133,8 +133,8 @@ export default function BuybackLeadsPage() {
 
   const fetchStats = async () => {
     try {
-      console.log("Fetching stats from /api/admin/sell-a-device/quotes/stats");
-      const response = await fetch("/api/admin/sell-a-device/quotes/stats");
+      console.log("Fetching stats from /api/admin/buyback/quotes/stats");
+      const response = await fetch("/api/admin/buyback/quotes/stats");
       console.log("Stats response status:", response.status);
       if (response.ok) {
         const data = await response.json();
@@ -153,7 +153,7 @@ export default function BuybackLeadsPage() {
 
   const handleUpdateStatus = async (quoteId: string, newStatus: string) => {
     try {
-      const response = await fetch(`/api/admin/sell-a-device/quotes/${quoteId}`, {
+      const response = await fetch(`/api/admin/buyback/quotes/${quoteId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),

@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { createBooking } from '@/lib/google-calendar';
 import { siteConfig } from '@/config/site';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { verifyCSRFToken } from '@/lib/csrf';
 import { rateLimit, RateLimitPresets } from '@/lib/rate-limit-production';
-
-const prisma = new PrismaClient();
 
 // Helper function to format issue slugs to readable labels
 function formatIssues(issues: string[]): string {
@@ -63,6 +61,14 @@ async function createEmailTransporter() {
   return transporter;
 }
 
+function formatTimeTo12Hour(time24: string): string {
+  if (!time24) return '';
+  const [hour, minute] = time24.split(':').map(Number);
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`;
+}
+
 function formatInternalEmail(data: RepairRequestData, calendarLink?: string): { subject: string; html: string; text: string } {
   const timestamp = new Date().toLocaleString('en-US', {
     timeZone: 'America/Chicago',
@@ -108,7 +114,7 @@ function formatInternalEmail(data: RepairRequestData, calendarLink?: string): { 
     <h3>Appointment Details</h3>
     <ul>
       <li><strong>Date:</strong> ${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</li>
-      <li><strong>Time:</strong> ${data.appointmentTime || 'Not specified'}</li>
+      <li><strong>Time:</strong> ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : 'Not specified'}</li>
     </ul>
     ` : ''}
 
@@ -138,7 +144,7 @@ ${data.description || 'No description provided'}
 
 ${data.requestType === 'appointment' && data.appointmentDate ? `Appointment Details:
 - Date: ${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-- Time: ${data.appointmentTime || 'Not specified'}
+- Time: ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : 'Not specified'}
 
 ` : ''}This request was submitted through the Nexus Tech Solutions website.
   `;
@@ -169,7 +175,7 @@ function formatCustomerEmail(data: RepairRequestData): { subject: string; html: 
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="margin-top: 0; color: #111827;">Appointment Details</h3>
           <p style="margin: 5px 0;"><strong>Date:</strong> ${formattedDate}</p>
-          <p style="margin: 5px 0;"><strong>Time:</strong> ${data.appointmentTime}</p>
+          <p style="margin: 5px 0;"><strong>Time:</strong> ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : ''}</p>
           <p style="margin: 5px 0;"><strong>Device:</strong> ${data.make} ${data.model}</p>
           <p style="margin: 5px 0;"><strong>Issues:</strong> ${formatIssues(data.issues)}</p>
         </div>
@@ -189,9 +195,7 @@ function formatCustomerEmail(data: RepairRequestData): { subject: string; html: 
           <h4 style="margin-top: 0; color: #059669;">What to Bring:</h4>
           <ul style="margin: 10px 0; padding-left: 20px;">
             <li>Your device (${data.make} ${data.model})</li>
-            <li>Charger or charging cable (if available)</li>
             <li>Any accessories related to the repair</li>
-            <li>Photo ID</li>
           </ul>
         </div>
 
@@ -231,7 +235,7 @@ Great news! Your repair appointment has been confirmed.
 
 APPOINTMENT DETAILS:
 Date: ${formattedDate}
-Time: ${data.appointmentTime}
+Time: ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : ''}
 Device: ${data.make} ${data.model}
 Issues: ${formatIssues(data.issues)}
 
@@ -242,9 +246,7 @@ Get Directions: https://www.google.com/maps/search/?api=1&query=${encodeURICompo
 
 WHAT TO BRING:
 - Your device (${data.make} ${data.model})
-- Charger or charging cable (if available)
 - Any accessories related to the repair
-- Photo ID
 
 WHAT HAPPENS NEXT:
 1. Bring your device to our store at the scheduled time

@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 import { IPadRepairHero } from "@/components/ipad-repair/hero";
 import { CommonIPadRepairs } from "@/components/ipad-repair/common-repairs";
 import { IPadModels } from "@/components/ipad-repair/ipad-models";
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "iPad Repair Services in Denton, TX | Nexus Tech Solutions",
     description: "Expert iPad repair services in Denton, Texas. Same-day repairs with 60-day warranty for all iPad models including Pro, Air, and Mini.",
+    url: `${siteConfig.url}/services/ipad-repair`,
     type: "website",
     locale: "en_US",
   },
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     description: "Professional iPad repair in Denton, TX. Same-day service with expert technicians and quality parts.",
   },
   alternates: {
-    canonical: "/services/ipad-repair",
+    canonical: `${siteConfig.url}/services/ipad-repair`,
   },
 };
 

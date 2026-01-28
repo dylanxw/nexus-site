@@ -63,7 +63,7 @@ export default function BuybackAnalyticsPage() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/admin/sell-a-device/analytics?range=${timeRange}`);
+      const response = await fetch(`/api/admin/buyback/analytics?range=${timeRange}`);
       if (response.ok) {
         const data = await response.json();
         setAnalytics(data);

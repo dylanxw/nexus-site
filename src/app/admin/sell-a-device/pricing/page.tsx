@@ -111,7 +111,7 @@ export default function BuybackPricingPage() {
         params.append('search', searchQuery);
       }
 
-      const response = await fetch(`/api/admin/sell-a-device/pricing?${params.toString()}`);
+      const response = await fetch(`/api/admin/buyback/pricing?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
         setPricing(data.pricing);
@@ -129,7 +129,7 @@ export default function BuybackPricingPage() {
 
   const fetchMarginSettings = async () => {
     try {
-      const response = await fetch("/api/admin/sell-a-device/margins");
+      const response = await fetch("/api/admin/buyback/margins");
       if (response.ok) {
         const data = await response.json();
         setMarginSettings(data.settings);
@@ -141,7 +141,7 @@ export default function BuybackPricingPage() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("/api/admin/sell-a-device/pricing/stats");
+      const response = await fetch("/api/admin/buyback/pricing/stats");
       if (response.ok) {
         const data = await response.json();
         setStats(data.stats);
@@ -260,7 +260,7 @@ export default function BuybackPricingPage() {
         }
       });
 
-      const response = await fetch(`/api/admin/sell-a-device/pricing/${itemId}`, {
+      const response = await fetch(`/api/admin/buyback/pricing/${itemId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -286,8 +286,8 @@ export default function BuybackPricingPage() {
   const handleClearOverride = async (itemId: string, grade?: string) => {
     try {
       const url = grade
-        ? `/api/admin/sell-a-device/pricing/${itemId}?grade=${grade}`
-        : `/api/admin/sell-a-device/pricing/${itemId}`;
+        ? `/api/admin/buyback/pricing/${itemId}?grade=${grade}`
+        : `/api/admin/buyback/pricing/${itemId}`;
 
       const response = await fetch(url, {
         method: "DELETE",
@@ -313,7 +313,7 @@ export default function BuybackPricingPage() {
   const handleSyncFromAtlas = async () => {
     const loadingToast = toast.loading("Syncing pricing from Atlas...");
     try {
-      const response = await fetch("/api/admin/sell-a-device/pricing/sync", {
+      const response = await fetch("/api/admin/buyback/pricing/sync", {
         method: "POST",
       });
 

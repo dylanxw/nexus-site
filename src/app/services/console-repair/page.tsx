@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 import { GameConsoleRepairHero } from "@/components/console-repair/hero";
 import { CommonConsoleRepairs } from "@/components/console-repair/common-repairs";
 import { GameConsoleModels } from "@/components/console-repair/console-models";
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Game Console Repair Services in Denton, TX | Nexus Tech Solutions",
     description: "Expert game console repair services in Denton, Texas. Same-day repairs with 60-day warranty for PlayStation, Xbox, Nintendo Switch, and all gaming consoles.",
+    url: `${siteConfig.url}/services/console-repair`,
     type: "website",
     locale: "en_US",
   },
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     description: "Professional game console repair in Denton, TX. Same-day service for PlayStation, Xbox, Nintendo with expert technicians.",
   },
   alternates: {
-    canonical: "/services/console-repair",
+    canonical: `${siteConfig.url}/services/console-repair`,
   },
 };
 

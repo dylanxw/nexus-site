@@ -2,12 +2,53 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Phone, MessageCircle, ShoppingCart, Battery, Smartphone, Wifi } from "lucide-react";
+import { Phone, Battery, Smartphone, Wifi, Monitor, Watch, Gamepad2, Headphones } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
-// Mock data structure - this will be replaced with real inventory data
+// Inventory item as received from API
+interface InventoryItem {
+  SKU?: string;
+  IMEI?: string;
+  Model?: string;
+  Brand?: string;
+  Category?: string;
+  Condition?: string;
+  Price?: string | number;
+  Storage?: string;
+  Color?: string;
+  'Battery Health'?: string;
+  Carrier?: string;
+  Connectivity?: string;
+  Notes?: string;
+  Size?: string;
+  Material?: string;
+  RAM?: string;
+  CPU?: string;
+  GPU?: string;
+  photos?: string[];
+  description?: string;
+  listingId?: string;
+  websiteStatus?: string;
+}
+
+// API response shape
+interface ShopInventoryResponse {
+  items: InventoryItem[];
+  total: number;
+  pagination: {
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasMore: boolean;
+    hasPrevious: boolean;
+  };
+  cached: boolean;
+}
+
+// Transformed product for display
 interface Product {
   id: string;
   model: string;
@@ -203,10 +244,10 @@ export function ProductGrid({ filters }: ProductGridProps) {
           throw new Error('Failed to fetch inventory');
         }
 
-        const data = await response.json();
+        const data: ShopInventoryResponse = await response.json();
 
         // Transform inventory data to product format
-        const transformedProducts: Product[] = data.items.map((item: any) => {
+        const transformedProducts: Product[] = data.items.map((item: InventoryItem) => {
           // Clean and parse price
           const priceStr = item.Price?.toString().replace(/[$,]/g, '') || '0';
           const price = parseFloat(priceStr) || 0;
@@ -400,6 +441,7 @@ export function ProductGrid({ filters }: ProductGridProps) {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+          aria-label="Sort products by"
           className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
         >
           <option value="newest">Newest First</option>
@@ -410,7 +452,11 @@ export function ProductGrid({ filters }: ProductGridProps) {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
+      <div
+        role="region"
+        aria-label="Product listings"
+        className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6"
+      >
         {sortedProducts.map((product, index) => (
           <motion.div
             key={product.id}
@@ -422,14 +468,24 @@ export function ProductGrid({ filters }: ProductGridProps) {
             {/* Product Image */}
             <div className="relative aspect-square bg-gray-100">
               {product.images[0] ? (
-                <img
+                <Image
                   src={product.images[0]}
                   alt={`${product.brand} ${product.model}`}
-                  className="w-full h-full object-contain"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                  unoptimized={product.images[0].startsWith('http')}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <Smartphone className="h-16 w-16 text-gray-400" />
+                  {/* Dynamic icon based on device type */}
+                  {product.deviceType === 'computer' && <Monitor className="h-16 w-16 text-gray-400" aria-hidden="true" />}
+                  {product.deviceType === 'smartwatch' && <Watch className="h-16 w-16 text-gray-400" aria-hidden="true" />}
+                  {product.deviceType === 'console' && <Gamepad2 className="h-16 w-16 text-gray-400" aria-hidden="true" />}
+                  {product.deviceType === 'headphones' && <Headphones className="h-16 w-16 text-gray-400" aria-hidden="true" />}
+                  {(product.deviceType === 'smartphone' || product.deviceType === 'tablet' || !product.deviceType) && (
+                    <Smartphone className="h-16 w-16 text-gray-400" aria-hidden="true" />
+                  )}
                 </div>
               )}
 

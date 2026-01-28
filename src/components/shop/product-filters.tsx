@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Filter, X, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 
 const conditions = [
   { id: "new", label: "New", description: "Brand new, sealed in box" },
@@ -40,11 +39,34 @@ export function ProductFilters({ filters, onFiltersChange }: ProductFiltersProps
   const [deviceTypes, setDeviceTypes] = useState<Array<{ id: string; label: string; count: number }>>([]);
   const [brands, setBrands] = useState<Array<{ id: string; label: string; count: number }>>([]);
 
+  // Lock body scroll when mobile filters are open
+  useEffect(() => {
+    if (showMobileFilters) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showMobileFilters]);
+
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showMobileFilters) {
+        setShowMobileFilters(false);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [showMobileFilters]);
+
   // Fetch inventory to calculate counts
   useEffect(() => {
     const fetchInventoryCounts = async () => {
       try {
-        const response = await fetch('/api/inventory?inStock=true');
+        const response = await fetch('/api/shop-inventory');
         const data = await response.json();
         const items = data.items || [];
 
@@ -271,36 +293,63 @@ export function ProductFilters({ filters, onFiltersChange }: ProductFiltersProps
       </div>
 
       {/* Desktop Filters */}
-      <div className="hidden lg:block bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+      <nav
+        aria-label="Product filters"
+        className="hidden lg:block bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
+      >
         <FilterContent />
-      </div>
+      </nav>
 
       {/* Mobile Filter Modal */}
-      {showMobileFilters && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setShowMobileFilters(false)} />
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            className="fixed left-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto"
+      <AnimatePresence>
+        {showMobileFilters && (
+          <div
+            className="fixed inset-0 z-50 lg:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Product filters"
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-gray-900">Filters</h2>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50"
+              onClick={() => setShowMobileFilters(false)}
+            />
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed left-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto"
+            >
+              <div className="p-6 pb-24">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-bold text-gray-900">Filters</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowMobileFilters(false)}
+                    aria-label="Close filters"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <FilterContent />
+              </div>
+              {/* Fixed Apply button at bottom */}
+              <div className="fixed bottom-0 left-0 w-80 p-4 bg-white border-t border-gray-200">
                 <Button
-                  variant="ghost"
-                  size="sm"
                   onClick={() => setShowMobileFilters(false)}
+                  className="w-full bg-[#DB5858] hover:bg-[#c94848] text-white"
                 >
-                  <X className="h-5 w-5" />
+                  Apply Filters
                 </Button>
               </div>
-              <FilterContent />
-            </div>
-          </motion.div>
-        </div>
-      )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

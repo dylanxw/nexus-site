@@ -89,8 +89,8 @@ export const siteConfig = {
     }
   ],
   trustSignals: {
-    rating: "4.9",
-    reviewCount: "150+",
+    rating: "4.7",
+    reviewCount: "226+",
     devicesServiced: "5,000+",
     warranty: "60-Day",
     turnaround: "Same-Day"

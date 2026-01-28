@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     images: [
       {
-        url: `${siteConfig.url}/shop-og-image.jpg`,
+        url: `${siteConfig.url}/images/shop-preowned-devices/shop-pre-owned-devices.webp`,
         width: 1200,
         height: 630,
         alt: "Nexus Tech Solutions - Pre-Owned Devices"
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Shop Pre-Owned Devices | Nexus Tech Solutions",
     description: "Quality refurbished electronics with warranty",
-    images: [`${siteConfig.url}/shop-og-image.jpg`],
+    images: [`${siteConfig.url}/images/shop-preowned-devices/shop-pre-owned-devices.webp`],
   },
   alternates: {
     canonical: `${siteConfig.url}/shop`,
@@ -60,14 +60,14 @@ async function getInitialProducts() {
 }
 
 // Add JSON-LD structured data for product listing
-function generateJsonLd(products: any) {
+function generateJsonLd(products: { items: Record<string, string>[]; total: number } | null) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Pre-Owned Devices',
     description: 'Quality refurbished electronics with warranty',
     numberOfItems: products?.total || 0,
-    itemListElement: products?.items?.slice(0, 10).map((product: any, index: number) => ({
+    itemListElement: products?.items?.slice(0, 10).map((product: Record<string, string>, index: number) => ({
       '@type': 'Product',
       position: index + 1,
       name: `${product.Brand} ${product.Model}`,

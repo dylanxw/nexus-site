@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Clock, Shield, CheckCircle, Star, Wrench } from "lucide-react";
@@ -94,10 +95,13 @@ export function IPhoneRepairHero() {
               </Button>
               <Button
                 size="lg"
+                asChild
                 className="backdrop-blur-md bg-white/40 border border-white/60 text-gray-800 hover:bg-white/60 hover:border-white/80 py-3 lg:py-4 px-6 lg:px-8 text-base lg:text-lg font-semibold transition-all duration-300"
               >
-                Get Free Quote
-                <MessageSquare className="ml-2 h-4 w-4 lg:h-5 lg:w-5" />
+                <Link href="/denton-tx/repair-form">
+                  Get Free Quote
+                  <MessageSquare className="ml-2 h-4 w-4 lg:h-5 lg:w-5" />
+                </Link>
               </Button>
             </div>
           </motion.div>

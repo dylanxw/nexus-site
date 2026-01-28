@@ -14,7 +14,6 @@ import { quoteSubmissionSchema } from "@/lib/validations/buyback";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit-production";
 import { logger, handleApiError } from "@/lib/logger";
 import { verifyCSRFToken } from "@/lib/csrf";
-import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   logger.apiRequest('POST', '/api/sell-a-device/quote');
@@ -46,8 +45,8 @@ export async function POST(request: NextRequest) {
     const validationResult = quoteSubmissionSchema.safeParse(body);
 
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(err => ({
-        field: err.path.join('.'),
+      const errors = validationResult.error.issues.map((err) => ({
+        field: err.path.map(String).join('.'),
         message: err.message
       }));
 
@@ -213,7 +212,7 @@ export async function POST(request: NextRequest) {
       })
     });
   } catch (error) {
-    const errorResponse = handleApiError(error, 'Quote Creation', { model, storage });
+    const errorResponse = handleApiError(error, 'Quote Creation', {});
 
     return NextResponse.json(
       { success: false, error: errorResponse.message },

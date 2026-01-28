@@ -1,62 +1,80 @@
 /**
  * CSRF Token Management
- * Simple in-memory store for CSRF tokens
- * For production scale, consider Redis or database
+ * Uses HMAC-signed tokens so verification doesn't require shared server-side state.
+ * This works reliably across serverless invocations and server restarts.
  */
 
-// Simple in-memory CSRF token store
-const csrfTokens = new Map<string, number>();
+import { createHmac, randomBytes } from 'crypto';
 
-// Clean up expired tokens every 10 minutes
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    const now = Date.now();
-    for (const [token, expiry] of csrfTokens.entries()) {
-      if (now > expiry) {
-        csrfTokens.delete(token);
-      }
-    }
-  }, 10 * 60 * 1000);
+// Secret used to sign tokens. Falls back to a random value per cold-start,
+// which is fine — tokens issued before a restart simply expire naturally.
+const CSRF_SECRET = process.env.CSRF_SECRET || randomBytes(32).toString('hex');
+
+/**
+ * Generate a new CSRF token.
+ * The token format is: <random>.<expiry>.<signature>
+ */
+export function generateCSRFToken(expiryMs: number = 60 * 60 * 1000): string {
+  const nonce = randomBytes(16).toString('hex');
+  const expiry = Date.now() + expiryMs;
+  const payload = `${nonce}.${expiry}`;
+  const signature = createHmac('sha256', CSRF_SECRET)
+    .update(payload)
+    .digest('hex');
+  return `${payload}.${signature}`;
 }
 
 /**
- * Store a new CSRF token
+ * Store a new CSRF token (kept for backward compatibility — now a no-op)
  */
-export function storeCSRFToken(token: string, expiryTime: number): void {
-  csrfTokens.set(token, expiryTime);
+export function storeCSRFToken(_token: string, _expiryTime: number): void {
+  // No-op: tokens are self-verifying via HMAC signature
 }
 
 /**
  * Verify CSRF token
- * Used by API routes to validate requests
+ * Checks the HMAC signature and expiry embedded in the token itself.
  */
 export function verifyCSRFToken(token: string | null): boolean {
   if (!token) return false;
 
-  const expiry = csrfTokens.get(token);
-  if (!expiry) return false;
+  const parts = token.split('.');
+  if (parts.length !== 3) return false;
 
-  // Check if token is expired
-  if (Date.now() > expiry) {
-    csrfTokens.delete(token);
-    return false;
+  const [nonce, expiryStr, signature] = parts;
+  if (!nonce || !expiryStr || !signature) return false;
+
+  const expiry = Number(expiryStr);
+  if (isNaN(expiry)) return false;
+
+  // Check expiry
+  if (Date.now() > expiry) return false;
+
+  // Verify signature
+  const payload = `${nonce}.${expiryStr}`;
+  const expected = createHmac('sha256', CSRF_SECRET)
+    .update(payload)
+    .digest('hex');
+
+  // Constant-time comparison to prevent timing attacks
+  if (expected.length !== signature.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) {
+    mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
   }
-
-  // Token is valid - remove it (one-time use)
-  csrfTokens.delete(token);
-  return true;
+  return mismatch === 0;
 }
 
 /**
- * Get token count (for testing/debugging)
+ * Get token count (for testing/debugging — always 0 with signed tokens)
  */
 export function getTokenCount(): number {
-  return csrfTokens.size;
+  return 0;
 }
 
 /**
- * Clear all tokens (for testing)
+ * Clear all tokens (for testing — no-op with signed tokens)
  */
 export function clearAllTokens(): void {
-  csrfTokens.clear();
+  // No-op: no server-side state to clear
 }

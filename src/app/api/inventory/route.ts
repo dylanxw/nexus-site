@@ -272,70 +272,11 @@ export async function GET(request: NextRequest) {
       return { model, storage, color, carrier, category, brand, size: '', material: '', connectivity: '' };
     }
 
-    // Return mock data if credentials are not configured
     if (!hasValidCredentials) {
-      console.log('Using mock inventory data (Google Sheets credentials not configured)');
-      const mockSheetData = [
-        ['Date', 'Supplier', 'Inventory (Model/GB/Color/Carrier)', 'IMEI', 'Battery Health', 'Condition', 'Cost', 'Price', 'B2B Price', 'Facebook Price', 'Swappa Price', 'SKU', 'eBay Price', 'Shopify Price', 'Notes', 'Status'],
-        ['2025-09-30', 'Apple', 'iPhone 15 Pro 128GB Natural Titanium Unlocked', '352094123456789', '95%', 'Excellent', '750', '899', '825', '875', '850', 'SKU001', '880', '890', 'Like new condition', ''],
-        ['2025-09-29', 'Samsung', 'Galaxy S24 Ultra 256GB Titanium Black Unlocked', '351234567890123', '88%', 'Good', '650', '749', '700', '730', '720', 'SKU002', '740', '745', 'Light wear on corners', ''],
-        ['2025-09-28', 'Apple', 'iPad Air 64GB Space Gray WiFi', '352123456789012', '', 'Excellent', '400', '499', '450', '480', '470', 'SKU003', '490', '495', 'Perfect condition', ''],
-        ['2025-09-27', 'Google', 'Pixel 8 128GB Obsidian Unlocked', '353456789012345', '93%', 'Excellent', '450', '549', '500', '530', '520', 'SKU004', '540', '545', 'Excellent condition', '']
-      ];
-
-      // Process mock data the same way as real data
-      const rows = mockSheetData;
-      const items = rows.slice(1).map(row => {
-        const inventoryData = parseInventoryString(row[2] || '');
-        return {
-          Date: row[0] || '',
-          Supplier: row[1] || '',
-          Inventory: row[2] || '',
-          IMEI: row[3] || '',
-          'Battery Health': row[4] || '',
-          Condition: row[5] || '',
-          Cost: row[6] || '',
-          Price: row[7] || '',
-          'B2B Price': row[8] || '',
-          'Facebook Price': row[9] || '',
-          'Swappa Price': row[10] || '',
-          SKU: row[11] || '',
-          'eBay Price': row[12] || '',
-          'Shopify Price': row[13] || '',
-          Notes: row[14] || '',
-          Status: row[15] || '',
-          Model: inventoryData.model,
-          Storage: inventoryData.storage,
-          Color: inventoryData.color,
-          Carrier: inventoryData.carrier,
-          Category: inventoryData.category,
-          Brand: inventoryData.brand,
-          Size: inventoryData.size,
-          Material: inventoryData.material,
-          Connectivity: inventoryData.connectivity,
-        };
-      });
-
-      // Apply filters
-      let filteredItems = items;
-      if (inStock) {
-        filteredItems = filteredItems.filter(item =>
-          item.Status !== 'SOLD' &&
-          item.Status !== 'RESERVED' &&
-          item.Status !== 'Out of Stock' &&
-          item.Price &&
-          parseFloat(item.Price.toString().replace(/[$,]/g, '')) > 0
-        );
-      }
-
-      if (model) {
-        filteredItems = filteredItems.filter(item =>
-          item.Model?.toLowerCase().includes(model.toLowerCase()) ||
-          item.Inventory?.toLowerCase().includes(model.toLowerCase())
-        );
-      }
-
-      return NextResponse.json({ items: filteredItems });
+      return NextResponse.json(
+        { error: 'Google Sheets credentials not configured' },
+        { status: 500 }
+      );
     }
 
     console.log('Attempting to fetch from Google Sheets...');
@@ -349,7 +290,7 @@ export async function GET(request: NextRequest) {
       sheets.spreadsheets.values.get({
         auth,
         spreadsheetId,
-        range: 'Retail Stock!A:N', // Fetch columns A through N (Nexus Site checkbox)
+        range: 'Retail Stock!A:L', // Fetch columns A through L (Nexus Site checkbox)
       }),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Google Sheets API timeout after 8s')), 8000)
@@ -368,15 +309,15 @@ export async function GET(request: NextRequest) {
     const items = rows
       .slice(1)
       .filter((row: any) => {
-        // Skip blank rows - check if inventory/IMEI/SKU columns have data
-        return row[2] || row[3] || row[11];
+        // Skip blank rows - check if inventory/IMEI columns have data
+        return row[1] || row[2];
       })
       .map((row: any, index: number) => {
-        // Based on the screenshot: A=Date, B=Supplier, C=Inventory, D=IMEI, E=Battery Health, etc.
-        const inventoryData = parseInventoryString(row[2] || ''); // Column C
+        // 2026 sheet: A=Photos, B=Inventory, C=IMEI, D=Battery Health, E=Condition, F=Notes, G=Cost, H=Price, I=B2B Price, J=Facebook, K=eBay, L=Nexus Site
+        const inventoryData = parseInventoryString(row[1] || ''); // Column B
 
         // Map grade to standardized condition
-        const grade = row[5]?.toString().trim() || '';
+        const grade = row[4]?.toString().trim() || '';
         let mappedCondition = 'Good'; // Default
 
         if (['N', 'New Sealed', 'NIB'].includes(grade)) {
@@ -394,23 +335,21 @@ export async function GET(request: NextRequest) {
         }
 
         return {
-          Date: row[0] || '',           // Column A - In-Take Date
-          Supplier: row[1] || '',       // Column B - Supplier
-          Inventory: row[2] || '',      // Column C - Inventory (Model/GB/Color/Carrier)
-          IMEI: row[3] || '',           // Column D - IMEI
-          'Battery Health': row[4] || '', // Column E - Battery Health
-          Condition: mappedCondition,   // Column F - Condition (mapped from grade)
-          OriginalGrade: row[5] || '',  // Keep original grade for reference
-          Notes: row[6] || '',          // Column G - Notes
-          Cost: row[7] || '',           // Column H - Cost
-          Price: row[8] || '',          // Column I - Price (Retail)
-          'B2B Price': row[9] || '',    // Column J - B2B Price
-          'Facebook Price': row[10] || '', // Column K - Facebook
-          'Swappa Price': row[11] || '', // Column L - Swappa
-          'eBay Price': row[12] || '',  // Column M - eBay
-          'Nexus Site': row[13] || '',  // Column N - Nexus Site? (checkbox)
-          SKU: row[3] || '',            // Using IMEI as SKU
-          Status: '',                   // No status column in sheet
+          Photos: row[0] || '',          // Column A - Photos
+          Inventory: row[1] || '',       // Column B - Inventory (Model/GB/Color/Carrier)
+          IMEI: row[2] || '',            // Column C - IMEI
+          'Battery Health': row[3] || '', // Column D - Battery Health
+          Condition: mappedCondition,    // Column E - Condition (mapped from grade)
+          OriginalGrade: row[4] || '',   // Keep original grade for reference
+          Notes: row[5] || '',           // Column F - Notes
+          Cost: row[6] || '',            // Column G - Cost
+          Price: row[7] || '',           // Column H - Price (Retail)
+          'B2B Price': row[8] || '',     // Column I - B2B Price
+          'Facebook Price': row[9] || '', // Column J - Facebook
+          'eBay Price': row[10] || '',   // Column K - eBay
+          'Nexus Site': row[11] || '',   // Column L - Nexus Site (checkbox)
+          SKU: row[2] || '',             // Using IMEI as SKU
+          Status: '',                    // No status column in sheet
           // Parsed fields from the combined inventory string
           Model: inventoryData.model,
           Storage: inventoryData.storage,
@@ -536,31 +475,26 @@ export async function POST(request: NextRequest) {
     const auth = await getGoogleAuth();
     const spreadsheetId = process.env.GOOGLE_SHEETS_INVENTORY_ID;
 
-    // Prepare row data according to actual sheet structure
-    const timestamp = new Date().toLocaleDateString();
+    // Prepare row data according to 2026 sheet structure
     const rowData = [
-      data.intakeDate || timestamp,    // A: Date
-      data.supplier || '',             // B: Supplier
-      data.inventory || `${data.model || ''} ${data.storage || ''} ${data.color || ''} ${data.carrier || ''}`.trim(), // C: Inventory (combined)
-      data.imei || '',                 // D: IMEI
-      data.batteryHealth || '',        // E: Battery Health
-      data.condition,                  // F: Condition
+      '',                              // A: Photos (leave empty, managed in sheet)
+      data.inventory || `${data.model || ''} ${data.storage || ''} ${data.color || ''} ${data.carrier || ''}`.trim(), // B: Inventory (combined)
+      data.imei || '',                 // C: IMEI
+      data.batteryHealth || '',        // D: Battery Health
+      data.condition,                  // E: Condition
+      data.notes || '',                // F: Notes
       data.cost,                       // G: Cost
       data.price,                      // H: Price
       data.b2bPrice || '',             // I: B2B Price
-      data.facebookPrice || '',        // J: Facebook Price
-      data.swappaPrice || '',          // K: Swappa Price
-      data.sku || '',                  // L: SKU
-      data.ebayPrice || '',            // M: eBay Price
-      data.shopifyPrice || '',         // N: Shopify Price
-      data.notes || '',                // O: Notes
-      data.status || '',               // P: Status
+      data.facebookPrice || '',        // J: Facebook
+      data.ebayPrice || '',            // K: eBay
+      '',                              // L: Nexus Site (checkbox, managed in sheet)
     ];
 
     await sheets.spreadsheets.values.append({
       auth,
       spreadsheetId,
-      range: 'Retail Stock!A:P',
+      range: 'Retail Stock!A:L',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [rowData],

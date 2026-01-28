@@ -364,7 +364,7 @@ export default function FormConfigPage() {
 
       const mappings = new Map<string, Set<string>>();
       Object.entries(data.modelIssues).forEach(([modelId, issues]: [string, any]) => {
-        const issueIds = new Set(issues.map((i: any) => i.issueId));
+        const issueIds = new Set<string>(issues.map((i: any) => i.issueId));
         mappings.set(modelId, issueIds);
       });
 
@@ -831,7 +831,7 @@ Gaming Consoles\tNintendo\tSwitch OLED`;
                         return `${device?.name} - ${brand?.name}`;
                       })()} (drag to reorder):
                     </p>
-                    {devices.flatMap(d => d.brands).find(b => b.id === newModel.brandId)?.models.length > 0 && (
+                    {((devices.flatMap(d => d.brands).find(b => b.id === newModel.brandId)?.models?.length) ?? 0) > 0 && (
                       <Button
                         onClick={bulkDeleteModels}
                         variant="ghost"

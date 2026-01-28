@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { siteConfig } from "@/config/site";
 import { TabletRepairHero } from "@/components/tablet-repair/hero";
 import { CommonTabletRepairs } from "@/components/tablet-repair/common-repairs";
 import { TabletBrands } from "@/components/tablet-repair/tablet-brands";
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tablet Repair Services in Denton, TX | Nexus Tech Solutions",
     description: "Expert tablet repair services in Denton, Texas. Same-day repairs with 60-day warranty for all tablet brands including iPad, Samsung, Microsoft Surface, and more.",
+    url: `${siteConfig.url}/services/tablet-repair`,
     type: "website",
     locale: "en_US",
   },
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     description: "Professional tablet repair in Denton, TX. Same-day service with expert technicians for all tablet brands.",
   },
   alternates: {
-    canonical: "/services/tablet-repair",
+    canonical: `${siteConfig.url}/services/tablet-repair`,
   },
 };
 

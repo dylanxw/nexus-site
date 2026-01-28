@@ -236,7 +236,9 @@ export async function createBooking(details: BookingDetails): Promise<CalendarEv
     endDateTime.setMinutes(endDateTime.getMinutes() + 30); // 30-minute appointment
 
     // Format event description
-    const issuesList = details.issues.join(', ');
+    const issuesList = details.issues.map(issue =>
+      issue.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    ).join(', ');
     const description = `
 Repair Appointment
 

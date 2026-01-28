@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import RepairFormClient from "./repair-form-client";
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
+import { siteConfig } from '@/config/site';
 import { RepairFormErrorBoundary } from '@/components/repair-form-error-boundary';
-
-const prisma = new PrismaClient();
 
 export const metadata: Metadata = {
   title: "Device Repair Form | Nexus Tech Solutions - Denton, TX",
@@ -14,8 +13,17 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Device Repair Form | Nexus Tech Solutions",
     description: "Complete your device repair request form. Same-day service available in Denton, TX.",
+    url: `${siteConfig.url}/denton-tx/repair-form`,
     type: "website",
     locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Device Repair Form | Nexus Tech Solutions",
+    description: "Complete your device repair request form. Same-day service available in Denton, TX.",
+  },
+  alternates: {
+    canonical: `${siteConfig.url}/denton-tx/repair-form`,
   },
 };
 

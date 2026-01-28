@@ -350,7 +350,7 @@ export function TrustBanner() {
                     </div>
                     <div className="flex items-center justify-center lg:justify-start gap-3">
                       <Clock className="h-4 w-4 text-[#DB5858]" />
-                      <span className="text-sm">Mon-Fri: 10AM-7PM, Sat: 10AM-6PM</span>
+                      <span className="text-sm">{siteConfig.hours.display}</span>
                     </div>
                     <div className="flex items-center justify-center lg:justify-start gap-3 pt-1">
                       <div className="flex">
@@ -358,7 +358,7 @@ export function TrustBanner() {
                           <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                         ))}
                       </div>
-                      <span className="text-white font-medium text-sm">4.7 (226+ reviews)</span>
+                      <span className="text-white font-medium text-sm">{siteConfig.trustSignals.rating} ({siteConfig.trustSignals.reviewCount} reviews)</span>
                     </div>
                   </div>
                 </div>
@@ -367,7 +367,7 @@ export function TrustBanner() {
                 <div className="flex flex-col gap-4 w-full lg:w-auto lg:min-w-[400px]">
                   <Button asChild className="py-4 px-12 backdrop-blur-md bg-white/10 border-2 border-white/30 hover:bg-white/20 hover:border-white/40 text-white font-medium rounded-xl transition-all duration-300 hover:shadow-lg">
                     <a
-                      href="https://maps.google.com"
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address.full)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

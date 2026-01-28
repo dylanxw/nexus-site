@@ -1,14 +1,15 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { CheckCircle, MapPin, Calendar, Clock, Phone, Home } from "lucide-react";
+import { CheckCircle, MapPin, Calendar, Clock, Phone, Home, Loader2 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
-export default function RepairConfirmationPage() {
+function RepairConfirmationContent() {
   const searchParams = useSearchParams();
 
   // TODO: In the future, fetch actual booking details from API using booking ID
@@ -81,7 +82,6 @@ export default function RepairConfirmationPage() {
                     <ul className="text-sm lg:text-base text-gray-600 space-y-0.5 lg:space-y-1">
                       <li>• Your device and any accessories</li>
                       <li>• Charger or charging cable (if available)</li>
-                      <li>• Photo ID</li>
                       <li>• Passcode or password for your device</li>
                     </ul>
                   </div>
@@ -156,5 +156,25 @@ export default function RepairConfirmationPage() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function RepairConfirmationLoading() {
+  return (
+    <section className="section-padding bg-gradient-to-br from-gray-50 to-white min-h-screen">
+      <div className="wide-container px-4">
+        <div className="max-w-3xl mx-auto flex items-center justify-center py-20">
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function RepairConfirmationPage() {
+  return (
+    <Suspense fallback={<RepairConfirmationLoading />}>
+      <RepairConfirmationContent />
+    </Suspense>
   );
 }

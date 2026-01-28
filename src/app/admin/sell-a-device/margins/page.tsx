@@ -78,7 +78,7 @@ export default function SimplifiedMarginPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/admin/sell-a-device/margins");
+      const response = await fetch("/api/admin/buyback/margins");
       if (response.ok) {
         const data = await response.json();
         if (data.settings) {
@@ -109,7 +109,7 @@ export default function SimplifiedMarginPage() {
   const saveSettings = async () => {
     try {
       setSaving(true);
-      const response = await fetch("/api/admin/sell-a-device/margins", {
+      const response = await fetch("/api/admin/buyback/margins", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),

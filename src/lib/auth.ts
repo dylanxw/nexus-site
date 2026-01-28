@@ -23,6 +23,7 @@ export interface SessionPayload {
   name: string;
   role: string;
   sessionId: string;
+  [key: string]: unknown; // Index signature for JWTPayload compatibility
 }
 
 // Password hashing

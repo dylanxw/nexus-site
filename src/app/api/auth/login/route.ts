@@ -15,7 +15,7 @@ const loginSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     // Get IP for rate limiting
-    const ip = request.headers.get('x-forwarded-for') || request.ip || 'unknown';
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const userAgent = request.headers.get('user-agent') || undefined;
 
     // Check rate limit

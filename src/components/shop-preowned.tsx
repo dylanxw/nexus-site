@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ShoppingCart, Smartphone, Laptop, Tablet, ArrowRight, CheckCircle } from "lucide-react";
@@ -84,9 +85,11 @@ export function ShopPreowned() {
             className="relative"
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img
+              <Image
                 src="/images/shop-preowned-devices/shop-pre-owned-devices.webp"
                 alt="Quality pre-owned devices including smartphones, tablets, and laptops"
+                width={600}
+                height={400}
                 className="w-full h-[400px] object-cover"
               />
 

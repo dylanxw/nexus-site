@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
     const response = await sheets.spreadsheets.values.get({
       auth,
       spreadsheetId,
-      range: 'Retail Stock!A:N',
+      range: 'Retail Stock!A:L',
     });
 
     const rows = response.data.values || [];
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Load existing metadata
-    let metadata = {};
+    let metadata: Record<string, Record<string, unknown>> = {};
     try {
       const metadataData = await fs.readFile(PRODUCT_METADATA_PATH, 'utf-8');
       metadata = JSON.parse(metadataData);
@@ -213,12 +213,13 @@ export async function POST(request: NextRequest) {
     // Process rows
     const items = rows
       .slice(1)
-      .filter((row: any) => row[2] || row[3] || row[11]) // Skip blank rows
+      .filter((row: any) => row[1] || row[2]) // Skip blank rows - check inventory/IMEI
       .map((row: any) => {
-        const inventoryData = parseInventoryString(row[2] || '');
+        // 2026 sheet: A=Photos, B=Inventory, C=IMEI, D=Battery Health, E=Condition, F=Notes, G=Cost, H=Price, I=B2B Price, J=Facebook, K=eBay, L=Nexus Site
+        const inventoryData = parseInventoryString(row[1] || '');
 
         // Map grade to condition
-        const grade = row[5]?.toString().trim() || '';
+        const grade = row[4]?.toString().trim() || '';
         let mappedCondition = 'Good';
 
         if (['N', 'New Sealed', 'NIB'].includes(grade)) {
@@ -235,26 +236,24 @@ export async function POST(request: NextRequest) {
           mappedCondition = 'Damaged';
         }
 
-        const productId = row[3] || ''; // IMEI as ID
-        const itemMetadata = metadata[productId] || {};
+        const productId = String(row[2] || ''); // IMEI as ID
+        const itemMetadata = metadata[productId] ?? {};
 
         return {
-          Date: row[0] || '',
-          Supplier: row[1] || '',
-          Inventory: row[2] || '',
-          IMEI: row[3] || '',
-          'Battery Health': row[4] || '',
+          Photos: row[0] || '',
+          Inventory: row[1] || '',
+          IMEI: row[2] || '',
+          'Battery Health': row[3] || '',
           Condition: mappedCondition,
-          OriginalGrade: row[5] || '',
-          Notes: row[6] || '',
-          Cost: row[7] || '',
-          Price: row[8] || '',
-          'B2B Price': row[9] || '',
-          'Facebook Price': row[10] || '',
-          'Swappa Price': row[11] || '',
-          'eBay Price': row[12] || '',
-          'Nexus Site': row[13] || '',
-          SKU: row[3] || '', // Using IMEI as SKU
+          OriginalGrade: row[4] || '',
+          Notes: row[5] || '',
+          Cost: row[6] || '',
+          Price: row[7] || '',
+          'B2B Price': row[8] || '',
+          'Facebook Price': row[9] || '',
+          'eBay Price': row[10] || '',
+          'Nexus Site': row[11] || '',
+          SKU: row[2] || '', // Using IMEI as SKU
           Status: '',
           Model: inventoryData.model,
           Storage: inventoryData.storage,

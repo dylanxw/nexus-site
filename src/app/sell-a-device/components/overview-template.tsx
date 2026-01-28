@@ -34,6 +34,35 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
     phone?: string;
   }>({});
 
+  // Phone number formatter - formats as (XXX) XXX-XXXX
+  const formatPhoneNumber = (value: string): string => {
+    const cleaned = value.replace(/\D/g, '');
+    const limited = cleaned.slice(0, 10);
+
+    if (limited.length <= 3) return limited;
+    else if (limited.length <= 6) return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+    else return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
+  };
+
+  const validatePhone = (phone: string): boolean => {
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length === 10;
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateName = (name: string): boolean => {
+    const nameRegex = /^[a-zA-Z\s'-]{2,}$/;
+    return nameRegex.test(name.trim());
+  };
+
+  const sanitizeInput = (value: string): string => {
+    return value.replace(/[<>]/g, '');
+  };
+
   useEffect(() => {
     // Retrieve quote data from sessionStorage
     const storedQuote = sessionStorage.getItem('buybackQuote');
@@ -342,8 +371,13 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
                       required
                       value={customerInfo.name}
                       onChange={(e) => {
-                        setCustomerInfo(prev => ({ ...prev, name: e.target.value }));
-                        if (fieldErrors.name) setFieldErrors(prev => ({ ...prev, name: undefined }));
+                        const value = sanitizeInput(e.target.value);
+                        setCustomerInfo(prev => ({ ...prev, name: value }));
+                        if (value.length > 0 && !validateName(value)) {
+                          setFieldErrors(prev => ({ ...prev, name: "Name must be at least 2 letters and contain only letters" }));
+                        } else {
+                          setFieldErrors(prev => ({ ...prev, name: undefined }));
+                        }
                       }}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent ${
                         fieldErrors.name
@@ -367,8 +401,13 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
                       required
                       value={customerInfo.email}
                       onChange={(e) => {
-                        setCustomerInfo(prev => ({ ...prev, email: e.target.value }));
-                        if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
+                        const value = e.target.value.toLowerCase().trim();
+                        setCustomerInfo(prev => ({ ...prev, email: value }));
+                        if (value.length > 0 && !validateEmail(value)) {
+                          setFieldErrors(prev => ({ ...prev, email: "Please enter a valid email address" }));
+                        } else {
+                          setFieldErrors(prev => ({ ...prev, email: undefined }));
+                        }
                       }}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent ${
                         fieldErrors.email
@@ -394,15 +433,27 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
                       required
                       value={customerInfo.phone}
                       onChange={(e) => {
-                        setCustomerInfo(prev => ({ ...prev, phone: e.target.value }));
-                        if (fieldErrors.phone) setFieldErrors(prev => ({ ...prev, phone: undefined }));
+                        const formatted = formatPhoneNumber(e.target.value);
+                        setCustomerInfo(prev => ({ ...prev, phone: formatted }));
+                        if (formatted.length > 0) {
+                          const cleaned = formatted.replace(/\D/g, '');
+                          if (cleaned.length > 0 && cleaned.length < 10) {
+                            setFieldErrors(prev => ({ ...prev, phone: "Phone number must be 10 digits" }));
+                          } else if (cleaned.length === 10 && !validatePhone(formatted)) {
+                            setFieldErrors(prev => ({ ...prev, phone: "Invalid phone number" }));
+                          } else {
+                            setFieldErrors(prev => ({ ...prev, phone: undefined }));
+                          }
+                        } else {
+                          setFieldErrors(prev => ({ ...prev, phone: undefined }));
+                        }
                       }}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent ${
                         fieldErrors.phone
                           ? 'border-red-500 focus:ring-red-500'
                           : 'border-gray-300 focus:ring-[#DB5858]'
                       }`}
-                      placeholder="940-600-1012"
+                      placeholder="(940) 600-1012"
                     />
                     {fieldErrors.phone ? (
                       <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p>

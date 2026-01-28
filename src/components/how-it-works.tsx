@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { MessageSquare, Wrench, CheckCircle, Clock, Star, Phone, Search, ShoppingCart, DollarSign, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
@@ -226,10 +227,13 @@ export function HowItWorks() {
               <>
                 <Button
                   size="lg"
+                  asChild
                   className="flex-1 bg-[#DB5858] hover:bg-[#c94848] text-white py-4 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Get Free Quote
-                  <MessageSquare className="ml-2 h-5 w-5" />
+                  <Link href="/denton-tx/repair-form">
+                    Get Free Quote
+                    <MessageSquare className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
                 <Button
                   size="lg"
@@ -249,10 +253,13 @@ export function HowItWorks() {
               <>
                 <Button
                   size="lg"
+                  asChild
                   className="flex-1 bg-[#DB5858] hover:bg-[#c94848] text-white py-4 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Browse Inventory
-                  <Search className="ml-2 h-5 w-5" />
+                  <Link href="/shop">
+                    Browse Inventory
+                    <Search className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
                 <Button
                   size="lg"
@@ -272,10 +279,13 @@ export function HowItWorks() {
               <>
                 <Button
                   size="lg"
+                  asChild
                   className="flex-1 bg-[#DB5858] hover:bg-[#c94848] text-white py-4 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Get Cash Quote
-                  <DollarSign className="ml-2 h-5 w-5" />
+                  <Link href="/sell-a-device">
+                    Get Cash Quote
+                    <DollarSign className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
                 <Button
                   size="lg"

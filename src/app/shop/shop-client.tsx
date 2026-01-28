@@ -6,7 +6,10 @@ import { ProductGrid } from "@/components/shop/product-grid";
 import { ShopErrorBoundary } from "@/components/shop/shop-error-boundary";
 
 interface ShopClientProps {
-  initialProducts?: any;
+  initialProducts?: {
+    items: Record<string, unknown>[];
+    total: number;
+  } | null;
 }
 
 export default function ShopClient({ initialProducts }: ShopClientProps) {
