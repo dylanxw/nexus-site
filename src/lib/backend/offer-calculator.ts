@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
+import { CONDITION_GRADE_MAP } from '@/lib/pricing-calculator';
 
 type GradeType = 'gradeA' | 'gradeB' | 'gradeC' | 'gradeD' | 'gradeDOA';
 
@@ -52,20 +53,30 @@ const DEFAULT_MARGIN_SETTINGS: MarginSettings = {
   seriesOverrides: {}
 };
 
+// In-memory cache for margin settings — avoids a DB query on every single request
+let marginCache: { data: MarginSettings; expiresAt: number } | null = null;
+const MARGIN_CACHE_TTL_MS = 60 * 1000; // 1 minute
+
 /**
- * Load margin settings from database
+ * Load margin settings from database (with in-memory cache)
  */
 export async function loadMarginSettings(): Promise<MarginSettings> {
+  // Return cached value if still fresh
+  if (marginCache && Date.now() < marginCache.expiresAt) {
+    return marginCache.data;
+  }
+
   try {
     const settingRecord = await prisma.setting.findUnique({
       where: { key: "margin_settings_simple" }
     });
 
-    if (settingRecord) {
-      return JSON.parse(settingRecord.value);
-    }
+    const settings = settingRecord
+      ? JSON.parse(settingRecord.value)
+      : DEFAULT_MARGIN_SETTINGS;
 
-    return DEFAULT_MARGIN_SETTINGS;
+    marginCache = { data: settings, expiresAt: Date.now() + MARGIN_CACHE_TTL_MS };
+    return settings;
   } catch (error) {
     logger.error('Error loading margin settings', 'BUYBACK', {}, error as Error);
     return DEFAULT_MARGIN_SETTINGS;
@@ -206,9 +217,6 @@ export async function calculateQuotePricing(params: {
   try {
     const { model, storage, network, condition } = params;
 
-    // Import from pricing-calculator to avoid circular dependency
-    const { CONDITION_GRADE_MAP } = await import('@/lib/pricing-calculator');
-
     type CustomerCondition = keyof typeof CONDITION_GRADE_MAP;
 
     // Map condition to Atlas grade
@@ -223,13 +231,19 @@ export async function calculateQuotePricing(params: {
     // Construct the model string for database lookup
     const fullModel = `${model} ${storage} ${networkForLookup}`;
 
-    // Get pricing from database - try exact match first
-    let pricing = await prisma.pricingData.findFirst({
-      where: {
-        model: fullModel,
-        isActive: true,
-      },
-    });
+    // Run pricing lookup and margin settings load in parallel
+    // The margin cache usually hits, so this costs nothing extra on the happy path
+    const [exactPricing, marginSettings] = await Promise.all([
+      prisma.pricingData.findFirst({
+        where: {
+          model: fullModel,
+          isActive: true,
+        },
+      }),
+      loadMarginSettings(),
+    ]);
+
+    let pricing = exactPricing;
 
     // If exact match fails, try finding by modelName, storage, and network
     if (!pricing) {
@@ -283,9 +297,6 @@ export async function calculateQuotePricing(params: {
         isOverride: true,
       };
     }
-
-    // Load margin settings
-    const marginSettings = await loadMarginSettings();
 
     // Map grade field to grade name
     const gradeMap: { [key: string]: GradeType } = {

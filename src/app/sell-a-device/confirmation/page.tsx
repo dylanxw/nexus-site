@@ -23,6 +23,25 @@ function ConfirmationContent() {
       return;
     }
 
+    // Try to load quote instantly from sessionStorage (set during submission)
+    const cached = sessionStorage.getItem('confirmationQuote');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        // Verify the cached data matches the requested quote number
+        if (parsed.quoteNumber === quoteNumber) {
+          setQuote(parsed);
+          setLoading(false);
+          sessionStorage.removeItem('confirmationQuote');
+          return;
+        }
+      } catch {
+        // Invalid cache — fall through to API fetch
+      }
+      sessionStorage.removeItem('confirmationQuote');
+    }
+
+    // Fallback: fetch from API (handles page refreshes, direct URL visits, shared links)
     fetchQuote();
   }, [quoteNumber]);
 

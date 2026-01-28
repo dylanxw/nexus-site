@@ -159,38 +159,6 @@ export async function POST(request: NextRequest) {
       return newQuote;
     });
 
-    // Send confirmation email to customer
-    let emailSent = false;
-    try {
-      emailSent = await sendQuoteConfirmationEmail(quote);
-      if (emailSent) {
-        logger.emailSent(quote.customerEmail, 'Quote Confirmation', true);
-      } else {
-        logger.warn('Quote confirmation email returned false', 'BUYBACK', { quoteId: quote.id });
-      }
-    } catch (emailError) {
-      logger.error('Failed to send customer confirmation email', 'BUYBACK', { quoteId: quote.id }, emailError as Error);
-      // Don't fail the request if email fails - quote is still created
-    }
-
-    // Send notification to admin
-    try {
-      await sendAdminNotification(quote);
-      logger.info('Admin notification sent', 'BUYBACK', { quoteId: quote.id });
-    } catch (emailError) {
-      logger.error('Failed to send admin notification', 'BUYBACK', { quoteId: quote.id }, emailError as Error);
-    }
-
-    // If customer email failed, send urgent notification to admin
-    if (!emailSent) {
-      try {
-        await sendAdminEmailFailureNotification(quote);
-        logger.warn('Admin email failure notification sent', 'BUYBACK', { quoteId: quote.id });
-      } catch (notifyError) {
-        logger.error('Failed to send admin email failure notification', 'BUYBACK', { quoteId: quote.id }, notifyError as Error);
-      }
-    }
-
     // Activity log is now created in transaction above (no need to create again)
 
     logger.info('Quote created successfully', 'BUYBACK', {
@@ -198,19 +166,68 @@ export async function POST(request: NextRequest) {
       model,
       offerPrice,
       customerEmail: email,
-      emailSent,
     });
 
-    return NextResponse.json({
+    // Return response immediately — don't block on email delivery
+    const response = NextResponse.json({
       success: true,
       quoteNumber,
       quoteId: quote.id,
       expiresAt,
-      emailSent,
-      ...((!emailSent) && {
-        warning: 'Your quote was created successfully, but we had trouble sending the confirmation email. Please save your quote number or contact us directly.'
-      })
+      // Include quote details so the client can display confirmation instantly
+      quote: {
+        quoteNumber,
+        model,
+        storage,
+        network,
+        condition,
+        offerPrice,
+        customerName: name,
+        customerEmail: email.toLowerCase(),
+        customerPhone: phone,
+        expiresAt,
+        status: "PENDING",
+      },
     });
+
+    // Fire-and-forget: send emails in the background without blocking the response
+    // Using waitUntil-style pattern — errors are logged but never block the user
+    const sendEmails = async () => {
+      let emailSent = false;
+      try {
+        emailSent = await sendQuoteConfirmationEmail(quote);
+        if (emailSent) {
+          logger.emailSent(quote.customerEmail, 'Quote Confirmation', true);
+        } else {
+          logger.warn('Quote confirmation email returned false', 'BUYBACK', { quoteId: quote.id });
+        }
+      } catch (emailError) {
+        logger.error('Failed to send customer confirmation email', 'BUYBACK', { quoteId: quote.id }, emailError as Error);
+      }
+
+      try {
+        await sendAdminNotification(quote);
+        logger.info('Admin notification sent', 'BUYBACK', { quoteId: quote.id });
+      } catch (emailError) {
+        logger.error('Failed to send admin notification', 'BUYBACK', { quoteId: quote.id }, emailError as Error);
+      }
+
+      if (!emailSent) {
+        try {
+          await sendAdminEmailFailureNotification(quote);
+          logger.warn('Admin email failure notification sent', 'BUYBACK', { quoteId: quote.id });
+        } catch (notifyError) {
+          logger.error('Failed to send admin email failure notification', 'BUYBACK', { quoteId: quote.id }, notifyError as Error);
+        }
+      }
+    };
+
+    // Don't await — let emails send after the response is returned
+    sendEmails().catch((err) => {
+      logger.error('Background email sending failed', 'BUYBACK', { quoteId: quote.id }, err as Error);
+    });
+
+    return response;
   } catch (error) {
     const errorResponse = handleApiError(error, 'Quote Creation', {});
 

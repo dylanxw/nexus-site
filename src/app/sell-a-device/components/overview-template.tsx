@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,6 +21,7 @@ interface OverviewTemplateProps {
 export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath }: OverviewTemplateProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [submissionStage, setSubmissionStage] = useState<"idle" | "submitting" | "success">("idle");
   const [quoteData, setQuoteData] = useState<any>(null);
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
   const [customerInfo, setCustomerInfo] = useState({
@@ -128,6 +129,7 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
 
     // Validation passed, proceed with submission
     setLoading(true);
+    setSubmissionStage("submitting");
 
     try {
       const validatedData = validationResult.data;
@@ -147,38 +149,36 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
           name: validatedData.name,
           email: validatedData.email,
           phone: validatedData.phone,
-          // ✅ Prices now calculated SERVER-SIDE for security
-          // ❌ Never send client prices - they can be manipulated
         }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        // Clear session storage
+        // Clear the device selection data
         sessionStorage.removeItem('buybackQuote');
 
-        // Check if email was sent successfully
-        if (data.emailSent === false || data.warning) {
-          // Quote created but email failed
-          toast.warning(data.warning || "Your quote was created, but we couldn't send the confirmation email. Please save your quote number: " + data.quoteNumber, {
-            duration: 8000, // Show longer for important message
-          });
-        } else {
-          // Full success
-          toast.success("Quote submitted successfully! Check your email for confirmation.");
+        // Store the full quote from the API response so the confirmation page
+        // can display instantly without a second network request
+        if (data.quote) {
+          sessionStorage.setItem('confirmationQuote', JSON.stringify(data.quote));
         }
 
-        // Navigate to confirmation with quote number
-        router.push(`/sell-a-device/confirmation?quote=${data.quoteNumber}`);
+        // Show success state briefly before navigating
+        setSubmissionStage("success");
+        setTimeout(() => {
+          router.push(`/sell-a-device/confirmation?quote=${data.quoteNumber}`);
+        }, 1200);
       } else {
+        setSubmissionStage("idle");
+        setLoading(false);
         toast.error(data.error || "Failed to submit quote. Please try again.");
       }
     } catch (error) {
       console.error("Quote submission error:", error);
-      toast.error("An error occurred. Please check your connection and try again.");
-    } finally {
+      setSubmissionStage("idle");
       setLoading(false);
+      toast.error("An error occurred. Please check your connection and try again.");
     }
   };
 
@@ -203,7 +203,101 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white relative">
+      {/* Submission Overlay */}
+      <AnimatePresence>
+        {submissionStage !== "idle" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm"
+          >
+            <div className="text-center">
+              {submissionStage === "submitting" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center gap-6"
+                >
+                  {/* Animated spinner */}
+                  <div className="relative w-16 h-16">
+                    <motion.div
+                      className="absolute inset-0 rounded-full border-4 border-gray-200"
+                    />
+                    <motion.div
+                      className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#DB5858]"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-gray-900">Locking in your quote...</p>
+                    <p className="text-sm text-gray-500 mt-1">This will only take a moment</p>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-[#DB5858] rounded-full"
+                      initial={{ width: "0%" }}
+                      animate={{ width: "90%" }}
+                      transition={{ duration: 4, ease: "easeOut" }}
+                    />
+                  </div>
+                </motion.div>
+              )}
+
+              {submissionStage === "success" && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  className="flex flex-col items-center gap-4"
+                >
+                  {/* Animated checkmark circle */}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }}
+                    className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center"
+                  >
+                    <motion.svg
+                      viewBox="0 0 24 24"
+                      className="w-10 h-10 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <motion.path
+                        d="M5 13l4 4L19 7"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.4, delay: 0.3 }}
+                      />
+                    </motion.svg>
+                  </motion.div>
+                  <div>
+                    <p className="text-xl font-bold text-gray-900">Quote Locked In!</p>
+                    <p className="text-sm text-gray-500 mt-1">Redirecting to your confirmation...</p>
+                  </div>
+                  {/* Completed progress bar */}
+                  <div className="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-green-500 rounded-full"
+                      initial={{ width: "90%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Breadcrumb Navigation */}
       <div className="border-b border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -465,7 +559,7 @@ export default function OverviewTemplate({ breadcrumbBase, deviceType, backPath 
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#DB5858] hover:bg-[#c94848] text-white py-3 font-semibold disabled:bg-gray-300"
+                    className="w-full bg-[#DB5858] hover:bg-[#c94848] text-white py-3 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Submitting..." : "Lock In This Price"}
                   </Button>
