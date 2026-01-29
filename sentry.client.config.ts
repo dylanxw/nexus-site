@@ -22,9 +22,9 @@ Sentry.init({
   // Only enable in production
   enabled: process.env.NODE_ENV === 'production',
 
-  // Replay configuration for session recording (optional - can be removed if not needed)
-  replaysOnErrorSampleRate: 1.0, // Capture 100% of sessions with errors
-  replaysSessionSampleRate: 0.1, // Capture 10% of all sessions
+  // Replay disabled to prevent multiple instance errors
+  // replaysOnErrorSampleRate: 1.0,
+  // replaysSessionSampleRate: 0.1,
 
   // Filter out common noise and sensitive data
   ignoreErrors: [
@@ -82,13 +82,11 @@ Sentry.init({
     return event;
   },
 
-  // Configure integrations
-  integrations: [
-    Sentry.replayIntegration({
-      // Mask all text content for privacy
-      maskAllText: false,
-      // Block all media for privacy
-      blockAllMedia: false,
-    }),
-  ],
+  // Integrations - replay disabled to prevent multiple instance errors
+  // integrations: [
+  //   Sentry.replayIntegration({
+  //     maskAllText: false,
+  //     blockAllMedia: false,
+  //   }),
+  // ],
 });
