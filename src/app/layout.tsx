@@ -50,12 +50,21 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    images: [
+      {
+        url: "/images/site-preview/nexus-cover-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Nexus Tech Solutions - Phone & Computer Repair in Denton, TX",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
     creator: "@nexustechsolutions",
+    images: ["/images/site-preview/nexus-cover-image.png"],
   },
   icons: {
     icon: "/images/nexus-favicon.png",

@@ -28,8 +28,8 @@ export const siteConfig = {
     display: "Mon-Fri: 10am-7pm | Sat: 1pm-5pm"
   },
   social: {
-    facebook: "",
-    instagram: "",
+    facebook: "https://www.facebook.com/NexusTechSolutionsLLC",
+    instagram: "https://www.instagram.com/nexustechsolutionsllc/",
     google: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_LINK || ""
   },
   maps: {

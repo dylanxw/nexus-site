@@ -445,85 +445,189 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
   try {
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || ['admin@nexusrepair.com'];
 
+    const timestamp = new Date(quote.createdAt).toLocaleString('en-US', {
+      timeZone: 'America/Chicago',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
     const html = `
       <!DOCTYPE html>
-      <html>
+      <html lang="en">
       <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #333; color: white; padding: 20px; }
-          .content { padding: 20px; background: #f9f9f9; }
-          table { width: 100%; border-collapse: collapse; }
-          td { padding: 10px; border-bottom: 1px solid #ddd; }
-        </style>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Buyback Quote</title>
       </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h2>New Buyback Quote Received</h2>
-          </div>
-          <div class="content">
-            <table>
-              <tr>
-                <td><strong>Quote #:</strong></td>
-                <td>${quote.quoteNumber}</td>
-              </tr>
-              <tr>
-                <td><strong>Customer:</strong></td>
-                <td>${quote.customerName}</td>
-              </tr>
-              <tr>
-                <td><strong>Email:</strong></td>
-                <td>${quote.customerEmail}</td>
-              </tr>
-              <tr>
-                <td><strong>Phone:</strong></td>
-                <td>${quote.customerPhone}</td>
-              </tr>
-              <tr>
-                <td><strong>Device:</strong></td>
-                <td>${quote.model} (${quote.storage}, ${quote.network})</td>
-              </tr>
-              <tr>
-                <td><strong>Condition:</strong></td>
-                <td>${quote.condition}</td>
-              </tr>
-              <tr>
-                <td><strong>Atlas Price:</strong></td>
-                <td>${formatPrice(quote.atlasPrice)}</td>
-              </tr>
-              <tr>
-                <td><strong>Our Offer:</strong></td>
-                <td>${formatPrice(quote.offerPrice)}</td>
-              </tr>
-              <tr>
-                <td><strong>Margin:</strong></td>
-                <td>${formatPrice(quote.margin)} (${((quote.margin / quote.atlasPrice) * 100).toFixed(1)}%)</td>
-              </tr>
-              <tr>
-                <td><strong>Created:</strong></td>
-                <td>${new Date(quote.createdAt).toLocaleString()}</td>
-              </tr>
-            </table>
+      <body style="margin:0; padding:0; background-color:#1a1a1a; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a;">
+          <tr>
+            <td align="center" style="padding:32px 16px;">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323; border-radius:8px; overflow:hidden; border:1px solid #333;">
 
-            <p style="margin-top: 20px;">
-              <a href="${process.env.NEXT_PUBLIC_URL}/admin/quotes/${quote.id}"
-                 style="background: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                View in Admin Panel
-              </a>
-            </p>
-          </div>
-        </div>
+                <!-- Header -->
+                <tr>
+                  <td style="background-color:#2a2a2a; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858; font-weight:600;">Nexus Internal</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff;">New Buyback Quote</h1>
+                        </td>
+                        <td align="right" style="vertical-align:top;">
+                          <span style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">BUYBACK</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Quote Info -->
+                <tr>
+                  <td style="padding:20px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:12px; color:#888888;">
+                          <strong style="color:#aaaaaa;">Quote #:</strong> ${quote.quoteNumber}
+                        </td>
+                        <td align="right" style="font-size:12px; color:#888888;">
+                          ${timestamp}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Price Card -->
+                <tr>
+                  <td style="padding:24px 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:8px; overflow:hidden; text-align:center;">
+                      <tr>
+                        <td style="padding:24px;">
+                          <p style="margin:0 0 8px 0; font-size:14px; color:#888888;">${quote.model}</p>
+                          <p style="margin:0 0 8px 0; font-size:42px; font-weight:700; color:#DB5858;">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-size:13px; color:#666666;">Our Offer &bull; Atlas: ${formatPrice(quote.atlasPrice)} &bull; Margin: ${formatPrice(quote.margin)} (${((quote.margin / quote.atlasPrice) * 100).toFixed(1)}%)</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Device Details -->
+                <tr>
+                  <td style="padding:0 32px 24px 32px;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Device Details</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Model</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:15px; color:#ffffff; font-weight:600;">${quote.model}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Storage</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:15px; color:#ffffff;">${quote.storage}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Network</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:15px; color:#ffffff;">${quote.network}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Condition</span>
+                        </td>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:15px; color:#ffffff;">${quote.condition}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Customer Information -->
+                <tr>
+                  <td style="padding:0 32px 24px 32px;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Customer Information</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Name</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:15px; color:#ffffff; font-weight:600;">${quote.customerName}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Phone</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <a href="tel:${quote.customerPhone}" style="font-size:15px; color:#DB5858; text-decoration:none; font-weight:600;">${quote.customerPhone}</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Email</span>
+                        </td>
+                        <td style="padding:14px 16px;">
+                          <a href="mailto:${quote.customerEmail}" style="font-size:15px; color:#DB5858; text-decoration:none;">${quote.customerEmail}</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Quick Actions -->
+                <tr>
+                  <td style="padding:0 32px 24px 32px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding-right:12px;">
+                          <a href="tel:${quote.customerPhone}" style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer</a>
+                        </td>
+                        <td>
+                          <a href="mailto:${quote.customerEmail}" style="display:inline-block; background-color:#333333; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600; border:1px solid #444444;">Send Email</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color:#1e1e1e; padding:20px 32px; border-top:1px solid #333333;">
+                    <p style="margin:0; font-size:12px; color:#666666; text-align:center;">
+                      This is an automated notification from the Nexus Tech Solutions website.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
       </body>
       </html>
     `;
 
     // Send with retry logic
     const sent = await sendEmailWithRetry({
-      from: `"${siteConfig.name} Buyback System" <${process.env.EMAIL_USER}>`,
+      from: `"Nexus Internal" <${process.env.EMAIL_USER}>`,
       to: adminEmails.join(','),
-      subject: `New Buyback Quote: ${quote.model} - ${formatPrice(quote.offerPrice)}`,
+      subject: `[Nexus Internal] New Buyback Quote - ${quote.model} - ${formatPrice(quote.offerPrice)}`,
       html,
     });
 
@@ -551,106 +655,182 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
   try {
     const adminEmails = process.env.ADMIN_EMAILS?.split(',') || ['admin@nexusrepair.com'];
 
+    const timestamp = new Date(quote.createdAt).toLocaleString('en-US', {
+      timeZone: 'America/Chicago',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
     const html = `
       <!DOCTYPE html>
-      <html>
+      <html lang="en">
       <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #ff6b6b; color: white; padding: 20px; }
-          .warning-banner { background: #fff3cd; border: 2px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
-          .content { padding: 20px; background: #f9f9f9; }
-          table { width: 100%; border-collapse: collapse; }
-          td { padding: 10px; border-bottom: 1px solid #ddd; }
-          .action-required { background: #ff6b6b; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin: 20px 0; }
-        </style>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Email Delivery Failed</title>
       </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h2>⚠️ Customer Email Delivery Failed</h2>
-          </div>
-          <div class="content">
-            <div class="action-required">
-              ACTION REQUIRED: Customer did not receive quote confirmation email
-            </div>
+      <body style="margin:0; padding:0; background-color:#1a1a1a; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a;">
+          <tr>
+            <td align="center" style="padding:32px 16px;">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323; border-radius:8px; overflow:hidden; border:1px solid #333;">
 
-            <div class="warning-banner">
-              <strong>⚠️ Email Delivery Issue</strong><br>
-              The customer's quote was created successfully, but we were unable to deliver the confirmation email to <strong>${quote.customerEmail}</strong>.
-              <br><br>
-              Please reach out to the customer directly via phone to provide their quote details.
-            </div>
+                <!-- Header -->
+                <tr>
+                  <td style="background-color:#2a2a2a; padding:24px 32px; border-bottom:3px solid #ff6b6b;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#ff6b6b; font-weight:600;">Nexus Internal</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff;">Email Delivery Failed</h1>
+                        </td>
+                        <td align="right" style="vertical-align:top;">
+                          <span style="display:inline-block; background-color:#ff6b6b; color:#ffffff; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">ACTION REQUIRED</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-            <h3>Quote Details to Provide:</h3>
-            <table>
-              <tr>
-                <td><strong>Quote #:</strong></td>
-                <td><strong>${quote.quoteNumber}</strong></td>
-              </tr>
-              <tr>
-                <td><strong>Customer:</strong></td>
-                <td>${quote.customerName}</td>
-              </tr>
-              <tr>
-                <td><strong>Phone:</strong></td>
-                <td><strong>${quote.customerPhone}</strong></td>
-              </tr>
-              <tr>
-                <td><strong>Email (Failed):</strong></td>
-                <td>${quote.customerEmail}</td>
-              </tr>
-              <tr>
-                <td><strong>Device:</strong></td>
-                <td>${quote.model} (${quote.storage}, ${quote.network})</td>
-              </tr>
-              <tr>
-                <td><strong>Condition:</strong></td>
-                <td>${quote.condition}</td>
-              </tr>
-              <tr>
-                <td><strong>Offer Amount:</strong></td>
-                <td><strong style="color: #DB5858; font-size: 18px;">${formatPrice(quote.offerPrice)}</strong></td>
-              </tr>
-              <tr>
-                <td><strong>Valid Until:</strong></td>
-                <td>${new Date(quote.expiresAt).toLocaleDateString()}</td>
-              </tr>
-              <tr>
-                <td><strong>Created:</strong></td>
-                <td>${new Date(quote.createdAt).toLocaleString()}</td>
-              </tr>
-            </table>
+                <!-- Alert Banner -->
+                <tr>
+                  <td style="padding:24px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#3d2020; border-radius:6px; border-left:3px solid #ff6b6b;">
+                      <tr>
+                        <td style="padding:16px;">
+                          <p style="margin:0 0 8px 0; font-size:14px; font-weight:700; color:#ff8a8a;">Customer did not receive quote confirmation</p>
+                          <p style="margin:0; font-size:14px; color:#cc8888; line-height:1.5;">
+                            The quote was created successfully, but the email to <strong style="color:#ffffff;">${quote.customerEmail}</strong> failed to deliver. Please call the customer to provide their quote details.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-            <p style="margin-top: 20px;">
-              <a href="${process.env.NEXT_PUBLIC_URL}/admin/quotes/${quote.id}"
-                 style="background: #DB5858; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                View in Admin Panel
-              </a>
-            </p>
+                <!-- Quote Info -->
+                <tr>
+                  <td style="padding:20px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:12px; color:#888888;">
+                          <strong style="color:#aaaaaa;">Quote #:</strong> ${quote.quoteNumber}
+                        </td>
+                        <td align="right" style="font-size:12px; color:#888888;">
+                          ${timestamp}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-            <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2196f3;">
-              <strong>Next Steps:</strong>
-              <ol style="margin: 10px 0;">
-                <li>Call the customer at <strong>${quote.customerPhone}</strong></li>
-                <li>Provide quote number: <strong>${quote.quoteNumber}</strong></li>
-                <li>Confirm offer amount: <strong>${formatPrice(quote.offerPrice)}</strong></li>
-                <li>Explain quote is valid until ${new Date(quote.expiresAt).toLocaleDateString()}</li>
-                <li>Verify their email address is correct</li>
-              </ol>
-            </div>
-          </div>
-        </div>
+                <!-- Price Card -->
+                <tr>
+                  <td style="padding:24px 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:8px; overflow:hidden; text-align:center;">
+                      <tr>
+                        <td style="padding:24px;">
+                          <p style="margin:0 0 8px 0; font-size:14px; color:#888888;">${quote.model} (${quote.storage})</p>
+                          <p style="margin:0 0 8px 0; font-size:42px; font-weight:700; color:#DB5858;">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-size:13px; color:#666666;">Valid until ${new Date(quote.expiresAt).toLocaleDateString()}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Customer Information -->
+                <tr>
+                  <td style="padding:0 32px 24px 32px;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Customer to Contact</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Name</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:15px; color:#ffffff; font-weight:600;">${quote.customerName}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Phone</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                          <a href="tel:${quote.customerPhone}" style="font-size:15px; color:#DB5858; text-decoration:none; font-weight:600;">${quote.customerPhone}</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Email (Failed)</span>
+                        </td>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:15px; color:#ff8a8a;">${quote.customerEmail}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Next Steps -->
+                <tr>
+                  <td style="padding:0 32px 24px 32px;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">What to Tell the Customer</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a2633; border-radius:6px; border-left:3px solid #5b9bd5;">
+                      <tr>
+                        <td style="padding:16px;">
+                          <p style="margin:0 0 12px 0; font-size:14px; color:#8bbde8; line-height:1.6;">
+                            1. Quote Number: <strong style="color:#ffffff;">${quote.quoteNumber}</strong><br>
+                            2. Device: <strong style="color:#ffffff;">${quote.model} (${quote.storage}, ${quote.network})</strong><br>
+                            3. Condition: <strong style="color:#ffffff;">${quote.condition}</strong><br>
+                            4. Offer Amount: <strong style="color:#DB5858;">${formatPrice(quote.offerPrice)}</strong><br>
+                            5. Valid Until: <strong style="color:#ffffff;">${new Date(quote.expiresAt).toLocaleDateString()}</strong>
+                          </p>
+                          <p style="margin:0; font-size:13px; color:#666666;">Ask them to verify their email address is correct.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Quick Actions -->
+                <tr>
+                  <td style="padding:0 32px 24px 32px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding-right:12px;">
+                          <a href="tel:${quote.customerPhone}" style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer Now</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color:#1e1e1e; padding:20px 32px; border-top:1px solid #333333;">
+                    <p style="margin:0; font-size:12px; color:#666666; text-align:center;">
+                      This is an automated notification from the Nexus Tech Solutions website.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
       </body>
       </html>
     `;
 
     // Send with retry logic
     const sent = await sendEmailWithRetry({
-      from: `"${siteConfig.name} Buyback System" <${process.env.EMAIL_USER}>`,
+      from: `"Nexus Internal" <${process.env.EMAIL_USER}>`,
       to: adminEmails.join(','),
-      subject: `🚨 URGENT: Customer Email Failed - Quote ${quote.quoteNumber}`,
+      subject: `[Nexus Internal] URGENT: Email Failed - Quote ${quote.quoteNumber}`,
       html,
     });
 

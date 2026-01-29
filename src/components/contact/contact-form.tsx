@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Phone, Mail, MessageSquare, Send, User, Smartphone, Clock, CheckCircle } from "lucide-react";
+import { Phone, Mail, MessageSquare, Send, User, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+
+type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -13,17 +15,74 @@ export function ContactForm() {
     inquiry: "",
     message: ""
   });
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission will be implemented later
-    console.log("Form submitted:", formData);
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "Contact Form",
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || undefined,
+          inquiryType: formData.inquiry,
+          message: formData.message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit form");
+      }
+
+      setStatus("success");
+      setFormData({ name: "", email: "", phone: "", inquiry: "", message: "" });
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    }
   };
+
+  if (status === "success") {
+    return (
+      <section className="section-padding bg-white">
+        <div className="wide-container">
+          <div className="max-w-2xl mx-auto text-center py-12">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Message Sent Successfully!
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Thank you for reaching out. We'll get back to you within 30 minutes during business hours.
+            </p>
+            <Button
+              onClick={() => setStatus("idle")}
+              className="bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white"
+            >
+              Send Another Message
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section-padding bg-white">
@@ -144,14 +203,31 @@ export function ContactForm() {
                 </div>
               </div>
 
+              {/* Error Message */}
+              {status === "error" && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {errorMessage}
+                </div>
+              )}
+
               {/* Submit Button */}
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-6 lg:py-4 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-none"
+                disabled={status === "submitting"}
+                className="w-full bg-gradient-to-r from-[#DB5858] to-[#c94848] hover:from-[#c94848] hover:to-[#b83d3d] text-white py-3 px-6 lg:py-4 lg:px-8 text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-none disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <Send className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />
-                Send Message
+                {status === "submitting" ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 lg:h-5 lg:w-5 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />
+                    Send Message
+                  </>
+                )}
               </Button>
 
               <p className="text-xs lg:text-sm text-gray-500 text-center">

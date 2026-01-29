@@ -79,7 +79,9 @@ function formatInternalEmail(data: RepairRequestData, calendarLink?: string): { 
     minute: '2-digit'
   });
 
-  const subject = `${data.requestType === 'appointment' ? 'New Appointment Booked' : 'New Repair Quote Request'} - ${data.make} ${data.model}`;
+  const isAppointment = data.requestType === 'appointment';
+  const badgeLabel = isAppointment ? 'APPOINTMENT' : 'QUOTE REQUEST';
+  const subject = `[Nexus Internal] ${isAppointment ? 'New Appointment' : 'New Quote Request'} - ${data.make} ${data.model}`;
 
   const html = `
     <!DOCTYPE html>
@@ -87,109 +89,187 @@ function formatInternalEmail(data: RepairRequestData, calendarLink?: string): { 
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${data.requestType === 'appointment' ? 'New Appointment' : 'New Repair Quote Request'}</title>
+      <title>${isAppointment ? 'New Appointment' : 'New Repair Quote Request'}</title>
     </head>
-    <body style="margin:0; padding:0; background-color:#f4f4f5; -webkit-font-smoothing:antialiased;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;">
+    <body style="margin:0; padding:0; background-color:#1a1a1a; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a;">
         <tr>
           <td align="center" style="padding:32px 16px;">
-            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; overflow:hidden;">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323; border-radius:8px; overflow:hidden; border:1px solid #333;">
 
               <!-- Header -->
               <tr>
-                <td style="background-color:#1a1a1a; padding:24px 32px; text-align:center;">
-                  <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.6);">Nexus Internal</p>
-                  <h1 style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:20px; font-weight:700; color:#ffffff;">${data.requestType === 'appointment' ? 'New Repair Appointment' : 'New Repair Quote Request'}</h1>
+                <td style="background-color:#2a2a2a; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td>
+                        <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858; font-weight:600;">Nexus Internal</p>
+                        <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff;">${isAppointment ? 'New Repair Appointment' : 'New Quote Request'}</h1>
+                      </td>
+                      <td align="right" style="vertical-align:top;">
+                        <span style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">${badgeLabel}</span>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
 
-              <!-- Timestamp bar -->
+              <!-- Timestamp -->
               <tr>
-                <td style="background-color:#DB5858; padding:8px 32px; text-align:center;">
-                  <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; color:#ffffff;">Submitted ${timestamp}</p>
+                <td style="padding:20px 32px 0 32px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="font-size:12px; color:#888888;">
+                        <strong style="color:#aaaaaa;">Device:</strong> ${data.make} ${data.model}
+                      </td>
+                      <td align="right" style="font-size:12px; color:#888888;">
+                        ${timestamp}
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
 
-              <!-- Body -->
+              ${isAppointment && data.appointmentDate ? `
+              <!-- Appointment Details -->
               <tr>
-                <td style="padding:28px 32px;">
-
+                <td style="padding:24px 32px 0 32px;">
+                  <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Appointment Details</p>
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                    <tr>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Date</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:15px; color:#ffffff; font-weight:600;">${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:14px 16px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Time</span>
+                      </td>
+                      <td style="padding:14px 16px;">
+                        <span style="font-size:15px; color:#ffffff; font-weight:600;">${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : 'Not specified'}</span>
+                      </td>
+                    </tr>
+                  </table>
                   ${calendarLink ? `
-                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                  <p style="margin:12px 0 0 0;">
+                    <a href="${calendarLink}" style="font-size:13px; color:#DB5858; text-decoration:underline;">View in Google Calendar</a>
+                  </p>
+                  ` : ''}
+                </td>
+              </tr>
+              ` : ''}
+
+              <!-- Device Information -->
+              <tr>
+                <td style="padding:24px 32px;">
+                  <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Device Information</p>
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
                     <tr>
-                      <td style="background-color:#f0f7ff; border-left:3px solid #5b9bd5; border-radius:0 6px 6px 0; padding:12px 16px;">
-                        <a href="${calendarLink}" style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#1e3a5f; text-decoration:underline;">View in Google Calendar</a>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Type</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:15px; color:#ffffff; font-weight:600;">${data.deviceType}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Make</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:15px; color:#ffffff;">${data.make}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Model</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:15px; color:#ffffff;">${data.model}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:14px 16px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Issues</span>
+                      </td>
+                      <td style="padding:14px 16px;">
+                        <span style="font-size:15px; color:#DB5858; font-weight:600;">${formatIssues(data.issues)}</span>
                       </td>
                     </tr>
                   </table>
-                  ` : ''}
+                </td>
+              </tr>
 
-                  ${data.requestType === 'appointment' && data.appointmentDate ? `
-                  <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;">Appointment</p>
-                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <!-- Customer Information -->
+              <tr>
+                <td style="padding:0 32px 24px 32px;">
+                  <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Customer Information</p>
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
                     <tr>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:80px;">Date</td>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Name</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:15px; color:#ffffff; font-weight:600;">${data.firstName} ${data.lastName}</span>
+                      </td>
                     </tr>
                     <tr>
-                      <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;">Time</td>
-                      <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : 'Not specified'}</td>
-                    </tr>
-                  </table>
-                  ` : ''}
-
-                  <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;">Device</p>
-                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-                    <tr>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:80px;">Type</td>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${data.deviceType}</td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Phone</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <a href="tel:${data.phone}" style="font-size:15px; color:#DB5858; text-decoration:none; font-weight:600;">${data.phone}</a>
+                      </td>
                     </tr>
                     <tr>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;">Make</td>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${data.make}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;">Model</td>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${data.model}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;">Issues</td>
-                      <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${formatIssues(data.issues)}</td>
-                    </tr>
-                  </table>
-
-                  <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;">Customer</p>
-                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-                    <tr>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:80px;">Name</td>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;">${data.firstName} ${data.lastName}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;">Phone</td>
-                      <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;"><a href="tel:${data.phone}" style="color:#DB5858; text-decoration:none;">${data.phone}</a></td>
-                    </tr>
-                    <tr>
-                      <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;">Email</td>
-                      <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;"><a href="mailto:${data.email}" style="color:#DB5858; text-decoration:none;">${data.email}</a></td>
-                    </tr>
-                  </table>
-
-                  <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;">Problem Description</p>
-                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
-                    <tr>
-                      <td style="background-color:#fafafa; border:1px solid #e5e5e5; border-radius:6px; padding:14px 16px;">
-                        <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5;">${data.description || 'No description provided'}</p>
+                      <td style="padding:14px 16px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Email</span>
+                      </td>
+                      <td style="padding:14px 16px;">
+                        <a href="mailto:${data.email}" style="font-size:15px; color:#DB5858; text-decoration:none;">${data.email}</a>
                       </td>
                     </tr>
                   </table>
+                </td>
+              </tr>
 
+              ${data.description ? `
+              <!-- Problem Description -->
+              <tr>
+                <td style="padding:0 32px 24px 32px;">
+                  <p style="margin:0 0 12px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Problem Description</p>
+                  <div style="background-color:#2a2a2a; border-radius:6px; padding:16px; border-left:3px solid #DB5858;">
+                    <p style="margin:0; font-size:14px; color:#cccccc; line-height:1.6; white-space:pre-wrap;">${data.description}</p>
+                  </div>
+                </td>
+              </tr>
+              ` : ''}
+
+              <!-- Quick Actions -->
+              <tr>
+                <td style="padding:0 32px 24px 32px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="padding-right:12px;">
+                        <a href="tel:${data.phone}" style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer</a>
+                      </td>
+                      <td>
+                        <a href="mailto:${data.email}" style="display:inline-block; background-color:#333333; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600; border:1px solid #444444;">Send Email</a>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
 
               <!-- Footer -->
               <tr>
-                <td style="background-color:#f9f9f9; border-top:1px solid #eeeeee; padding:16px 32px; text-align:center;">
-                  <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#bbbbbb;">Submitted via nexustechsolutions.io</p>
+                <td style="background-color:#1e1e1e; padding:20px 32px; border-top:1px solid #333333;">
+                  <p style="margin:0; font-size:12px; color:#666666; text-align:center;">
+                    This is an automated notification from the Nexus Tech Solutions website.
+                  </p>
                 </td>
               </tr>
 
@@ -202,30 +282,38 @@ function formatInternalEmail(data: RepairRequestData, calendarLink?: string): { 
   `;
 
   const text = `
-New Repair ${data.requestType === 'appointment' ? 'Appointment' : 'Repair Quote Request'}
+[NEXUS INTERNAL] New Repair ${isAppointment ? 'Appointment' : 'Quote Request'}
+============================================
+
 Submitted: ${timestamp}
+Device: ${data.make} ${data.model}
 
 ${calendarLink ? `View in Calendar: ${calendarLink}\n` : ''}
 
-Device Information:
-- Type: ${data.deviceType}
-- Make: ${data.make}
-- Model: ${data.model}
-- Issues: ${formatIssues(data.issues)}
+DEVICE INFORMATION
+------------------
+Type: ${data.deviceType}
+Make: ${data.make}
+Model: ${data.model}
+Issues: ${formatIssues(data.issues)}
 
-Customer Information:
-- Name: ${data.firstName} ${data.lastName}
-- Phone: ${data.phone}
-- Email: ${data.email}
+CUSTOMER INFORMATION
+--------------------
+Name: ${data.firstName} ${data.lastName}
+Phone: ${data.phone}
+Email: ${data.email}
 
-Problem Description:
-${data.description || 'No description provided'}
+${data.description ? `PROBLEM DESCRIPTION
+-------------------
+${data.description}` : ''}
 
-${data.requestType === 'appointment' && data.appointmentDate ? `Appointment Details:
-- Date: ${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-- Time: ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : 'Not specified'}
-
-` : ''}This request was submitted through the Nexus Tech Solutions website.
+${isAppointment && data.appointmentDate ? `APPOINTMENT DETAILS
+-------------------
+Date: ${new Date(data.appointmentDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+Time: ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : 'Not specified'}
+` : ''}
+---
+This request was submitted through the Nexus Tech Solutions website.
   `;
 
   return { subject, html, text };
@@ -783,7 +871,7 @@ export async function POST(request: NextRequest) {
     // Send email to business (internal)
     const internalEmail = formatInternalEmail(data, calendarEventLink);
     await transporter.sendMail({
-      from: `${siteConfig.name} <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      from: `"Nexus Internal" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
       to: process.env.BUSINESS_EMAIL,
       subject: internalEmail.subject,
       html: internalEmail.html,

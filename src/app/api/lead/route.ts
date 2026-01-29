@@ -39,6 +39,18 @@ async function createEmailTransporter() {
   return transporter;
 }
 
+function getInquiryLabel(inquiryType: string): string {
+  const labels: Record<string, string> = {
+    'schedule-repair': 'Schedule a Repair',
+    'buy-device': 'Buy a Device',
+    'sell-device': 'Sell a Device',
+    'warranty-claim': 'Warranty Claim',
+    'job-opportunities': 'Job Opportunities',
+    'other-inquiry': 'Other Inquiry',
+  };
+  return labels[inquiryType] || inquiryType;
+}
+
 function formatLeadEmail(leadData: LeadData): { subject: string; html: string; text: string } {
   const timestamp = new Date(leadData.timestamp).toLocaleString('en-US', {
     timeZone: 'America/Chicago',
@@ -49,41 +61,166 @@ function formatLeadEmail(leadData: LeadData): { subject: string; html: string; t
     minute: '2-digit'
   });
 
-  const subject = `New ${leadData.type} Lead from ${leadData.name || 'Website Visitor'}`;
+  const inquiryLabel = getInquiryLabel(leadData.inquiryType as string || 'General');
+  const subject = `[Nexus Internal] New ${inquiryLabel} Inquiry from ${leadData.name || 'Website Visitor'}`;
 
   const html = `
-    <h2>New Lead: ${leadData.type}</h2>
-    <p><strong>Lead ID:</strong> ${leadData.id}</p>
-    <p><strong>Submitted:</strong> ${timestamp}</p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Lead Notification</title>
+    </head>
+    <body style="margin:0; padding:0; background-color:#1a1a1a; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a;">
+        <tr>
+          <td align="center" style="padding:32px 16px;">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323; border-radius:8px; overflow:hidden; border:1px solid #333;">
 
-    <h3>Contact Information</h3>
-    <ul>
-      ${leadData.name ? `<li><strong>Name:</strong> ${leadData.name}</li>` : ''}
-      ${leadData.phone ? `<li><strong>Phone:</strong> <a href="tel:${leadData.phone}">${leadData.phone}</a></li>` : ''}
-      ${leadData.email ? `<li><strong>Email:</strong> <a href="mailto:${leadData.email}">${leadData.email}</a></li>` : ''}
-    </ul>
+              <!-- Header -->
+              <tr>
+                <td style="background-color:#2a2a2a; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td>
+                        <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858; font-weight:600;">Nexus Internal</p>
+                        <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff;">New Website Inquiry</h1>
+                      </td>
+                      <td align="right" style="vertical-align:top;">
+                        <span style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">${inquiryLabel}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
 
-    <h3>Additional Details</h3>
-    <pre>${JSON.stringify(leadData, null, 2)}</pre>
+              <!-- Lead ID & Timestamp -->
+              <tr>
+                <td style="padding:20px 32px 0 32px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="font-size:12px; color:#888888;">
+                        <strong style="color:#aaaaaa;">Lead ID:</strong> ${leadData.id}
+                      </td>
+                      <td align="right" style="font-size:12px; color:#888888;">
+                        ${timestamp}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
 
-    <hr>
-    <p><small>This lead was submitted through the Nexus Tech Solutions website.</small></p>
+              <!-- Contact Information -->
+              <tr>
+                <td style="padding:24px 32px;">
+                  <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Contact Information</p>
+
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                    ${leadData.name ? `
+                    <tr>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Name</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:15px; color:#ffffff; font-weight:600;">${leadData.name}</span>
+                      </td>
+                    </tr>
+                    ` : ''}
+                    ${leadData.email ? `
+                    <tr>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Email</span>
+                      </td>
+                      <td style="padding:14px 16px; border-bottom:1px solid #333333;">
+                        <a href="mailto:${leadData.email}" style="font-size:15px; color:#DB5858; text-decoration:none;">${leadData.email}</a>
+                      </td>
+                    </tr>
+                    ` : ''}
+                    ${leadData.phone ? `
+                    <tr>
+                      <td style="padding:14px 16px; ${leadData.message ? 'border-bottom:1px solid #333333;' : ''}">
+                        <span style="font-size:12px; color:#888888; text-transform:uppercase;">Phone</span>
+                      </td>
+                      <td style="padding:14px 16px; ${leadData.message ? 'border-bottom:1px solid #333333;' : ''}">
+                        <a href="tel:${leadData.phone}" style="font-size:15px; color:#DB5858; text-decoration:none; font-weight:600;">${leadData.phone}</a>
+                      </td>
+                    </tr>
+                    ` : ''}
+                  </table>
+                </td>
+              </tr>
+
+              ${leadData.message ? `
+              <!-- Message -->
+              <tr>
+                <td style="padding:0 32px 24px 32px;">
+                  <p style="margin:0 0 12px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Message</p>
+                  <div style="background-color:#2a2a2a; border-radius:6px; padding:16px; border-left:3px solid #DB5858;">
+                    <p style="margin:0; font-size:14px; color:#cccccc; line-height:1.6; white-space:pre-wrap;">${leadData.message}</p>
+                  </div>
+                </td>
+              </tr>
+              ` : ''}
+
+              <!-- Quick Actions -->
+              <tr>
+                <td style="padding:0 32px 24px 32px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0">
+                    <tr>
+                      ${leadData.phone ? `
+                      <td style="padding-right:12px;">
+                        <a href="tel:${leadData.phone}" style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Now</a>
+                      </td>
+                      ` : ''}
+                      ${leadData.email ? `
+                      <td>
+                        <a href="mailto:${leadData.email}" style="display:inline-block; background-color:#333333; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600; border:1px solid #444444;">Reply via Email</a>
+                      </td>
+                      ` : ''}
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="background-color:#1e1e1e; padding:20px 32px; border-top:1px solid #333333;">
+                  <p style="margin:0; font-size:12px; color:#666666; text-align:center;">
+                    This is an automated notification from the Nexus Tech Solutions website.<br>
+                    Please respond to this inquiry within 30 minutes during business hours.
+                  </p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
   `;
 
   const text = `
-New Lead: ${leadData.type}
+[NEXUS INTERNAL] New ${inquiryLabel} Inquiry
+============================================
+
 Lead ID: ${leadData.id}
 Submitted: ${timestamp}
 
-Contact Information:
-${leadData.name ? `- Name: ${leadData.name}` : ''}
-${leadData.phone ? `- Phone: ${leadData.phone}` : ''}
-${leadData.email ? `- Email: ${leadData.email}` : ''}
+CONTACT INFORMATION
+-------------------
+${leadData.name ? `Name: ${leadData.name}` : ''}
+${leadData.email ? `Email: ${leadData.email}` : ''}
+${leadData.phone ? `Phone: ${leadData.phone}` : ''}
 
-Additional Details:
-${JSON.stringify(leadData, null, 2)}
+${leadData.message ? `MESSAGE
+-------
+${leadData.message}` : ''}
 
+---
 This lead was submitted through the Nexus Tech Solutions website.
+Please respond within 30 minutes during business hours.
   `;
 
   return { subject, html, text };
@@ -98,8 +235,8 @@ async function sendEmailWithRetry(leadData: LeadData, maxRetries = 3): Promise<v
       const { subject, html, text } = formatLeadEmail(leadData);
 
       await transporter.sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
-        to: process.env.BUSINESS_EMAIL,
+        from: `"Nexus Internal" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+        to: process.env.CONTACT_FORM_EMAIL || process.env.BUSINESS_EMAIL,
         subject,
         html,
         text,
