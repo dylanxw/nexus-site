@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import { siteConfig } from "@/config/site";
 import { Card } from "@/components/ui/card";
 
@@ -106,22 +107,24 @@ export default function GalleryPage() {
                   // Before & After side by side with consistent height
                   <div className="grid grid-cols-2 gap-0 h-[280px] lg:h-[400px]">
                     <div className="bg-gradient-to-br from-muted to-muted/50 flex flex-col items-center justify-center border-r relative overflow-hidden">
-                      <img
-                        src={repair.beforeImage}
+                      <Image
+                        src={repair.beforeImage!}
                         alt={`${repair.title} - Before`}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-1.5 lg:py-2">
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-1.5 lg:py-2 z-10">
                         <span className="text-xs lg:text-sm text-white font-medium block text-center">Before</span>
                       </div>
                     </div>
                     <div className="bg-gradient-to-br from-muted/50 to-muted flex flex-col items-center justify-center relative overflow-hidden">
-                      <img
-                        src={repair.afterImage}
+                      <Image
+                        src={repair.afterImage!}
                         alt={`${repair.title} - After`}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-1.5 lg:py-2">
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-1.5 lg:py-2 z-10">
                         <span className="text-xs lg:text-sm text-white font-medium block text-center">After</span>
                       </div>
                     </div>
@@ -129,10 +132,11 @@ export default function GalleryPage() {
                 ) : hasSingleImage ? (
                   // Single image with consistent height
                   <div className="h-[280px] lg:h-[400px] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative overflow-hidden">
-                    <img
-                      src={repair.beforeImage || repair.afterImage}
+                    <Image
+                      src={(repair.beforeImage || repair.afterImage)!}
                       alt={repair.title}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                 ) : (

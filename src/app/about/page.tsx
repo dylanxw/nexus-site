@@ -4,6 +4,7 @@ import { SimpleAboutHero } from "@/components/about/simple-hero";
 import { OurStory } from "@/components/about/our-story";
 import { CoreValues } from "@/components/about/core-values";
 import { WhyChooseUs } from "@/components/about/why-choose-us";
+import { generateOrganizationJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "About Us | Nexus Tech Solutions - Denton, TX Device Repair",
@@ -55,20 +56,27 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const organizationJsonLd = generateOrganizationJsonLd();
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "About Us", url: `${siteConfig.url}/about` },
+  ]);
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <SimpleAboutHero />
       <OurStory />
       <CoreValues />
       <WhyChooseUs />
-      {/* Original components commented out for future use */}
-      {/* <AboutHero />
-      <FounderStory />
-      <OurMission />
-      <WhatMakesUsDifferent />
-      <OurValues />
-      <TeamSection />
-      <CommunityInvolvement /> */}
     </main>
   );
 }

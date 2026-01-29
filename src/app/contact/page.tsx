@@ -3,6 +3,7 @@ import { ContactHero } from "@/components/contact/hero";
 import { ContactInfo } from "@/components/contact/contact-info";
 import { ContactForm } from "@/components/contact/contact-form";
 import { siteConfig } from "@/config/site";
+import { generateContactPageJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contact Us | Nexus Tech Solutions - Device Repair in Denton, TX",
@@ -53,8 +54,23 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const contactJsonLd = generateContactPageJsonLd();
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Contact", url: `${siteConfig.url}/contact` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <ContactHero />
       <ContactForm />
       <ContactInfo />

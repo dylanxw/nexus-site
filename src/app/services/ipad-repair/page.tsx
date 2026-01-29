@@ -7,6 +7,7 @@ import { WhyChooseIPad } from "@/components/ipad-repair/why-choose";
 import { OtherIPadServices } from "@/components/ipad-repair/other-services";
 import { IPadReviews } from "@/components/ipad-repair/reviews";
 import { CallEstimateIPad } from "@/components/ipad-repair/call-estimate";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "iPad Repair Services in Denton, TX | Same-Day Screen & Battery Repair",
@@ -30,8 +31,29 @@ export const metadata: Metadata = {
 };
 
 export default function IPadRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "iPad Repair Service",
+    description: "Professional iPad repair in Denton, TX. Screen replacement, battery repair, and charging port fixes for all iPad models including Pro, Air, and Mini. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/ipad-repair`,
+    serviceType: "iPad Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "iPad Repair", url: `${siteConfig.url}/services/ipad-repair` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <IPadRepairHero />
       <CommonIPadRepairs />
       <IPadModels />

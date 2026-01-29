@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Clock, Shield, CheckCircle, Star, Gamepad2 } from "lucide-react";
 import { siteConfig } from "@/config/site";
@@ -99,11 +100,14 @@ export function GameConsoleRepairHero() {
 
           {/* Console Image */}
           <div className="relative">
-            <div className="relative">
-              <img
+            <div className="relative max-w-md mx-auto">
+              <Image
                 src="/images/game-console-repair/game-console-repair-services.png"
                 alt="Game console repair services in Denton TX"
-                className="w-full h-auto max-w-md mx-auto rounded-2xl"
+                width={448}
+                height={336}
+                className="w-full h-auto rounded-2xl"
+                priority
               />
 
               {/* Floating badge */}

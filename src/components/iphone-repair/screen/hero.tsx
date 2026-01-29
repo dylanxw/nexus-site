@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Clock, Shield, CheckCircle, Star, Smartphone } from "lucide-react";
 import { siteConfig } from "@/config/site";
@@ -99,11 +100,14 @@ export function IPhoneScreenHero() {
 
           {/* iPhone Screen Image */}
           <div className="relative">
-            <div className="relative">
-              <img
+            <div className="relative max-w-md mx-auto">
+              <Image
                 src="/images/iphone-repair/iphone-cracked-screen-repair.jpg"
                 alt="iPhone screen replacement service in Denton TX - before and after cracked screen repair"
-                className="w-full h-auto max-w-md mx-auto rounded-xl lg:rounded-2xl"
+                width={448}
+                height={336}
+                className="w-full h-auto rounded-xl lg:rounded-2xl"
+                priority
               />
 
               {/* Quality Parts badge */}

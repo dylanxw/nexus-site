@@ -4,6 +4,8 @@ import { BackGlassRepairTypes } from "@/components/iphone-repair/back-glass/type
 import { BackGlassRepairProcess } from "@/components/iphone-repair/back-glass/process";
 import { BackGlassRepairFAQ } from "@/components/iphone-repair/back-glass/faq";
 import { CallEstimate } from "@/components/iphone-repair/call-estimate";
+import { siteConfig } from "@/config/site";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "iPhone Back Glass Repair Denton TX | Housing Swap & Glass Replacement",
@@ -12,8 +14,30 @@ export const metadata: Metadata = {
 };
 
 export default function IPhoneBackGlassRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "iPhone Back Glass Repair",
+    description: "Professional iPhone back glass repair in Denton, TX. Full housing swap with OEM Apple parts or back glass only replacement for all iPhone models. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/iphone-repair/back-glass-repair`,
+    serviceType: "iPhone Back Glass Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "iPhone Repair", url: `${siteConfig.url}/services/iphone-repair` },
+    { name: "Back Glass Repair", url: `${siteConfig.url}/services/iphone-repair/back-glass-repair` },
+  ]);
+
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <IPhoneBackGlassHero />
       <BackGlassRepairTypes />
       <BackGlassRepairProcess />

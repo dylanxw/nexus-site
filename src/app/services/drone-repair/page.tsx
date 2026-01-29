@@ -7,6 +7,7 @@ import { DroneRepairReviews } from "@/components/drone-repair/reviews";
 import { CallEstimateDrone } from "@/components/drone-repair/call-estimate";
 import { OtherDroneServices } from "@/components/drone-repair/other-services";
 import { siteConfig } from "@/config/site";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Drone Repair Denton TX | DJI, Autel & Professional Service",
@@ -59,8 +60,29 @@ export const metadata: Metadata = {
 };
 
 export default function DroneRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "Drone Repair Service",
+    description: "Expert drone repair in Denton, TX. DJI Mavic, Mini, Phantom, Air, Autel, and professional drone repairs. Crash damage restoration, gimbal repair, camera repair, propeller replacement. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/drone-repair`,
+    serviceType: "Drone Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "Drone Repair", url: `${siteConfig.url}/services/drone-repair` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <DroneRepairHero />
       <CommonDroneRepairs />
       <DroneModels />

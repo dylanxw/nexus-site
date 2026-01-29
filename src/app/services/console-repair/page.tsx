@@ -7,6 +7,7 @@ import { WhyChooseConsole } from "@/components/console-repair/why-choose";
 import { ConsoleRepairReviews } from "@/components/console-repair/reviews";
 import { CallEstimateConsole } from "@/components/console-repair/call-estimate";
 import { OtherConsoleServices } from "@/components/console-repair/other-services";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Game Console Repair Services in Denton, TX | PlayStation, Xbox & Nintendo Repair",
@@ -30,8 +31,29 @@ export const metadata: Metadata = {
 };
 
 export default function GameConsoleRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "Game Console Repair Service",
+    description: "Professional game console repair in Denton, TX. PlayStation 5, Xbox Series X, Nintendo Switch repairs including HDMI port fixes, overheating solutions, disc drive repair, and controller fixes. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/console-repair`,
+    serviceType: "Game Console Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "Console Repair", url: `${siteConfig.url}/services/console-repair` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <GameConsoleRepairHero />
       <CommonConsoleRepairs />
       <GameConsoleModels />

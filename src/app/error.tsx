@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import * as Sentry from '@sentry/nextjs';
 import { siteConfig } from '@/config/site';
 import { AlertCircle, RefreshCw, Home, Phone } from 'lucide-react';
 
@@ -13,13 +14,15 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error('Application error:', error);
-
-    // You could send this to Sentry or another error tracking service here
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(error);
-    // }
+    // Log error to Sentry
+    Sentry.captureException(error, {
+      tags: {
+        errorBoundary: 'app-error',
+      },
+      extra: {
+        digest: error.digest,
+      },
+    });
   }, [error]);
 
   return (

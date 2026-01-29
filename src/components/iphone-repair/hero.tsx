@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Clock, Shield, CheckCircle, Star, Wrench } from "lucide-react";
@@ -113,11 +114,14 @@ export function IPhoneRepairHero() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative">
-              <img
+            <div className="relative max-w-md mx-auto">
+              <Image
                 src="/images/iphone-repair/iphone-cracked-screen-repair.jpg"
                 alt="iPhone with cracked screen repair service in Denton TX"
-                className="w-full h-auto max-w-md mx-auto rounded-xl lg:rounded-2xl"
+                width={448}
+                height={336}
+                className="w-full h-auto rounded-xl lg:rounded-2xl"
+                priority
               />
 
               {/* Floating badge */}

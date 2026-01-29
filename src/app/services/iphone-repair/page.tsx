@@ -7,6 +7,7 @@ import { IPhoneReviews } from "@/components/iphone-repair/reviews";
 import { OtherRepairServices } from "@/components/iphone-repair/other-services";
 import { CallEstimate } from "@/components/iphone-repair/call-estimate";
 import { siteConfig } from "@/config/site";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "iPhone Repair Denton TX | Same-Day Screen & Battery Repair Service",
@@ -58,8 +59,29 @@ export const metadata: Metadata = {
 };
 
 export default function IPhoneRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "iPhone Repair Service",
+    description: "Professional iPhone repair in Denton, TX. Screen replacement, battery repair, water damage restoration, charging port repair, camera repair, and back glass repair. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/iphone-repair`,
+    serviceType: "iPhone Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "iPhone Repair", url: `${siteConfig.url}/services/iphone-repair` },
+  ]);
+
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <IPhoneRepairHero />
       <CommonRepairs />
       <IPhoneModels />

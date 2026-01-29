@@ -11,6 +11,19 @@ const JWT_SECRET = new TextEncoder().encode(
   })()
 );
 
+// Maintenance mode configuration
+const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE === 'true';
+const MAINTENANCE_BYPASS_TOKEN = process.env.MAINTENANCE_BYPASS_TOKEN;
+
+// Routes excluded from maintenance mode
+const maintenanceExcludedRoutes = [
+  '/maintenance',
+  '/api/',
+  '/_next/',
+  '/images/',
+  '/favicon.ico',
+];
+
 // Add routes that need authentication
 const protectedRoutes = [
   '/admin',
@@ -64,6 +77,44 @@ export async function middleware(request: NextRequest) {
     return response;
   };
 
+  // ============================================
+  // MAINTENANCE MODE CHECK
+  // ============================================
+  if (MAINTENANCE_MODE) {
+    // Check if route is excluded from maintenance mode
+    const isExcluded = maintenanceExcludedRoutes.some(route => pathname.startsWith(route));
+
+    // Check for bypass token in cookie or URL
+    const bypassCookie = request.cookies.get('maintenance_bypass')?.value;
+    const bypassParam = request.nextUrl.searchParams.get('bypass');
+    const hasValidBypass = MAINTENANCE_BYPASS_TOKEN &&
+      (bypassCookie === MAINTENANCE_BYPASS_TOKEN || bypassParam === MAINTENANCE_BYPASS_TOKEN);
+
+    // If bypass token provided via URL, set cookie and redirect to clean URL
+    if (bypassParam === MAINTENANCE_BYPASS_TOKEN && MAINTENANCE_BYPASS_TOKEN) {
+      const cleanUrl = new URL(request.url);
+      cleanUrl.searchParams.delete('bypass');
+      const response = NextResponse.redirect(cleanUrl);
+      response.cookies.set('maintenance_bypass', MAINTENANCE_BYPASS_TOKEN, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      });
+      return addSecurityHeaders(response);
+    }
+
+    // Redirect to maintenance page if not excluded and no valid bypass
+    if (!isExcluded && !hasValidBypass) {
+      const maintenanceUrl = new URL('/maintenance', request.url);
+      const response = NextResponse.rewrite(maintenanceUrl);
+      return addSecurityHeaders(response);
+    }
+  }
+
+  // ============================================
+  // ADMIN AUTHENTICATION CHECK
+  // ============================================
   // Check if route needs protection
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));

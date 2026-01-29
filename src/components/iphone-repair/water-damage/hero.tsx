@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Clock, Shield, Droplets, AlertTriangle } from "lucide-react";
@@ -122,11 +123,14 @@ export function IPhoneWaterDamageHero() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative">
-              <img
+            <div className="relative max-w-md mx-auto">
+              <Image
                 src="/images/iphone-repair/iphone-liquid-damage-repair.jpg"
                 alt="iPhone water damage repair service in Denton TX - emergency liquid damage restoration"
-                className="w-full h-auto max-w-md mx-auto rounded-xl lg:rounded-2xl"
+                width={448}
+                height={336}
+                className="w-full h-auto rounded-xl lg:rounded-2xl"
+                priority
               />
 
               {/* Emergency Service badge */}

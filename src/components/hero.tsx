@@ -13,7 +13,7 @@ interface HeroProps {
 
 export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
   return (
-    <section className="relative py-20 lg:py-32 pb-32 lg:pb-40 overflow-hidden">
+    <section className="relative min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-80px)] flex flex-col overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
@@ -33,8 +33,8 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
       <div className="absolute bottom-20 left-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/3 to-transparent rounded-full blur-3xl"></div>
 
-      <div className="wide-container relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
+      <div className="wide-container relative z-10 flex-1 flex flex-col justify-center py-8 lg:py-10">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left side - Text content */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -53,19 +53,19 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
               <span>4.9/5 Rating • 150+ Reviews</span>
             </motion.div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
               <span className="text-white">Fast, reliable electronics repair in</span>{" "}
               <span className="text-gradient bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent">
                 Denton, TX
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-lg md:text-xl text-white mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Phones, tablets, computers & consoles. 60-day repair warranty. Same-day service on most repairs.
             </p>
 
             {/* CTA Buttons - Inline */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12 max-w-lg mx-auto lg:mx-0">
+            <div className="flex flex-col sm:flex-row gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
               <Button
                 size="lg"
                 onClick={onQuoteClick}
@@ -129,9 +129,8 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="absolute -bottom-32 left-0 right-0 hidden lg:block"
+          className="mt-6 lg:mt-8 hidden lg:block"
         >
-          <div className="wide-container">
             <div className="grid grid-cols-4 gap-4">
             {/* 150+ 5 Star Reviews */}
             <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 text-center hover:bg-white/15 transition-all duration-300 group relative overflow-hidden">
@@ -176,8 +175,7 @@ export function Hero({ onScheduleClick, onQuoteClick }: HeroProps) {
                 <p className="text-xs text-white/80 font-medium">Service Available</p>
               </div>
             </div>
-          </div>
-        </div>
+            </div>
         </motion.div>
 
       </div>

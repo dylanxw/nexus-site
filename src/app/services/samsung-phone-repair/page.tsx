@@ -7,6 +7,7 @@ import { SamsungPhoneReviews } from "@/components/samsung-phone-repair/reviews";
 import { CallEstimateSamsung } from "@/components/samsung-phone-repair/call-estimate";
 import { OtherSamsungServices } from "@/components/samsung-phone-repair/other-services";
 import { siteConfig } from "@/config/site";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Samsung Repair Denton TX | Galaxy Screen & Battery Service",
@@ -57,8 +58,29 @@ export const metadata: Metadata = {
 };
 
 export default function SamsungPhoneRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "Samsung Phone Repair Service",
+    description: "Professional Samsung Galaxy phone repair in Denton, TX. Screen replacement, battery repair, charging port fixes for all Galaxy models including S-series, Note, A-series, Z Fold, and Z Flip. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/samsung-phone-repair`,
+    serviceType: "Samsung Phone Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "Samsung Phone Repair", url: `${siteConfig.url}/services/samsung-phone-repair` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <SamsungPhoneRepairHero />
       <CommonSamsungRepairs />
       <SamsungPhoneModels />

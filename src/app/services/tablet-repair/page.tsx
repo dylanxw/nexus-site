@@ -7,6 +7,7 @@ import { WhyChooseTablet } from "@/components/tablet-repair/why-choose";
 import { TabletReviews } from "@/components/tablet-repair/reviews";
 import { CallEstimateTablet } from "@/components/tablet-repair/call-estimate";
 import { OtherTabletServices } from "@/components/tablet-repair/other-services";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Tablet Repair Services in Denton, TX | iPad, Samsung, Microsoft Surface",
@@ -30,8 +31,29 @@ export const metadata: Metadata = {
 };
 
 export default function TabletRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "Tablet Repair Service",
+    description: "Professional tablet repair in Denton, TX. Screen replacement, battery repair, and charging port fixes for iPad, Samsung Galaxy Tab, Microsoft Surface, and all tablet brands. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/tablet-repair`,
+    serviceType: "Tablet Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "Tablet Repair", url: `${siteConfig.url}/services/tablet-repair` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <TabletRepairHero />
       <CommonTabletRepairs />
       <TabletBrands />

@@ -7,6 +7,7 @@ import { ComputerRepairReviews } from "@/components/computer-repair/reviews";
 import { CallEstimateComputer } from "@/components/computer-repair/call-estimate";
 import { OtherComputerServices } from "@/components/computer-repair/other-services";
 import { siteConfig } from "@/config/site";
+import { generateServiceJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Computer & Laptop Repair Denton TX | MacBook, PC Service",
@@ -60,8 +61,29 @@ export const metadata: Metadata = {
 };
 
 export default function ComputerRepairPage() {
+  const serviceJsonLd = generateServiceJsonLd({
+    name: "Computer & Laptop Repair Service",
+    description: "Professional computer and laptop repair in Denton, TX. MacBook, PC, and Windows laptop repairs including screen replacement, battery repair, virus removal, SSD upgrades, and data recovery. Same-day service with 60-day warranty.",
+    url: `${siteConfig.url}/services/computer-repair`,
+    serviceType: "Computer Repair",
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Home", url: siteConfig.url },
+    { name: "Services", url: `${siteConfig.url}/services` },
+    { name: "Computer Repair", url: `${siteConfig.url}/services/computer-repair` },
+  ]);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <ComputerRepairHero />
       <CommonComputerRepairs />
       <ComputerModels />

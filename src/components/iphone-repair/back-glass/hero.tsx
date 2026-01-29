@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageSquare, Clock, Shield, Smartphone, AlertTriangle } from "lucide-react";
@@ -109,11 +110,14 @@ export function IPhoneBackGlassHero() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative">
-              <img
+            <div className="relative max-w-md mx-auto">
+              <Image
                 src="/images/iphone-repair/iphone-back-glass-replacement.jpg"
                 alt="iPhone back glass repair service in Denton TX - Housing swap and glass replacement"
-                className="w-full h-auto max-w-md mx-auto rounded-xl lg:rounded-2xl"
+                width={448}
+                height={336}
+                className="w-full h-auto rounded-xl lg:rounded-2xl"
+                priority
               />
 
               {/* OEM Housing badge */}

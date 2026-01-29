@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { CallFab } from "@/components/call-fab";
@@ -97,6 +98,7 @@ export default function RootLayout({
         <CallFab />
         <Toaster />
         <Analytics />
+        <GoogleAnalytics />
       </body>
     </html>
   );
