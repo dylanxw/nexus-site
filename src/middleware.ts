@@ -73,7 +73,8 @@ export async function middleware(request: NextRequest) {
       cspDirectives.push("upgrade-insecure-requests");
     }
 
-    response.headers.set('Content-Security-Policy', cspDirectives.join('; '));
+    // Temporarily disabled CSP for debugging - uncomment when ready
+    // response.headers.set('Content-Security-Policy', cspDirectives.join('; '));
     return response;
   };
 
@@ -107,7 +108,7 @@ export async function middleware(request: NextRequest) {
     // Redirect to maintenance page if not excluded and no valid bypass
     if (!isExcluded && !hasValidBypass) {
       const maintenanceUrl = new URL('/maintenance', request.url);
-      const response = NextResponse.rewrite(maintenanceUrl);
+      const response = NextResponse.redirect(maintenanceUrl);
       return addSecurityHeaders(response);
     }
   }

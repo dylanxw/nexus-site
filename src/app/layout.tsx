@@ -3,9 +3,7 @@ import { Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@/components/google-analytics";
-import { SiteHeader } from "@/components/site-header";
-import { Footer } from "@/components/footer";
-import { CallFab } from "@/components/call-fab";
+import { LayoutWrapper } from "@/components/layout-wrapper";
 import { generateLocalBusinessJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
@@ -91,11 +89,8 @@ export default function RootLayout({
       </head>
       <body className={`${manrope.variable} font-sans antialiased`} suppressHydrationWarning>
         <div className="relative flex min-h-screen flex-col">
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <LayoutWrapper>{children}</LayoutWrapper>
         </div>
-        <CallFab />
         <Toaster />
         <Analytics />
         <GoogleAnalytics />
