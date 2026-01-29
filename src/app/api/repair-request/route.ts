@@ -340,8 +340,8 @@ function formatCustomerEmail(data: RepairRequestData): { subject: string; html: 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="color-scheme" content="light dark">
-        <meta name="supported-color-schemes" content="light dark">
+        <meta name="color-scheme" content="only">
+        <meta name="supported-color-schemes" content="only">
         <title>Appointment Confirmed</title>
         <!--[if mso]>
         <style type="text/css">
@@ -349,147 +349,153 @@ function formatCustomerEmail(data: RepairRequestData): { subject: string; html: 
         </style>
         <![endif]-->
         <style>
-          :root { color-scheme: light dark; }
+          :root { color-scheme: only; }
+          [data-ogsc] { background-color: #ffffff !important; }
           @media (prefers-color-scheme: dark) {
-            .email-bg { background-color: #1a1a1a !important; }
-            .email-body { background-color: #232323 !important; }
-            .header-bg { background-color: #DB5858 !important; }
-            .header-bar { background-color: #c94848 !important; }
-            .header-text, .header-subtext { color: #ffffff !important; }
-            .body-cell { background-color: #232323 !important; }
-            .text-heading { color: #f0f0f0 !important; }
-            .text-body { color: #cccccc !important; }
-            .text-section-label { color: #888888 !important; }
-            .text-detail-label { color: #aaaaaa !important; }
-            .text-detail-value { color: #f0f0f0 !important; }
-            .detail-border { border-bottom-color: #333333 !important; }
-            .detail-card { background-color: #2a2a2a !important; border-color: #3a3a3a !important; }
-            .notice-bg { background-color: #342a14 !important; border-left-color: #E8A735 !important; }
-            .notice-text { color: #e8c56e !important; }
-            .info-bg { background-color: #1a2633 !important; border-left-color: #5b9bd5 !important; }
-            .info-text { color: #8bbde8 !important; }
-            .step-text { color: #cccccc !important; }
-            .cta-btn { background-color: #DB5858 !important; color: #ffffff !important; }
-            .divider { border-top-color: #333333 !important; }
-            .footer-bg { background-color: #1e1e1e !important; border-top-color: #333333 !important; }
-            .footer-name { color: #dddddd !important; }
-            .footer-detail { color: #888888 !important; }
-            .footer-copy { color: #555555 !important; }
+            * { color-scheme: only !important; }
           }
         </style>
       </head>
-      <body style="margin:0; padding:0; background-color:#f4f4f5; -webkit-font-smoothing:antialiased;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;" class="email-bg">
+      <body style="margin:0; padding:0; background-color:#ffffff !important; -webkit-font-smoothing:antialiased;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff !important;">
           <tr>
             <td align="center" style="padding:32px 16px;">
-              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.08);" class="email-body">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323 !important; border-radius:8px; overflow:hidden; border:1px solid #333333;">
 
                 <!-- Header -->
                 <tr>
-                  <td style="background-color:#DB5858; padding:32px 40px; text-align:center;" class="header-bg">
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.85);" class="header-subtext">Nexus Tech Solutions</p>
-                    <h1 style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:24px; font-weight:700; color:#ffffff; line-height:1.3;" class="header-text">Appointment Confirmed</h1>
+                  <td style="background-color:#2a2a2a !important; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858 !important; font-weight:600;">Nexus Tech Solutions</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff !important;">Appointment Confirmed</h1>
+                        </td>
+                        <td align="right" style="vertical-align:top;">
+                          <span style="display:inline-block; background-color:#34d399 !important; color:#ffffff !important; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">CONFIRMED</span>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
-                <!-- Booking bar -->
+                <!-- Appointment Time Bar -->
                 <tr>
-                  <td style="background-color:#c94848; padding:10px 40px; text-align:center;" class="header-bar">
-                    <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:rgba(255,255,255,0.9); letter-spacing:0.5px;" class="header-text">${customerDate} at ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : ''}</p>
+                  <td style="padding:20px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:12px; color:#888888 !important;">
+                          <strong style="color:#aaaaaa !important;">Device:</strong> ${data.make} ${data.model}
+                        </td>
+                        <td align="right" style="font-size:12px; color:#888888 !important;">
+                          ${customerDate} at ${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : ''}
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
                 <!-- Body -->
                 <tr>
-                  <td style="padding:32px 40px;" class="body-cell">
+                  <td style="padding:24px 32px;">
 
-                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:20px; font-weight:700; color:#1a1a1a;" class="text-heading">Hi ${data.firstName},</p>
-                    <p style="margin:0 0 28px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:15px; color:#555555; line-height:1.5;" class="text-body">Your repair appointment has been confirmed. Here are the details.</p>
+                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:18px; font-weight:700; color:#ffffff !important;">Hi ${data.firstName},</p>
+                    <p style="margin:0 0 24px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5;">Your repair appointment has been confirmed. Here are the details.</p>
 
                     <!-- Appointment details card -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <p style="margin:0 0 16px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Appointment Details</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:6px; overflow:hidden; margin-bottom:24px;">
                       <tr>
-                        <td style="background-color:#fafafa; border:1px solid #e5e5e5; border-radius:8px; padding:24px;" class="detail-card">
-                          <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">Appointment Details</p>
-                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                            <tr>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:80px;" class="text-detail-label detail-border">Date</td>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${customerDate}</td>
-                            </tr>
-                            <tr>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Time</td>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : ''}</td>
-                            </tr>
-                            <tr>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Device</td>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${data.make} ${data.model}</td>
-                            </tr>
-                            <tr>
-                              <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label">Issues</td>
-                              <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value">${formatIssues(data.issues)}</td>
-                            </tr>
-                          </table>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important; width:100px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Date</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${customerDate}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Time</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${data.appointmentTime ? formatTimeTo12Hour(data.appointmentTime) : ''}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Device</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important;">${data.make} ${data.model}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Issues</span>
+                        </td>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:15px; color:#DB5858 !important; font-weight:600;">${formatIssues(data.issues)}</span>
                         </td>
                       </tr>
                     </table>
 
                     <!-- Location -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                       <tr>
-                        <td style="background-color:#f0f7ff; border-left:3px solid #5b9bd5; border-radius:0 6px 6px 0; padding:16px;" class="info-bg">
-                          <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:700; color:#1e3a5f;" class="info-text"><strong>${siteConfig.name}</strong></p>
-                          <p style="margin:0 0 2px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#3b6998;" class="info-text">${siteConfig.address.street}</p>
-                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#3b6998;" class="info-text">${siteConfig.address.city}, ${siteConfig.address.state} ${siteConfig.address.zip}</p>
-                          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address.full)}" style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#DB5858; text-decoration:underline;">Get Directions</a>
+                        <td style="background-color:#1a2633 !important; border-left:3px solid #5b9bd5 !important; border-radius:0 6px 6px 0; padding:16px;">
+                          <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:700; color:#8bbde8 !important;"><strong>${siteConfig.name}</strong></p>
+                          <p style="margin:0 0 2px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#6a9fd4 !important;">${siteConfig.address.street}</p>
+                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#6a9fd4 !important;">${siteConfig.address.city}, ${siteConfig.address.state} ${siteConfig.address.zip}</p>
+                          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address.full)}" style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#DB5858 !important; text-decoration:underline;">Get Directions</a>
                         </td>
                       </tr>
                     </table>
 
                     <!-- What to bring -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                       <tr>
-                        <td style="background-color:#f0fdf4; border-left:3px solid #34d399; border-radius:0 6px 6px 0; padding:14px 16px;">
-                          <p style="margin:0 0 6px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:700; color:#166534;">What to Bring</p>
-                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#15803d; line-height:1.6;">Your ${data.make} ${data.model} and any related accessories.</p>
+                        <td style="background-color:#1a2e1a !important; border-left:3px solid #34d399 !important; border-radius:0 6px 6px 0; padding:14px 16px;">
+                          <p style="margin:0 0 6px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:700; color:#6ee7a8 !important;">What to Bring</p>
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#5dd99a !important; line-height:1.6;">Your ${data.make} ${data.model} and any related accessories.</p>
                         </td>
                       </tr>
                     </table>
 
                     <!-- What happens next -->
-                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">What Happens Next</p>
+                    <p style="margin:0 0 16px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">What Happens Next</p>
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">Bring your device at the scheduled time.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">Bring your device at the scheduled time.</td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">Our technician will diagnose the issue and provide a quote.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">Our technician will diagnose the issue and provide a quote.</td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">3</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">3</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">Most repairs are completed same day.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">Most repairs are completed same day.</td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">4</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">4</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">We'll notify you when your device is ready for pickup.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">We'll notify you when your device is ready for pickup.</td>
                       </tr>
                     </table>
 
                     <!-- Reschedule notice -->
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 24px 0;">
                       <tr>
-                        <td style="background-color:#FEF9EF; border-left:3px solid #E8A735; border-radius:0 6px 6px 0; padding:14px 16px;" class="notice-bg">
-                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#7A5D1E; line-height:1.5;" class="notice-text">
-                            <strong>Need to reschedule?</strong> Call us at <a href="${siteConfig.phoneHref}" style="color:#DB5858; text-decoration:underline;">${siteConfig.phoneFormatted}</a>
+                        <td style="background-color:#342a14 !important; border-left:3px solid #E8A735 !important; border-radius:0 6px 6px 0; padding:14px 16px;">
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#e8c56e !important; line-height:1.5;">
+                            <strong>Need to reschedule?</strong> Call us at <a href="${siteConfig.phoneHref}" style="color:#DB5858 !important; text-decoration:underline;">${siteConfig.phoneFormatted}</a>
                           </p>
                         </td>
                       </tr>
@@ -498,16 +504,8 @@ function formatCustomerEmail(data: RepairRequestData): { subject: string; html: 
                     <!-- CTA Button -->
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 24px 0;">
                       <tr>
-                        <td align="center">
-                          <!--[if mso]>
-                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${siteConfig.phoneHref}" style="height:48px; width:220px; v-text-anchor:middle;" arcsize="10%" fillcolor="#DB5858">
-                            <w:anchorlock/>
-                            <center style="font-family:Arial,sans-serif; font-size:16px; font-weight:bold; color:#ffffff;">Call or Text Us</center>
-                          </v:roundrect>
-                          <![endif]-->
-                          <!--[if !mso]><!-->
-                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:6px; line-height:1;" class="cta-btn">Call or Text Us</a>
-                          <!--<![endif]-->
+                        <td>
+                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call or Text Us</a>
                         </td>
                       </tr>
                     </table>
@@ -517,11 +515,11 @@ function formatCustomerEmail(data: RepairRequestData): { subject: string; html: 
 
                 <!-- Footer -->
                 <tr>
-                  <td style="background-color:#f9f9f9; border-top:1px solid #eeeeee; padding:24px 40px; text-align:center;" class="footer-bg">
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#333333;" class="footer-name">${siteConfig.name}</p>
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.address.full}</p>
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
-                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#bbbbbb;" class="footer-copy">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
+                  <td style="background-color:#1e1e1e !important; padding:20px 32px; border-top:1px solid #333333 !important;">
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#dddddd !important;">${siteConfig.name}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.address.full}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
+                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#555555 !important;">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
                   </td>
                 </tr>
 
@@ -586,8 +584,8 @@ This is an automated confirmation. Please do not reply to this email.
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="color-scheme" content="light dark">
-        <meta name="supported-color-schemes" content="light dark">
+        <meta name="color-scheme" content="only">
+        <meta name="supported-color-schemes" content="only">
         <title>Repair Quote Request Received</title>
         <!--[if mso]>
         <style type="text/css">
@@ -595,118 +593,122 @@ This is an automated confirmation. Please do not reply to this email.
         </style>
         <![endif]-->
         <style>
-          :root { color-scheme: light dark; }
+          :root { color-scheme: only; }
+          [data-ogsc] { background-color: #ffffff !important; }
           @media (prefers-color-scheme: dark) {
-            .email-bg { background-color: #1a1a1a !important; }
-            .email-body { background-color: #232323 !important; }
-            .header-bg { background-color: #DB5858 !important; }
-            .header-bar { background-color: #c94848 !important; }
-            .header-text, .header-subtext { color: #ffffff !important; }
-            .body-cell { background-color: #232323 !important; }
-            .text-heading { color: #f0f0f0 !important; }
-            .text-body { color: #cccccc !important; }
-            .text-section-label { color: #888888 !important; }
-            .text-detail-label { color: #aaaaaa !important; }
-            .text-detail-value { color: #f0f0f0 !important; }
-            .detail-border { border-bottom-color: #333333 !important; }
-            .detail-card { background-color: #2a2a2a !important; border-color: #3a3a3a !important; }
-            .info-bg { background-color: #1a2633 !important; border-left-color: #5b9bd5 !important; }
-            .info-text { color: #8bbde8 !important; }
-            .step-text { color: #cccccc !important; }
-            .cta-btn { background-color: #DB5858 !important; color: #ffffff !important; }
-            .divider { border-top-color: #333333 !important; }
-            .footer-bg { background-color: #1e1e1e !important; border-top-color: #333333 !important; }
-            .footer-name { color: #dddddd !important; }
-            .footer-detail { color: #888888 !important; }
-            .footer-copy { color: #555555 !important; }
+            * { color-scheme: only !important; }
           }
         </style>
       </head>
-      <body style="margin:0; padding:0; background-color:#f4f4f5; -webkit-font-smoothing:antialiased;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;" class="email-bg">
+      <body style="margin:0; padding:0; background-color:#ffffff !important; -webkit-font-smoothing:antialiased;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff !important;">
           <tr>
             <td align="center" style="padding:32px 16px;">
-              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.08);" class="email-body">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323 !important; border-radius:8px; overflow:hidden; border:1px solid #333333;">
 
                 <!-- Header -->
                 <tr>
-                  <td style="background-color:#DB5858; padding:32px 40px; text-align:center;" class="header-bg">
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.85);" class="header-subtext">Nexus Tech Solutions</p>
-                    <h1 style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:24px; font-weight:700; color:#ffffff; line-height:1.3;" class="header-text">Repair Quote Request Received</h1>
+                  <td style="background-color:#2a2a2a !important; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858 !important; font-weight:600;">Nexus Tech Solutions</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff !important;">Repair Quote Request Received</h1>
+                        </td>
+                        <td align="right" style="vertical-align:top;">
+                          <span style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">QUOTE REQUEST</span>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
-                <!-- Subheader bar -->
+                <!-- Device Info Bar -->
                 <tr>
-                  <td style="background-color:#c94848; padding:10px 40px; text-align:center;" class="header-bar">
-                    <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:rgba(255,255,255,0.9); letter-spacing:0.5px;" class="header-text">${data.make} ${data.model} Repair</p>
+                  <td style="padding:20px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:12px; color:#888888 !important;">
+                          <strong style="color:#aaaaaa !important;">Device:</strong> ${data.make} ${data.model}
+                        </td>
+                        <td align="right" style="font-size:12px; color:#888888 !important;">
+                          ${data.deviceType}
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
                 <!-- Body -->
                 <tr>
-                  <td style="padding:32px 40px;" class="body-cell">
+                  <td style="padding:24px 32px;">
 
-                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:20px; font-weight:700; color:#1a1a1a;" class="text-heading">Hi ${data.firstName},</p>
-                    <p style="margin:0 0 28px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:15px; color:#555555; line-height:1.5;" class="text-body">We've received your repair quote request and will prepare an estimate for your ${data.make} ${data.model} repair.</p>
+                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:18px; font-weight:700; color:#ffffff !important;">Hi ${data.firstName},</p>
+                    <p style="margin:0 0 24px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5;">We've received your repair quote request and will prepare an estimate for your ${data.make} ${data.model} repair.</p>
 
                     <!-- Device details card -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <p style="margin:0 0 16px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Device Details</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:6px; overflow:hidden; margin-bottom:24px;">
                       <tr>
-                        <td style="background-color:#fafafa; border:1px solid #e5e5e5; border-radius:8px; padding:24px;" class="detail-card">
-                          <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">Device Details</p>
-                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                            <tr>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:80px;" class="text-detail-label detail-border">Device</td>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${data.make} ${data.model}</td>
-                            </tr>
-                            <tr>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Type</td>
-                              <td style="padding:8px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${data.deviceType}</td>
-                            </tr>
-                            <tr>
-                              <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label">Issues</td>
-                              <td style="padding:8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value">${formatIssues(data.issues)}</td>
-                            </tr>
-                          </table>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important; width:100px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Device</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${data.make} ${data.model}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Type</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important;">${data.deviceType}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Issues</span>
+                        </td>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:15px; color:#DB5858 !important; font-weight:600;">${formatIssues(data.issues)}</span>
                         </td>
                       </tr>
                     </table>
 
                     <!-- What happens next -->
-                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">What Happens Next</p>
+                    <p style="margin:0 0 16px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">What Happens Next</p>
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">Our technician will review your device information.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">Our technician will review your device information.</td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">We'll prepare a detailed quote for the repairs needed.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">We'll prepare a detailed quote for the repairs needed.</td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">3</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">3</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">You'll receive a call or email with the estimate within 2-4 hours during business hours.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">You'll receive a call or email with the estimate within 2-4 hours during business hours.</td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">4</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">4</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">Once approved, schedule an appointment or drop off your device.</td>
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">Once approved, schedule an appointment or drop off your device.</td>
                       </tr>
                     </table>
 
                     <!-- Business hours -->
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0 24px 0;">
                       <tr>
-                        <td style="background-color:#f0f7ff; border-left:3px solid #5b9bd5; border-radius:0 6px 6px 0; padding:14px 16px;" class="info-bg">
-                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#1e3a5f; line-height:1.5;" class="info-text">
+                        <td style="background-color:#1a2633 !important; border-left:3px solid #5b9bd5 !important; border-radius:0 6px 6px 0; padding:14px 16px;">
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#8bbde8 !important; line-height:1.5;">
                             <strong>Business Hours:</strong> ${siteConfig.hours.display}
                           </p>
                         </td>
@@ -716,16 +718,8 @@ This is an automated confirmation. Please do not reply to this email.
                     <!-- CTA Button -->
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 24px 0;">
                       <tr>
-                        <td align="center">
-                          <!--[if mso]>
-                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${siteConfig.phoneHref}" style="height:48px; width:260px; v-text-anchor:middle;" arcsize="10%" fillcolor="#DB5858">
-                            <w:anchorlock/>
-                            <center style="font-family:Arial,sans-serif; font-size:16px; font-weight:bold; color:#ffffff;">Need Immediate Help? Call Us</center>
-                          </v:roundrect>
-                          <![endif]-->
-                          <!--[if !mso]><!-->
-                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:6px; line-height:1;" class="cta-btn">Need Immediate Help? Call Us</a>
-                          <!--<![endif]-->
+                        <td>
+                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Need Immediate Help? Call Us</a>
                         </td>
                       </tr>
                     </table>
@@ -735,11 +729,11 @@ This is an automated confirmation. Please do not reply to this email.
 
                 <!-- Footer -->
                 <tr>
-                  <td style="background-color:#f9f9f9; border-top:1px solid #eeeeee; padding:24px 40px; text-align:center;" class="footer-bg">
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#333333;" class="footer-name">${siteConfig.name}</p>
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.address.full}</p>
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
-                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#bbbbbb;" class="footer-copy">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
+                  <td style="background-color:#1e1e1e !important; padding:20px 32px; border-top:1px solid #333333 !important;">
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#dddddd !important;">${siteConfig.name}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.address.full}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
+                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#555555 !important;">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
                   </td>
                 </tr>
 

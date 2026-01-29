@@ -75,8 +75,8 @@ export async function sendQuoteConfirmationEmail(quote: Quote): Promise<boolean>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="color-scheme" content="light dark">
-        <meta name="supported-color-schemes" content="light dark">
+        <meta name="color-scheme" content="only">
+        <meta name="supported-color-schemes" content="only">
         <title>Your Device Quote</title>
         <!--[if mso]>
         <style type="text/css">
@@ -84,118 +84,117 @@ export async function sendQuoteConfirmationEmail(quote: Quote): Promise<boolean>
         </style>
         <![endif]-->
         <style>
-          :root { color-scheme: light dark; }
-          /* Apple Mail / iOS dark mode overrides */
+          /* Prevent dark mode color inversion on all email clients */
+          :root { color-scheme: only; }
+          [data-ogsc] { background-color: #ffffff !important; }
           @media (prefers-color-scheme: dark) {
-            .email-bg { background-color: #1a1a1a !important; }
-            .email-body { background-color: #232323 !important; }
-            /* Keep branded header colors intact */
-            .header-bg { background-color: #DB5858 !important; }
-            .header-bar { background-color: #c94848 !important; }
-            .header-text, .header-subtext { color: #ffffff !important; }
-            /* Body text */
-            .body-cell { background-color: #232323 !important; }
-            .text-heading { color: #f0f0f0 !important; }
-            .text-body { color: #cccccc !important; }
-            .text-muted { color: #aaaaaa !important; }
-            .text-detail-label { color: #aaaaaa !important; }
-            .text-detail-value { color: #f0f0f0 !important; }
-            .text-section-label { color: #888888 !important; }
-            /* Price card */
-            .price-card { background-color: #2a2a2a !important; border-color: #3a3a3a !important; }
-            .price-text { color: #e86a6a !important; }
-            .price-label { color: #aaaaaa !important; }
-            .price-sub { color: #888888 !important; }
-            /* Detail rows */
-            .detail-border { border-bottom-color: #333333 !important; }
-            /* Expiration notice */
-            .notice-bg { background-color: #342a14 !important; border-left-color: #E8A735 !important; }
-            .notice-text { color: #e8c56e !important; }
-            /* CTA button - keep as-is */
-            .cta-btn { background-color: #DB5858 !important; color: #ffffff !important; }
-            /* Divider */
-            .divider { border-top-color: #333333 !important; }
-            /* Why Nexus */
-            .text-why { color: #aaaaaa !important; }
-            /* Footer */
-            .footer-bg { background-color: #1e1e1e !important; border-top-color: #333333 !important; }
-            .footer-name { color: #dddddd !important; }
-            .footer-detail { color: #888888 !important; }
-            .footer-copy { color: #555555 !important; }
-            /* Step text */
-            .step-text { color: #cccccc !important; }
+            * { color-scheme: only !important; }
           }
         </style>
       </head>
-      <body style="margin:0; padding:0; background-color:#f4f4f5; -webkit-font-smoothing:antialiased;">
+      <body style="margin:0; padding:0; background-color:#ffffff !important; -webkit-font-smoothing:antialiased;">
         <!-- Outer wrapper -->
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;" class="email-bg">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff !important;">
           <tr>
             <td align="center" style="padding:32px 16px;">
 
               <!-- Email container -->
-              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.08);" class="email-body">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323 !important; border-radius:8px; overflow:hidden; border:1px solid #333333;">
 
                 <!-- Header -->
                 <tr>
-                  <td style="background-color:#DB5858; padding:32px 40px; text-align:center;" class="header-bg">
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.85);" class="header-subtext">Nexus Tech Solutions</p>
-                    <h1 style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:24px; font-weight:700; color:#ffffff; line-height:1.3;" class="header-text">Your Device Quote is Ready</h1>
+                  <td style="background-color:#2a2a2a !important; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858 !important; font-weight:600;">Nexus Tech Solutions</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff !important;">Your Device Quote is Ready</h1>
+                        </td>
+                        <td align="right" style="vertical-align:top;">
+                          <span style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">BUYBACK</span>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
-                <!-- Quote number bar -->
+                <!-- Quote Info -->
                 <tr>
-                  <td style="background-color:#c94848; padding:10px 40px; text-align:center;" class="header-bar">
-                    <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:rgba(255,255,255,0.9); letter-spacing:0.5px;" class="header-text">Quote #${quote.quoteNumber}</p>
+                  <td style="padding:20px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:12px; color:#888888 !important;">
+                          <strong style="color:#aaaaaa !important;">Quote #:</strong> ${quote.quoteNumber}
+                        </td>
+                        <td align="right" style="font-size:12px; color:#888888 !important;">
+                          Valid until ${new Date(quote.expiresAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
                 <!-- Body -->
                 <tr>
-                  <td style="padding:32px 40px;" class="body-cell">
+                  <td style="padding:24px 32px;">
 
                     <!-- Greeting -->
-                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:20px; font-weight:700; color:#1a1a1a;" class="text-heading">Hi ${quote.customerName},</p>
-                    <p style="margin:0 0 28px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:15px; color:#555555; line-height:1.5;" class="text-body">We've evaluated your device and have an instant cash offer ready for you.</p>
+                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:18px; font-weight:700; color:#ffffff !important;">Hi ${quote.customerName},</p>
+                    <p style="margin:0 0 24px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5;">We've evaluated your device and have an instant cash offer ready for you.</p>
 
                     <!-- Price card -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                       <tr>
-                        <td style="background-color:#fafafa; border:1px solid #e5e5e5; border-radius:8px; padding:28px 24px; text-align:center;" class="price-card">
-                          <p style="margin:0 0 6px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="price-label">Your ${quote.model} is worth</p>
-                          <p style="margin:0 0 6px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:42px; font-weight:700; color:#DB5858; line-height:1.1;" class="price-text">${formatPrice(quote.offerPrice)}</p>
-                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#999999;" class="price-sub">Instant cash &mdash; no waiting</p>
+                        <td style="background-color:#2a2a2a !important; border-radius:8px; padding:24px; text-align:center;">
+                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#888888 !important;">Your ${quote.model} is worth</p>
+                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:42px; font-weight:700; color:#DB5858 !important; line-height:1.1;">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#666666 !important;">Instant cash &mdash; no waiting</p>
                         </td>
                       </tr>
                     </table>
 
                     <!-- Device details -->
-                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">Device Details</p>
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <p style="margin:0 0 16px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Device Details</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:6px; overflow:hidden; margin-bottom:24px;">
                       <tr>
-                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777; width:100px;" class="text-detail-label detail-border">Model</td>
-                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${quote.model}</td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important; width:100px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Model</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${quote.model}</span>
+                        </td>
                       </tr>
                       <tr>
-                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Storage</td>
-                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${quote.storage}</td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Storage</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important;">${quote.storage}</span>
+                        </td>
                       </tr>
                       <tr>
-                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label detail-border">Network</td>
-                        <td style="padding:10px 0; border-bottom:1px solid #f0f0f0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value detail-border">${quote.network}</td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Network</span>
+                        </td>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important;">${quote.network}</span>
+                        </td>
                       </tr>
                       <tr>
-                        <td style="padding:10px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#777777;" class="text-detail-label">Condition</td>
-                        <td style="padding:10px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; font-weight:600; color:#1a1a1a; text-align:right;" class="text-detail-value">${quote.condition}</td>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Condition</span>
+                        </td>
+                        <td style="padding:14px 16px;">
+                          <span style="font-size:15px; color:#ffffff !important;">${quote.condition}</span>
+                        </td>
                       </tr>
                     </table>
 
                     <!-- Expiration notice -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                       <tr>
-                        <td style="background-color:#FEF9EF; border-left:3px solid #E8A735; border-radius:0 6px 6px 0; padding:14px 16px;" class="notice-bg">
-                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#7A5D1E; line-height:1.5;" class="notice-text">
+                        <td style="background-color:#342a14 !important; border-left:3px solid #E8A735 !important; border-radius:0 6px 6px 0; padding:14px 16px;">
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#e8c56e !important; line-height:1.5;">
                             <strong>Valid for ${daysRemaining} days.</strong> After ${new Date(quote.expiresAt).toLocaleDateString()}, pricing may change based on market conditions.
                           </p>
                         </td>
@@ -203,53 +202,42 @@ export async function sendQuoteConfirmationEmail(quote: Quote): Promise<boolean>
                     </table>
 
                     <!-- How to get paid -->
-                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">How to Get Paid</p>
+                    <p style="margin:0 0 16px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">How to Get Paid</p>
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">1</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">
-                          <strong>Visit our store</strong> &mdash; Bring your device to our Denton location for instant payment.
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">
+                          <strong style="color:#ffffff !important;">Visit our store</strong> &mdash; Bring your device to our Denton location for instant payment.
                         </td>
                       </tr>
                       <tr>
                         <td style="width:24px; vertical-align:top; padding:0 10px 0 0;">
-                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
+                          <span style="display:inline-block; width:22px; height:22px; background-color:#DB5858 !important; color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:12px; font-weight:700; line-height:22px; text-align:center; border-radius:50%;">2</span>
                         </td>
-                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#333333; line-height:1.5; padding-bottom:10px;" class="step-text">
-                          <strong>Mail it in</strong> &mdash; Call us at ${siteConfig.phoneFormatted} for a prepaid shipping label.
+                        <td style="font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5; padding-bottom:10px;">
+                          <strong style="color:#ffffff !important;">Mail it in</strong> &mdash; Call us at ${siteConfig.phoneFormatted} for a prepaid shipping label.
                         </td>
                       </tr>
                     </table>
 
                     <!-- CTA Button -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 28px 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
                       <tr>
-                        <td align="center">
-                          <!--[if mso]>
-                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${siteConfig.phoneHref}" style="height:48px; width:220px; v-text-anchor:middle;" arcsize="10%" fillcolor="#DB5858">
-                            <w:anchorlock/>
-                            <center style="font-family:Arial,sans-serif; font-size:16px; font-weight:bold; color:#ffffff;">Call Now to Sell</center>
-                          </v:roundrect>
-                          <![endif]-->
-                          <!--[if !mso]><!-->
-                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858; color:#ffffff; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:6px; line-height:1;" class="cta-btn">Call Now to Sell</a>
-                          <!--<![endif]-->
+                        <td style="padding-right:12px;">
+                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Now to Sell</a>
                         </td>
                       </tr>
                     </table>
 
-                    <!-- Divider -->
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-                      <tr><td style="border-top:1px solid #eee;" class="divider"></td></tr>
-                    </table>
-
                     <!-- Why sell to Nexus -->
-                    <p style="margin:0 0 12px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#999999;" class="text-section-label">Why Nexus?</p>
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
                       <tr>
-                        <td style="padding:4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#555555; line-height:1.6;" class="text-why">Instant cash payment &bull; Best prices in Denton &bull; Free data wiping &bull; Trusted local shop</td>
+                        <td style="border-top:1px solid #333333 !important; padding-top:16px;">
+                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Why Nexus?</p>
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#888888 !important; line-height:1.6;">Instant cash payment &bull; Best prices in Denton &bull; Free data wiping &bull; Trusted local shop</p>
+                        </td>
                       </tr>
                     </table>
 
@@ -258,11 +246,11 @@ export async function sendQuoteConfirmationEmail(quote: Quote): Promise<boolean>
 
                 <!-- Footer -->
                 <tr>
-                  <td style="background-color:#f9f9f9; border-top:1px solid #eeeeee; padding:24px 40px; text-align:center;" class="footer-bg">
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#333333;" class="footer-name">${siteConfig.name}</p>
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.address.full}</p>
-                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888;" class="footer-detail">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
-                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#bbbbbb;" class="footer-copy">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
+                  <td style="background-color:#1e1e1e !important; padding:20px 32px; border-top:1px solid #333333 !important;">
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#dddddd !important;">${siteConfig.name}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.address.full}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.phoneFormatted} &nbsp;&bull;&nbsp; ${siteConfig.hours.display}</p>
+                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#555555 !important;">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
                   </td>
                 </tr>
 
@@ -345,60 +333,124 @@ export async function sendReminderEmail(
 
     const html = `
       <!DOCTYPE html>
-      <html>
+      <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
       <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="color-scheme" content="only">
+        <meta name="supported-color-schemes" content="only">
+        <title>Quote Reminder</title>
+        <!--[if mso]>
+        <style type="text/css">
+          table, td { font-family: Arial, sans-serif; }
+        </style>
+        <![endif]-->
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #DB5858; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; border-top: none; }
-          .urgency-banner { background: #ff6b6b; color: white; padding: 20px; text-align: center; font-size: 20px; border-radius: 8px; margin: 20px 0; }
-          .price { font-size: 48px; color: #DB5858; font-weight: bold; text-align: center; }
-          .cta-button { display: inline-block; background: #DB5858; color: white; padding: 20px 50px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-size: 20px; }
-          .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+          :root { color-scheme: only; }
+          [data-ogsc] { background-color: #ffffff !important; }
+          @media (prefers-color-scheme: dark) {
+            * { color-scheme: only !important; }
+          }
         </style>
       </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>${urgencyMessage}</h1>
-          </div>
+      <body style="margin:0; padding:0; background-color:#ffffff !important; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff !important;">
+          <tr>
+            <td align="center" style="padding:32px 16px;">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323 !important; border-radius:8px; overflow:hidden; border:1px solid #333333;">
 
-          <div class="content">
-            <p>Hi ${quote.customerName},</p>
+                <!-- Header -->
+                <tr>
+                  <td style="background-color:#2a2a2a !important; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858 !important; font-weight:600;">Nexus Tech Solutions</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff !important;">${urgencyMessage}</h1>
+                        </td>
+                        <td align="right" style="vertical-align:top;">
+                          <span style="display:inline-block; background-color:#ff6b6b !important; color:#ffffff !important; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">REMINDER</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-            <p>Your cash offer is still waiting for you!</p>
+                <!-- Quote Info -->
+                <tr>
+                  <td style="padding:20px 32px 0 32px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:12px; color:#888888 !important;">
+                          <strong style="color:#aaaaaa !important;">Quote #:</strong> ${quote.quoteNumber}
+                        </td>
+                        <td align="right" style="font-size:12px; color:#888888 !important;">
+                          Expires: ${new Date(quote.expiresAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
 
-            <div class="urgency-banner">
-              ⏰ ${daysRemaining} ${daysRemaining === 1 ? 'DAY' : 'DAYS'} LEFT
-            </div>
+                <!-- Body -->
+                <tr>
+                  <td style="padding:24px 32px;">
 
-            <div class="price">
-              ${formatPrice(quote.offerPrice)}
-            </div>
-            <p style="text-align: center; font-size: 18px; color: #666;">
-              for your ${quote.model}
-            </p>
+                    <!-- Greeting -->
+                    <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:18px; font-weight:700; color:#ffffff !important;">Hi ${quote.customerName},</p>
+                    <p style="margin:0 0 24px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#cccccc !important; line-height:1.5;">Your cash offer is still waiting for you!</p>
 
-            <p style="font-size: 18px; text-align: center;">
-              <strong>Don't let this cash slip away!</strong>
-            </p>
+                    <!-- Urgency Banner -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                      <tr>
+                        <td style="background-color:#3d2020 !important; border-radius:6px; padding:16px; text-align:center; border-left:3px solid #ff6b6b !important;">
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:18px; font-weight:700; color:#ff8a8a !important;">
+                            ⏰ ${daysRemaining} ${daysRemaining === 1 ? 'DAY' : 'DAYS'} LEFT
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
 
-            <div style="text-align: center;">
-              <a href="${siteConfig.phoneHref}" class="cta-button">Call Now: ${siteConfig.phoneFormatted}</a>
-            </div>
+                    <!-- Price card -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                      <tr>
+                        <td style="background-color:#2a2a2a !important; border-radius:8px; padding:24px; text-align:center;">
+                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:14px; color:#888888 !important;">Your ${quote.model} is worth</p>
+                          <p style="margin:0 0 8px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:42px; font-weight:700; color:#DB5858 !important; line-height:1.1;">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#666666 !important;">Instant cash &mdash; no waiting</p>
+                        </td>
+                      </tr>
+                    </table>
 
-            <p style="text-align: center; color: #666;">
-              Quote #${quote.quoteNumber}<br>
-              Valid until: ${new Date(quote.expiresAt).toLocaleDateString()}
-            </p>
-          </div>
+                    <!-- Message -->
+                    <p style="margin:0 0 24px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:16px; font-weight:700; color:#ffffff !important; text-align:center;">Don't let this cash slip away!</p>
 
-          <div class="footer">
-            <p>${siteConfig.name} | ${siteConfig.address.full}</p>
-            <p>© ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
-          </div>
-        </div>
+                    <!-- CTA Button -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                      <tr>
+                        <td align="center">
+                          <a href="${siteConfig.phoneHref}" style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:14px 32px; text-decoration:none; border-radius:6px; font-size:16px; font-weight:600;">Call Now: ${siteConfig.phoneFormatted}</a>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color:#1e1e1e !important; padding:20px 32px; border-top:1px solid #333333 !important;">
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; font-weight:600; color:#dddddd !important;">${siteConfig.name}</p>
+                    <p style="margin:0 0 4px 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:13px; color:#888888 !important;">${siteConfig.address.full}</p>
+                    <p style="margin:16px 0 0 0; font-family:'Segoe UI',Roboto,Arial,sans-serif; font-size:11px; color:#555555 !important;">&copy; ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
       </body>
       </html>
     `;
@@ -456,29 +508,44 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
 
     const html = `
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="color-scheme" content="only">
+        <meta name="supported-color-schemes" content="only">
         <title>New Buyback Quote</title>
+        <!--[if mso]>
+        <style type="text/css">
+          table, td { font-family: Arial, sans-serif; }
+        </style>
+        <![endif]-->
+        <style>
+          :root { color-scheme: only; }
+          [data-ogsc] { background-color: #1a1a1a !important; }
+          @media (prefers-color-scheme: dark) {
+            * { color-scheme: only !important; }
+          }
+        </style>
       </head>
-      <body style="margin:0; padding:0; background-color:#1a1a1a; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a;">
+      <body style="margin:0; padding:0; background-color:#1a1a1a !important; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a !important;">
           <tr>
             <td align="center" style="padding:32px 16px;">
-              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323; border-radius:8px; overflow:hidden; border:1px solid #333;">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323 !important; border-radius:8px; overflow:hidden; border:1px solid #333;">
 
                 <!-- Header -->
                 <tr>
-                  <td style="background-color:#2a2a2a; padding:24px 32px; border-bottom:3px solid #DB5858;">
+                  <td style="background-color:#2a2a2a !important; padding:24px 32px; border-bottom:3px solid #DB5858;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                         <td>
-                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858; font-weight:600;">Nexus Internal</p>
-                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff;">New Buyback Quote</h1>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#DB5858 !important; font-weight:600;">Nexus Internal</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff !important;">New Buyback Quote</h1>
                         </td>
                         <td align="right" style="vertical-align:top;">
-                          <span style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">BUYBACK</span>
+                          <span style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">BUYBACK</span>
                         </td>
                       </tr>
                     </table>
@@ -490,10 +557,10 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
                   <td style="padding:20px 32px 0 32px;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="font-size:12px; color:#888888;">
-                          <strong style="color:#aaaaaa;">Quote #:</strong> ${quote.quoteNumber}
+                        <td style="font-size:12px; color:#888888 !important;">
+                          <strong style="color:#aaaaaa !important;">Quote #:</strong> ${quote.quoteNumber}
                         </td>
-                        <td align="right" style="font-size:12px; color:#888888;">
+                        <td align="right" style="font-size:12px; color:#888888 !important;">
                           ${timestamp}
                         </td>
                       </tr>
@@ -504,12 +571,12 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
                 <!-- Price Card -->
                 <tr>
                   <td style="padding:24px 32px;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:8px; overflow:hidden; text-align:center;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:8px; overflow:hidden; text-align:center;">
                       <tr>
                         <td style="padding:24px;">
-                          <p style="margin:0 0 8px 0; font-size:14px; color:#888888;">${quote.model}</p>
-                          <p style="margin:0 0 8px 0; font-size:42px; font-weight:700; color:#DB5858;">${formatPrice(quote.offerPrice)}</p>
-                          <p style="margin:0; font-size:13px; color:#666666;">Our Offer &bull; Atlas: ${formatPrice(quote.atlasPrice)} &bull; Margin: ${formatPrice(quote.margin)} (${((quote.margin / quote.atlasPrice) * 100).toFixed(1)}%)</p>
+                          <p style="margin:0 0 8px 0; font-size:14px; color:#888888 !important;">${quote.model}</p>
+                          <p style="margin:0 0 8px 0; font-size:42px; font-weight:700; color:#DB5858 !important;">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-size:13px; color:#666666 !important;">Our Offer &bull; Atlas: ${formatPrice(quote.atlasPrice)} &bull; Margin: ${formatPrice(quote.margin)} (${((quote.margin / quote.atlasPrice) * 100).toFixed(1)}%)</p>
                         </td>
                       </tr>
                     </table>
@@ -519,38 +586,38 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
                 <!-- Device Details -->
                 <tr>
                   <td style="padding:0 32px 24px 32px;">
-                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Device Details</p>
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Device Details</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:6px; overflow:hidden;">
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Model</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important; width:100px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Model</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:15px; color:#ffffff; font-weight:600;">${quote.model}</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${quote.model}</span>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Storage</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Storage</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:15px; color:#ffffff;">${quote.storage}</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important;">${quote.storage}</span>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Network</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Network</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:15px; color:#ffffff;">${quote.network}</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important;">${quote.network}</span>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:14px 16px;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Condition</span>
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Condition</span>
                         </td>
                         <td style="padding:14px 16px;">
-                          <span style="font-size:15px; color:#ffffff;">${quote.condition}</span>
+                          <span style="font-size:15px; color:#ffffff !important;">${quote.condition}</span>
                         </td>
                       </tr>
                     </table>
@@ -560,30 +627,30 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
                 <!-- Customer Information -->
                 <tr>
                   <td style="padding:0 32px 24px 32px;">
-                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Customer Information</p>
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Customer Information</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:6px; overflow:hidden;">
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Name</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important; width:100px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Name</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:15px; color:#ffffff; font-weight:600;">${quote.customerName}</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${quote.customerName}</span>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Phone</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Phone</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <a href="tel:${quote.customerPhone}" style="font-size:15px; color:#DB5858; text-decoration:none; font-weight:600;">${quote.customerPhone}</a>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <a href="tel:${quote.customerPhone}" style="font-size:15px; color:#DB5858 !important; text-decoration:none; font-weight:600;">${quote.customerPhone}</a>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:14px 16px;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Email</span>
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Email</span>
                         </td>
                         <td style="padding:14px 16px;">
-                          <a href="mailto:${quote.customerEmail}" style="font-size:15px; color:#DB5858; text-decoration:none;">${quote.customerEmail}</a>
+                          <a href="mailto:${quote.customerEmail}" style="font-size:15px; color:#DB5858 !important; text-decoration:none;">${quote.customerEmail}</a>
                         </td>
                       </tr>
                     </table>
@@ -596,10 +663,10 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding-right:12px;">
-                          <a href="tel:${quote.customerPhone}" style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer</a>
+                          <a href="tel:${quote.customerPhone}" style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer</a>
                         </td>
                         <td>
-                          <a href="mailto:${quote.customerEmail}" style="display:inline-block; background-color:#333333; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600; border:1px solid #444444;">Send Email</a>
+                          <a href="mailto:${quote.customerEmail}" style="display:inline-block; background-color:#333333 !important; color:#ffffff !important; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600; border:1px solid #444444 !important;">Send Email</a>
                         </td>
                       </tr>
                     </table>
@@ -608,8 +675,8 @@ export async function sendAdminNotification(quote: Quote): Promise<boolean> {
 
                 <!-- Footer -->
                 <tr>
-                  <td style="background-color:#1e1e1e; padding:20px 32px; border-top:1px solid #333333;">
-                    <p style="margin:0; font-size:12px; color:#666666; text-align:center;">
+                  <td style="background-color:#1e1e1e !important; padding:20px 32px; border-top:1px solid #333333 !important;">
+                    <p style="margin:0; font-size:12px; color:#666666 !important; text-align:center;">
                       This is an automated notification from the Nexus Tech Solutions website.
                     </p>
                   </td>
@@ -666,29 +733,44 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
 
     const html = `
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="color-scheme" content="only">
+        <meta name="supported-color-schemes" content="only">
         <title>Email Delivery Failed</title>
+        <!--[if mso]>
+        <style type="text/css">
+          table, td { font-family: Arial, sans-serif; }
+        </style>
+        <![endif]-->
+        <style>
+          :root { color-scheme: only; }
+          [data-ogsc] { background-color: #1a1a1a !important; }
+          @media (prefers-color-scheme: dark) {
+            * { color-scheme: only !important; }
+          }
+        </style>
       </head>
-      <body style="margin:0; padding:0; background-color:#1a1a1a; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a;">
+      <body style="margin:0; padding:0; background-color:#1a1a1a !important; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a1a1a !important;">
           <tr>
             <td align="center" style="padding:32px 16px;">
-              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323; border-radius:8px; overflow:hidden; border:1px solid #333;">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:#232323 !important; border-radius:8px; overflow:hidden; border:1px solid #333;">
 
                 <!-- Header -->
                 <tr>
-                  <td style="background-color:#2a2a2a; padding:24px 32px; border-bottom:3px solid #ff6b6b;">
+                  <td style="background-color:#2a2a2a !important; padding:24px 32px; border-bottom:3px solid #ff6b6b;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                         <td>
-                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#ff6b6b; font-weight:600;">Nexus Internal</p>
-                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff;">Email Delivery Failed</h1>
+                          <p style="margin:0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#ff6b6b !important; font-weight:600;">Nexus Internal</p>
+                          <h1 style="margin:8px 0 0 0; font-size:22px; font-weight:700; color:#ffffff !important;">Email Delivery Failed</h1>
                         </td>
                         <td align="right" style="vertical-align:top;">
-                          <span style="display:inline-block; background-color:#ff6b6b; color:#ffffff; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">ACTION REQUIRED</span>
+                          <span style="display:inline-block; background-color:#ff6b6b !important; color:#ffffff !important; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase;">ACTION REQUIRED</span>
                         </td>
                       </tr>
                     </table>
@@ -698,12 +780,12 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
                 <!-- Alert Banner -->
                 <tr>
                   <td style="padding:24px 32px 0 32px;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#3d2020; border-radius:6px; border-left:3px solid #ff6b6b;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#3d2020 !important; border-radius:6px; border-left:3px solid #ff6b6b !important;">
                       <tr>
                         <td style="padding:16px;">
-                          <p style="margin:0 0 8px 0; font-size:14px; font-weight:700; color:#ff8a8a;">Customer did not receive quote confirmation</p>
-                          <p style="margin:0; font-size:14px; color:#cc8888; line-height:1.5;">
-                            The quote was created successfully, but the email to <strong style="color:#ffffff;">${quote.customerEmail}</strong> failed to deliver. Please call the customer to provide their quote details.
+                          <p style="margin:0 0 8px 0; font-size:14px; font-weight:700; color:#ff8a8a !important;">Customer did not receive quote confirmation</p>
+                          <p style="margin:0; font-size:14px; color:#cc8888 !important; line-height:1.5;">
+                            The quote was created successfully, but the email to <strong style="color:#ffffff !important;">${quote.customerEmail}</strong> failed to deliver. Please call the customer to provide their quote details.
                           </p>
                         </td>
                       </tr>
@@ -716,10 +798,10 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
                   <td style="padding:20px 32px 0 32px;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="font-size:12px; color:#888888;">
-                          <strong style="color:#aaaaaa;">Quote #:</strong> ${quote.quoteNumber}
+                        <td style="font-size:12px; color:#888888 !important;">
+                          <strong style="color:#aaaaaa !important;">Quote #:</strong> ${quote.quoteNumber}
                         </td>
-                        <td align="right" style="font-size:12px; color:#888888;">
+                        <td align="right" style="font-size:12px; color:#888888 !important;">
                           ${timestamp}
                         </td>
                       </tr>
@@ -730,12 +812,12 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
                 <!-- Price Card -->
                 <tr>
                   <td style="padding:24px 32px;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:8px; overflow:hidden; text-align:center;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:8px; overflow:hidden; text-align:center;">
                       <tr>
                         <td style="padding:24px;">
-                          <p style="margin:0 0 8px 0; font-size:14px; color:#888888;">${quote.model} (${quote.storage})</p>
-                          <p style="margin:0 0 8px 0; font-size:42px; font-weight:700; color:#DB5858;">${formatPrice(quote.offerPrice)}</p>
-                          <p style="margin:0; font-size:13px; color:#666666;">Valid until ${new Date(quote.expiresAt).toLocaleDateString()}</p>
+                          <p style="margin:0 0 8px 0; font-size:14px; color:#888888 !important;">${quote.model} (${quote.storage})</p>
+                          <p style="margin:0 0 8px 0; font-size:42px; font-weight:700; color:#DB5858 !important;">${formatPrice(quote.offerPrice)}</p>
+                          <p style="margin:0; font-size:13px; color:#666666 !important;">Valid until ${new Date(quote.expiresAt).toLocaleDateString()}</p>
                         </td>
                       </tr>
                     </table>
@@ -745,30 +827,30 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
                 <!-- Customer Information -->
                 <tr>
                   <td style="padding:0 32px 24px 32px;">
-                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">Customer to Contact</p>
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a; border-radius:6px; overflow:hidden;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">Customer to Contact</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a2a2a !important; border-radius:6px; overflow:hidden;">
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333; width:100px;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Name</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important; width:100px;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Name</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:15px; color:#ffffff; font-weight:600;">${quote.customerName}</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:15px; color:#ffffff !important; font-weight:600;">${quote.customerName}</span>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Phone</span>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Phone</span>
                         </td>
-                        <td style="padding:14px 16px; border-bottom:1px solid #333333;">
-                          <a href="tel:${quote.customerPhone}" style="font-size:15px; color:#DB5858; text-decoration:none; font-weight:600;">${quote.customerPhone}</a>
+                        <td style="padding:14px 16px; border-bottom:1px solid #333333 !important;">
+                          <a href="tel:${quote.customerPhone}" style="font-size:15px; color:#DB5858 !important; text-decoration:none; font-weight:600;">${quote.customerPhone}</a>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:14px 16px;">
-                          <span style="font-size:12px; color:#888888; text-transform:uppercase;">Email (Failed)</span>
+                          <span style="font-size:12px; color:#888888 !important; text-transform:uppercase;">Email (Failed)</span>
                         </td>
                         <td style="padding:14px 16px;">
-                          <span style="font-size:15px; color:#ff8a8a;">${quote.customerEmail}</span>
+                          <span style="font-size:15px; color:#ff8a8a !important;">${quote.customerEmail}</span>
                         </td>
                       </tr>
                     </table>
@@ -778,18 +860,18 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
                 <!-- Next Steps -->
                 <tr>
                   <td style="padding:0 32px 24px 32px;">
-                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666;">What to Tell the Customer</p>
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a2633; border-radius:6px; border-left:3px solid #5b9bd5;">
+                    <p style="margin:0 0 16px 0; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666666 !important;">What to Tell the Customer</p>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#1a2633 !important; border-radius:6px; border-left:3px solid #5b9bd5 !important;">
                       <tr>
                         <td style="padding:16px;">
-                          <p style="margin:0 0 12px 0; font-size:14px; color:#8bbde8; line-height:1.6;">
-                            1. Quote Number: <strong style="color:#ffffff;">${quote.quoteNumber}</strong><br>
-                            2. Device: <strong style="color:#ffffff;">${quote.model} (${quote.storage}, ${quote.network})</strong><br>
-                            3. Condition: <strong style="color:#ffffff;">${quote.condition}</strong><br>
-                            4. Offer Amount: <strong style="color:#DB5858;">${formatPrice(quote.offerPrice)}</strong><br>
-                            5. Valid Until: <strong style="color:#ffffff;">${new Date(quote.expiresAt).toLocaleDateString()}</strong>
+                          <p style="margin:0 0 12px 0; font-size:14px; color:#8bbde8 !important; line-height:1.6;">
+                            1. Quote Number: <strong style="color:#ffffff !important;">${quote.quoteNumber}</strong><br>
+                            2. Device: <strong style="color:#ffffff !important;">${quote.model} (${quote.storage}, ${quote.network})</strong><br>
+                            3. Condition: <strong style="color:#ffffff !important;">${quote.condition}</strong><br>
+                            4. Offer Amount: <strong style="color:#DB5858 !important;">${formatPrice(quote.offerPrice)}</strong><br>
+                            5. Valid Until: <strong style="color:#ffffff !important;">${new Date(quote.expiresAt).toLocaleDateString()}</strong>
                           </p>
-                          <p style="margin:0; font-size:13px; color:#666666;">Ask them to verify their email address is correct.</p>
+                          <p style="margin:0; font-size:13px; color:#666666 !important;">Ask them to verify their email address is correct.</p>
                         </td>
                       </tr>
                     </table>
@@ -802,7 +884,7 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding-right:12px;">
-                          <a href="tel:${quote.customerPhone}" style="display:inline-block; background-color:#DB5858; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer Now</a>
+                          <a href="tel:${quote.customerPhone}" style="display:inline-block; background-color:#DB5858 !important; color:#ffffff !important; padding:12px 24px; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;">Call Customer Now</a>
                         </td>
                       </tr>
                     </table>
@@ -811,8 +893,8 @@ export async function sendAdminEmailFailureNotification(quote: Quote): Promise<b
 
                 <!-- Footer -->
                 <tr>
-                  <td style="background-color:#1e1e1e; padding:20px 32px; border-top:1px solid #333333;">
-                    <p style="margin:0; font-size:12px; color:#666666; text-align:center;">
+                  <td style="background-color:#1e1e1e !important; padding:20px 32px; border-top:1px solid #333333 !important;">
+                    <p style="margin:0; font-size:12px; color:#666666 !important; text-align:center;">
                       This is an automated notification from the Nexus Tech Solutions website.
                     </p>
                   </td>
