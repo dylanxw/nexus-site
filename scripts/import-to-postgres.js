@@ -44,6 +44,12 @@ async function importData() {
     { sqliteTable: 'VerificationToken', prismaModel: 'verificationToken' },
   ];
 
+  // Fields that need boolean conversion (SQLite uses 0/1)
+  const booleanFields = [
+    'active', 'twoFactorEnabled', 'emailVerified', 'isActive',
+    'usePercentage', 'watch', 'autorestart', 'time'
+  ];
+
   for (const { sqliteTable, prismaModel } of importOrder) {
     const records = data[sqliteTable] || [];
     if (records.length === 0) {
@@ -52,21 +58,35 @@ async function importData() {
     }
 
     try {
-      // Convert date strings back to Date objects and handle BigInt
+      // Process each record
       const processedRecords = records.map(record => {
         const processed = { ...record };
+
         for (const key of Object.keys(processed)) {
-          if (processed[key] && typeof processed[key] === 'string') {
-            // Check if it looks like a date
-            if (/^\d{4}-\d{2}-\d{2}T/.test(processed[key])) {
-              processed[key] = new Date(processed[key]);
-            }
+          const value = processed[key];
+
+          // Convert SQLite booleans (0/1) to JavaScript booleans
+          if (booleanFields.includes(key) && typeof value === 'number') {
+            processed[key] = value === 1;
           }
-          // Handle BigInt fields (like resetTime in rate_limits)
-          if (typeof processed[key] === 'number' && key === 'resetTime') {
-            processed[key] = BigInt(processed[key]);
+
+          // Convert date timestamps to Date objects
+          if (value && typeof value === 'number' &&
+              (key.includes('At') || key.includes('Date') || key === 'expiresAt' || key === 'lastUsedAt')) {
+            processed[key] = new Date(value);
+          }
+
+          // Convert date strings to Date objects
+          if (value && typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+            processed[key] = new Date(value);
+          }
+
+          // Handle BigInt fields
+          if (key === 'resetTime' && typeof value === 'number') {
+            processed[key] = BigInt(value);
           }
         }
+
         return processed;
       });
 
@@ -78,6 +98,10 @@ async function importData() {
       console.log(`  ${sqliteTable}: ${result.count} records imported`);
     } catch (e) {
       console.log(`  ${sqliteTable}: error - ${e.message}`);
+      // Log first record for debugging
+      if (records.length > 0) {
+        console.log(`    First record sample:`, JSON.stringify(records[0]).substring(0, 200));
+      }
     }
   }
 
