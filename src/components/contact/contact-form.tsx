@@ -4,8 +4,47 @@ import { useState } from "react";
 import { Phone, Mail, MessageSquare, Send, User, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import { validateContactFormSafe } from "@/lib/validations/contact";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
+
+interface FieldErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  inquiry?: string;
+  message?: string;
+}
+
+// Client-side validation helpers
+function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function validatePhone(phone: string): boolean {
+  if (!phone) return true; // Phone is optional
+  const digits = phone.replace(/\D/g, '');
+  return digits.length === 10;
+}
+
+function validateName(name: string): boolean {
+  const nameRegex = /^[a-zA-Z\s'\-]{2,}$/;
+  return nameRegex.test(name);
+}
+
+function formatPhoneNumber(value: string): string {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length === 0) return '';
+  if (digits.length <= 3) return `(${digits}`;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+}
+
+function sanitizeInput(value: string): string {
+  // Remove potential HTML tags for XSS prevention
+  return value.replace(/[<>]/g, '');
+}
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -17,16 +56,102 @@ export function ContactForm() {
   });
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    let sanitizedValue = sanitizeInput(value);
+
+    // Format phone number as user types
+    if (name === 'phone') {
+      sanitizedValue = formatPhoneNumber(value);
+    }
+
+    setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
+
+    // Clear field error when user starts typing
+    if (fieldErrors[name as keyof FieldErrors]) {
+      setFieldErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+
+    // Validate individual field on blur
+    let error: string | undefined;
+
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          error = 'Name is required';
+        } else if (!validateName(value)) {
+          error = 'Name can only contain letters, spaces, hyphens, and apostrophes (min 2 characters)';
+        }
+        break;
+      case 'email':
+        if (!value.trim()) {
+          error = 'Email is required';
+        } else if (!validateEmail(value)) {
+          error = 'Please enter a valid email address';
+        }
+        break;
+      case 'phone':
+        if (value && !validatePhone(value)) {
+          error = 'Phone number must be 10 digits';
+        }
+        break;
+      case 'inquiry':
+        if (!value) {
+          error = 'Please select an inquiry type';
+        }
+        break;
+      case 'message':
+        if (!value.trim()) {
+          error = 'Message is required';
+        } else if (value.trim().length < 10) {
+          error = 'Message must be at least 10 characters';
+        } else if (value.length > 1000) {
+          error = 'Message must be 1000 characters or less';
+        }
+        break;
+    }
+
+    setFieldErrors(prev => ({ ...prev, [name]: error }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
     setErrorMessage("");
+    setFieldErrors({});
+
+    // Validate form data using Zod schema
+    const validationResult = validateContactFormSafe({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      inquiry: formData.inquiry,
+      message: formData.message,
+    });
+
+    if (!validationResult.success) {
+      // Map Zod errors to field errors
+      const errors: FieldErrors = {};
+      validationResult.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof FieldErrors;
+        if (field && !errors[field]) {
+          errors[field] = issue.message;
+        }
+      });
+      setFieldErrors(errors);
+      setStatus("error");
+      setErrorMessage("Please fix the errors above and try again.");
+      return;
+    }
 
     try {
       const response = await fetch("/api/lead", {
@@ -36,11 +161,11 @@ export function ContactForm() {
         },
         body: JSON.stringify({
           type: "Contact Form",
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || undefined,
-          inquiryType: formData.inquiry,
-          message: formData.message,
+          name: validationResult.data.name,
+          email: validationResult.data.email,
+          phone: validationResult.data.phone,
+          inquiryType: validationResult.data.inquiry,
+          message: validationResult.data.message,
         }),
       });
 
@@ -52,6 +177,7 @@ export function ContactForm() {
 
       setStatus("success");
       setFormData({ name: "", email: "", phone: "", inquiry: "", message: "" });
+      setTouched({});
     } catch (error) {
       setStatus("error");
       setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
@@ -112,11 +238,20 @@ export function ContactForm() {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
+                      onBlur={handleBlur}
                       required
-                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
+                      maxLength={50}
+                      className={`w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent ${
+                        fieldErrors.name && touched.name
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-gray-300'
+                      }`}
                       placeholder="Your full name"
                     />
                   </div>
+                  {fieldErrors.name && touched.name && (
+                    <p className="mt-1 text-xs text-red-600">{fieldErrors.name}</p>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
@@ -130,11 +265,20 @@ export function ContactForm() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      onBlur={handleBlur}
                       required
-                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
+                      maxLength={255}
+                      className={`w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent ${
+                        fieldErrors.email && touched.email
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-gray-300'
+                      }`}
                       placeholder="your@email.com"
                     />
                   </div>
+                  {fieldErrors.email && touched.email && (
+                    <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+                  )}
                 </div>
               </div>
 
@@ -152,10 +296,19 @@ export function ContactForm() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent"
+                      onBlur={handleBlur}
+                      maxLength={14}
+                      className={`w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent ${
+                        fieldErrors.phone && touched.phone
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-gray-300'
+                      }`}
                       placeholder="(555) 123-4567"
                     />
                   </div>
+                  {fieldErrors.phone && touched.phone && (
+                    <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="inquiry" className="block text-xs lg:text-sm font-medium text-gray-700 mb-1.5 lg:mb-2">
@@ -168,8 +321,13 @@ export function ContactForm() {
                       name="inquiry"
                       value={formData.inquiry}
                       onChange={handleInputChange}
+                      onBlur={handleBlur}
                       required
-                      className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent appearance-none bg-white"
+                      className={`w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent appearance-none bg-white ${
+                        fieldErrors.inquiry && touched.inquiry
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-gray-300'
+                      }`}
                     >
                       <option value="">Select an option</option>
                       <option value="schedule-repair">Schedule a Repair</option>
@@ -180,6 +338,9 @@ export function ContactForm() {
                       <option value="other-inquiry">Other Inquiry</option>
                     </select>
                   </div>
+                  {fieldErrors.inquiry && touched.inquiry && (
+                    <p className="mt-1 text-xs text-red-600">{fieldErrors.inquiry}</p>
+                  )}
                 </div>
               </div>
 
@@ -195,11 +356,27 @@ export function ContactForm() {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     required
                     rows={4}
-                    className="w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border border-gray-300 rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent resize-none"
+                    maxLength={1000}
+                    className={`w-full pl-9 lg:pl-10 pr-3 lg:pr-4 py-2.5 lg:py-3 border rounded-lg text-sm lg:text-base focus:ring-2 focus:ring-[#DB5858] focus:border-transparent resize-none ${
+                      fieldErrors.message && touched.message
+                        ? 'border-red-500 bg-red-50'
+                        : 'border-gray-300'
+                    }`}
                     placeholder="Please provide details about your inquiry..."
                   />
+                </div>
+                <div className="flex justify-between mt-1">
+                  {fieldErrors.message && touched.message ? (
+                    <p className="text-xs text-red-600">{fieldErrors.message}</p>
+                  ) : (
+                    <span />
+                  )}
+                  <p className="text-xs text-gray-500">
+                    {formData.message.length}/1000
+                  </p>
                 </div>
               </div>
 
